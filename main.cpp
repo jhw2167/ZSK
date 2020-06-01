@@ -199,15 +199,14 @@ void followerMechanics(sf::RenderWindow &window, sf::Mouse mouseObject,
 	Player &player1, std::vector<Follower> &activeFollowers, std::vector<Bullet> &activeBullets,
 	std::vector<Tower> &towers)
 {
-
 	static int temperSpawnRate = 0; temperSpawnRate++;				//moderates spawn rate
-	static int maxFollowers = 32;
+	static int maxFollowers = 1;
 	static int tmperRate = 10;
 	
 	if ((temperSpawnRate % tmperRate == 0) && (activeFollowers.size() < maxFollowers))
 	{
 		activeFollowers.push_back(spawnFollower(window, player1));				//adds new follower to vector of active follower
-		//std::cout << "Spawning num: " << activeFollowers.size() << std::endl;
+		std::cout << "Spawning fol, total num: " << activeFollowers.size() << std::endl;
 	}
 	
 	moveFollowers(player1, activeFollowers, towers);					//moves followers
@@ -236,6 +235,10 @@ void moveFollowers(Player &player1, std::vector<Follower> &activeFollowers, std:
 		//checks follower for follower collision then moves and adjust velocity as necesary
 		//if follower is in collision with another follower, function "bounces" them off each other
 		//otherwise just moves follwer at current velocity
+
+		//check if follower is still inBounds
+		if(activeFollowers[i].outOfBounds())
+			activeFollowers.erase(activeFollowers.begin() + i);
 	}
 
 }

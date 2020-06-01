@@ -311,6 +311,14 @@ public:
 		}
 
 		fPosition = fShape.getPosition();
+
+		static int temp = 0; temp++;
+		if (temp % 500 == 0)
+		{
+			std::cout << "The x position of follower is: " << fPosition.x << std::endl;
+			std::cout << "The y position of follower is: " << fPosition.y << std::endl;
+		}
+			
 	}
 
 
@@ -386,7 +394,7 @@ public:
 
 	
 	//OUT OF BOUNDS AND FOLLOWER COLLISION BEHAVIOR
-	void outOfBounds()
+	bool outOfBounds()
 	{
 		bool xOut = fShape.getPosition().x < 0 || fShape.getPosition().x > windowLength;
 		bool yOut = fShape.getPosition().y < 0 || fShape.getPosition().y > windowHeight;
@@ -397,6 +405,8 @@ public:
 
 		if (yOut)
 			fVelocity.y = -fVelocity.y;
+
+		return (xOut && yOut);
 	}
 
 	void towerCollision(Tower tempTower)				//if there is a tower collision, redirect follower's velocity
