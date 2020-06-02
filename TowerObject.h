@@ -113,7 +113,6 @@ public:
 	//TOWER COLLISIONS
 	bool checkTowerCollision(sf::Vector2f playerPos)
 	{
-
 		if (distanceFrom(playerPos) <= towerRadius)
 			return true;
 

@@ -141,23 +141,23 @@ public:
 
 	}
 
-	void setPosition(float newPosX, float newPosY)
+	void setPosition(sf::Vector2f newPos)
 	{
-		heart.setPosition(newPosX, newPosY);
+		heart.setPosition(newPos);
 
-		head.setPosition(newPosX, newPosY - bodyHeight / 4);
+		head.setPosition(newPos.x, newPos.y - bodyHeight / 4);
 
-		playerBody[BODY].setPosition(sf::Vector2f(newPosX, newPosY - bodyLength / 4.f));
+		playerBody[BODY].setPosition(sf::Vector2f(newPos.x, newPos.y - bodyLength / 4.f));
 
-		playerBody[ARMS].setPosition(newPosX, newPosY);
+		playerBody[ARMS].setPosition(newPos);
 
-		playerBody[GUN1].setPosition(newPosX + armLength / 2.f, newPosY);
+		playerBody[GUN1].setPosition(newPos.x + armLength / 2.f, newPos.y);
 
-		playerBody[GUN2].setPosition(newPosX + armLength / 2.f, newPosY - gunLength / 2.f);
+		playerBody[GUN2].setPosition(newPos.x + armLength / 2.f, newPos.y - gunLength / 2.f);
 
-		playerBody[LEG1].setPosition(newPosX - bodyLength / 3.f, newPosY + (3.f / 4.f) * bodyHeight);
+		playerBody[LEG1].setPosition(newPos.x - bodyLength / 3.f, newPos.y + (3.f / 4.f) * bodyHeight);
 
-		playerBody[LEG2].setPosition(newPosX + bodyLength / 3.f, newPosY + (3.f / 4.f) * bodyHeight);
+		playerBody[LEG2].setPosition(newPos.x + bodyLength / 3.f, newPos.y + (3.f / 4.f) * bodyHeight);
 
 	}
 
@@ -248,6 +248,7 @@ private:
 	sf::Vector2f moveVect = sf::Vector2f(STILL, STILL);
 	
 	PlayerShape playerShape;
+	sf::RectangleShape pBox;
 
 	Bullet bullet;											//declares bullet object to be used to fill vector of active bullets
 	std::vector<Bullet> activeBullets;
@@ -264,9 +265,10 @@ private:
 public: 
 
 		//CONSTRUCTOR 
-	Player(sf::RenderWindow &window, int pNumber = 1, float startHealth = 300.f, float startShieldSize = 0,
-		int startScore = 0, float smallRadius = 60.f, float largeRadius = 180.f, float areaOutline = 4.f,
-		int laserL = 100.f, int laserW = 1, sf::Color laserC = sf::Color::Cyan)
+	Player(sf::RenderWindow &window, sf::Vector2f startPos, int pNumber = 1,
+		float startHealth = 300.f, float startShieldSize = 0, int startScore = 0, float smallRadius = 60.f,
+		float largeRadius = 180.f, float areaOutline = 4.f, int laserL = 100.f, int laserW = 1,
+		sf::Color laserC = sf::Color::Cyan,  bool showBox = true)
 	{
 		playerNumber = pNumber;
 		health = startHealth;
@@ -275,9 +277,10 @@ public:
 		score = startScore;
 
 		playerShape = PlayerShape();
+		setPlayerBox(playerShape, showBox);
 
 		playerDirection = STILL;
-		playerPosition = playerShape.getPosition();
+		setPosition(startPos);
 
 		healthBarWidth = 30.f;
 		healthBarPosition = sf::Vector2f(window.getSize().x / 3.f, 20.f);
@@ -403,9 +406,49 @@ public:
 
 	void setPosition(sf::Vector2f newPos)
 	{
-		playerShape.setPosition(newPos.x, newPos.y);
+		playerPosition = newPos;
+		playerShape.setPosition(newPos);
+		pBox.setPosition(newPos);
 	}
 
+	void setPlayerBox(PlayerShape &shape, bool showBoxes)
+	{
+		float length = shape.getRightBounds() - shape.getLeftBounds();
+		float height = shape.getLowerBounds() - shape.getUpperBounds();
+
+		pBox = sf::RectangleShape(sf::Vector2f(length, height));
+
+		sf::Color outlineColor = sf::Color::Transparent;
+		if (showBoxes)
+			outlineColor = sf::Color::Black;
+
+		float thickness = 2.f;
+		pBox.setFillColor(sf::Color::Transparent);
+		pBox.setOutlineThickness(thickness);
+		pBox.setOutlineColor(outlineColor);
+
+		pBox.setOrigin(length / 2.f, shape.getPosition().y - shape.getUpperBounds());
+	}
+
+	//SETS TEXT FOR NUMERICAL DISPLAY OF HEALTH OVERLAYED ONTO BARS
+	void setText(sf::Text &healthText, sf::Font &arial)
+	{
+
+		if (!arial.loadFromFile("arial.ttf")) 	//loads font to use for text drawing
+		{
+			std::cout << "Error loading text" << std::endl;
+		}
+		int textSize = 40;
+		sf::Vector2f centerHealthBar = sf::Vector2f(90.f, -10.f);		//vector adjusts health string text display for centering
+
+		healthText.setFont(arial);
+		healthText.setCharacterSize(textSize);
+		healthText.setFillColor(sf::Color::White);
+		healthText.setPosition(healthBarPosition + centerHealthBar);
+		healthText.setString(std::to_string(static_cast<int>(health)) + "/"
+			+ std::to_string(static_cast<int>(maxHealth)));
+
+	}
 
 	//METHODS OF CLASS PLAYER MANAGING SCORE
 	int adjScore(int adj)
@@ -452,6 +495,7 @@ public:
 		}
 
 		playerShape.movePlayershape(moveVect);		//function in playershape has default argument move set to 5
+		pBox.move(moveVect);
 		playerPosition += moveVect;
 
 
@@ -506,27 +550,6 @@ public:
 	}
 
 
-	//SETS TEXT FOR NUMERICAL DISPLAY OF HEALTH OVERLAYED ONTO BARS
-	void setText(sf::Text &healthText, sf::Font &arial)
-	{
-
-		if (!arial.loadFromFile("arial.ttf")) 	//loads font to use for text drawing
-		{
-			std::cout << "Error loading text" << std::endl;
-		}
-		int textSize = 40;
-		sf::Vector2f centerHealthBar = sf::Vector2f(90.f, -10.f);		//vector adjusts health string text display for centering
-
-		healthText.setFont(arial);
-		healthText.setCharacterSize(textSize);
-		healthText.setFillColor(sf::Color::White);
-		healthText.setPosition(healthBarPosition + centerHealthBar);
-		healthText.setString(std::to_string(static_cast<int>(health)) + "/"
-			+ std::to_string(static_cast<int>(maxHealth)));
-
-	}
-
-
 	//METHODS RELATING TO PLAYERS INERACTION WITH TOWERS
 
 
@@ -536,6 +559,7 @@ public:
 	void drawPlayer(sf::RenderWindow &window)
 	{
 		playerShape.drawPlayer(window);
+		window.draw(pBox);
 	}
 
 	void drawHealthBar(sf::RenderWindow &window)

@@ -223,8 +223,8 @@ public:
 
 	void setFollowerBox(FollowerShape &shape, bool showBoxes)
 	{
-		float length = fShape.getRightBounds() - fShape.getLeftBounds();
-		float height = fShape.getLowerBounds() - fShape.getUpperBounds();
+		float length = shape.getRightBounds() - shape.getLeftBounds();
+		float height = shape.getLowerBounds() - shape.getUpperBounds();
 
 		fBox = sf::RectangleShape(sf::Vector2f(length, height));
 
@@ -237,7 +237,7 @@ public:
 		fBox.setOutlineThickness(thickness);
 		fBox.setOutlineColor(outlineColor);
 
-		fBox.setOrigin(length / 2.f, fShape.getHeadRadius());
+		fBox.setOrigin(length / 2.f, shape.getHeadRadius());
 	}
 
 	void randomSpawn(sf::Vector2f newPos = sf::Vector2f(0, 0))

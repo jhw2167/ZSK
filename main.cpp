@@ -13,9 +13,13 @@ int main(int argc, char *argv[])
 
 	sf::RenderWindow window(sf::VideoMode(static_cast<int>(windowLength), static_cast<int>(windowHeight)), "Zombie Slayer Killer");
 	window.setFramerateLimit(60);
+	sf::RectangleShape gameArea = sf::RectangleShape(sf::Vector2f(windowLength, windowHeight));
+	gameArea.setFillColor(sf::Color::Transparent);
+	gameArea.setOrigin(windowLength / 2.f, windowHeight / 2.f);
 
 	int numberOfPlayers = 1;
-	Player player1(window);							//Must declare and initialize drawn objects AFTER window is created
+	sf::Vector2f startPos = sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f);
+	Player player1(window, startPos);							//Must declare and initialize drawn objects AFTER window is created
 
 	std::vector<Bullet> activeBullets;				//key vectors for managing bullets and followers
 	std::vector<Follower> activeFollowers;
@@ -317,8 +321,10 @@ int checkTowerCollision(Player &player1, std::vector<Tower> &towers)
 	//We can make this better, only check for collision if close to tower
 	for (size_t i = 0; i < towers.size(); i++)
 	{
-		if (towers[i].checkTowerCollision(player1.getPosition()))
+		if (towers[i].checkTowerCollision(player1.getPosition())) {
 			collidingTower = i;
+		}
+			
 	}
 
 	return collidingTower;
