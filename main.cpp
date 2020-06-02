@@ -237,8 +237,9 @@ void moveFollowers(Player &player1, std::vector<Follower> &activeFollowers, std:
 		//otherwise just moves follwer at current velocity
 
 		//check if follower is still inBounds
-		if(activeFollowers[i].outOfBounds())
-			activeFollowers.erase(activeFollowers.begin() + i);
+
+		//if(activeFollowers[i].outOfBounds())
+			//activeFollowers.erase(activeFollowers.begin() + i);
 	}
 
 }
