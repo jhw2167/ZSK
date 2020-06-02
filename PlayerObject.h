@@ -187,24 +187,24 @@ public:
 		heart.move(moveVect);
 	}
 
-	float getUpperBounds()									//returns player's upper, lower, left and right bounds for boundry checking
-	{
-		return head.getPosition().y - head.getRadius();			//the head is the highest point on the character, and its position is retrieved at its center
-	}
-
-	float getLowerBounds()
-	{
-		return playerBody[LEG1].getPosition().y + legLength;			//players lowerBounds with respect 
-	}
-
 	float getLeftBounds()
 	{
 		return playerBody[ARMS].getPosition().x - armLength / 2;		//left and right bounds with respect to the players arms
 	}
 
+	float getUpperBounds()									//returns player's upper, lower, left and right bounds for boundry checking
+	{
+		return head.getPosition().y - head.getRadius();			//the head is the highest point on the character, and its position is retrieved at its center
+	}
+
 	float getRightBounds()
 	{
 		return playerBody[ARMS].getPosition().x + armLength / 2;		//left and right bounds with respect to the players arms
+	}
+
+	float getLowerBounds()
+	{
+		return playerBody[LEG1].getPosition().y + legLength;			//players lowerBounds with respect 
 	}
 
 };

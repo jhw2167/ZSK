@@ -37,6 +37,7 @@ private:
 	float shieldRadius;				// in setSize
 	float legLength;
 	float legWidth;
+	float legAngle;
 
 	float fSize;				//scales up follow size
 	sf::Color fColor;
@@ -47,6 +48,7 @@ public:
 	FollowerShape(sf::Color color = sf::Color::Black, float scale = 2.f)
 	{
 		//setUp follower Shape and size
+		legAngle = 35;
 		setSize(scale);
 		//set follower color
 		setColor(color);
@@ -60,17 +62,17 @@ public:
 		legWidth = scale * 1.75f;
 
 		head.setRadius(headRadius);
-		head.setOrigin(head.getRadius(), head.getRadius());		
+		head.setOrigin(head.getRadius() , head.getRadius());
 		//origin at center of head
 
 		leg1.setSize(sf::Vector2f(legWidth, legLength));
 		leg1.setOrigin(sf::Vector2f(legWidth / 2.f, 0));
-		leg1.setRotation(35);
+		leg1.setRotation(legAngle);
 		//Origin at center, left side of leg
 
 		leg2.setSize(sf::Vector2f(legWidth, legLength));
 		leg2.setOrigin(sf::Vector2f(legWidth / 2.f, 0));
-		leg2.setRotation(325);
+		leg2.setRotation(360 - legAngle);
 		//Origin at center, left side of leg
 
 		fSize = scale;
@@ -115,6 +117,34 @@ public:
 	{
 		return head.getGlobalBounds();
 	}
+
+	//bounds with respect to center of follower head at fPos
+	float getLeftBounds()
+	{
+		return fPos.x - headRadius;			
+	}
+
+	float getUpperBounds()
+	{
+		return fPos.y - headRadius;			
+	}
+
+	float getRightBounds()
+	{
+		return fPos.x + headRadius;				
+	}
+
+	float getLowerBounds()
+	{
+		float degsToRads = 3.14159 / 180;
+		float dist = 2 * headRadius * cos(legAngle * degsToRads);
+		return fPos.y + dist;
+	}
+
+	float getHeadRadius() {
+		return headRadius;
+	}
+
 	//***END GETTER METHODS***
 
 	//other Methods
@@ -158,7 +188,8 @@ private:
 	int aUp, aLeft, aDown, aRight = 0;						//static ints will track how many times a follower has been accelerating in a given direction
 	enum direction {STILL = 0, UP, LEFT, DOWN, RIGHT};		//declares enum direction to handle player movement
 
-	sf::Vector2f bounce;									//vector with random x y coordinates for collisions
+	sf::Vector2f bounce;			//vector with random x y coordinates for collisions
+	sf::RectangleShape fBox;		//sets transparent box around follower for mechanics
 
 	float windowLength;
 	float windowHeight;
@@ -168,9 +199,11 @@ private:
 public:
 
 	Follower(sf::RenderWindow &window, sf::Color fColor = sf::Color::Black, 
-		float scale = 2.f)
+		float scale = 2.f, bool showBoxes = false)
 	{
+		showBoxes = true;
 		fShape = FollowerShape(fColor, scale);
+		setFollowerBox(fShape, showBoxes);
 
 		windowLength = window.getSize().x ;
 		windowHeight = window.getSize().y;
@@ -186,6 +219,25 @@ public:
 	void setFollowerColor(sf::Color color)
 	{
 		fShape.setColor(color);
+	}
+
+	void setFollowerBox(FollowerShape &shape, bool showBoxes)
+	{
+		float length = fShape.getRightBounds() - fShape.getLeftBounds();
+		float height = fShape.getLowerBounds() - fShape.getUpperBounds();
+
+		fBox = sf::RectangleShape(sf::Vector2f(length, height));
+
+		sf::Color outlineColor = sf::Color::Transparent;
+		if (showBoxes)
+			outlineColor = sf::Color::Black;
+
+		float thickness = 1.f;
+		fBox.setFillColor(sf::Color::Transparent);
+		fBox.setOutlineThickness(thickness);
+		fBox.setOutlineColor(outlineColor);
+
+		fBox.setOrigin(length / 2.f, fShape.getHeadRadius());
 	}
 
 	void randomSpawn(sf::Vector2f newPos = sf::Vector2f(0, 0))
@@ -241,6 +293,7 @@ public:
 	void setPosition(sf::Vector2f newPos)
 	{
 		fShape.setPosition(newPos);
+		fBox.setPosition(newPos);
 		fPosition = newPos;
 	}
 
@@ -297,17 +350,18 @@ public:
 		
 		outOfBounds();		//checks if follwer is out of bounds and redirects it as necesary
 
-		for (size_t i = 0; i < towers.size() ; i++)			//checks each tower for potential collision
-		{
+		for (size_t i = 0; i < towers.size() ; i++) {	//checks each tower for potential collision
 			towerCollision(towers[i]);
 		}
 		
 
 		if (collision) {
 			fShape.move(fVelocity + bounce);	// "bounces" followers in case of collision
+			fBox.move(fVelocity + bounce);
 		}
 		else {
 			fShape.move(fVelocity);			//otherwise moves them normally
+			fBox.move(fVelocity);
 		}
 
 		fPosition = fShape.getPosition();
@@ -470,6 +524,7 @@ public:
 	void drawFollower(sf::RenderWindow &window)
 	{
 		fShape.draw(window);
+		window.draw(fBox);
 	}
 };
 
