@@ -262,8 +262,9 @@ private:
 	float shield;
 	float maxShield;
 
-	static float healthBarWidth;
-	sf::Vector2f healthBarPosition;		
+	static float healthBarHeight;
+	sf::Vector2f healthBarPosition;
+	sf::Vector2f healthBarOrigin;
 	sf::RectangleShape healthBarRed;							//representaion of player's lost health
 	sf::RectangleShape healthBarGreen;							//visual representation of player's health
 	sf::RectangleShape shieldBar;							//representaiton of player's shield (if applicable)
@@ -290,7 +291,9 @@ private:
 
 	int laserLength;			//Max distance tower projectiles travel for player
 	int laserWidth;				//Max width of player projectiles, levels 1->2->3
-	sf::Color laserColor;
+	
+	sf::CircleShape dot = sf::CircleShape(4.f);
+	sf::RectangleShape box;
 
 public: 
 
@@ -315,56 +318,43 @@ public:
 		//initialize player spawn health and shield bars
 		initHealthBar(window, startHealth, startMaxHealth);
 		initShieldBar(window, startShield, startMaxShield);
-		initHealthText(healthText, arial);
-
-		
+		initHealthText();
 		
 		//Initialize large and small follower areas
 		initSmallFollowerRadius(smallRadius);
 		initLargeFollowerRadius(largeRadius);
 
-	
-		laserLength = laserL;
-		laserWidth = laserW;
-		laserColor = playerColor;
-
+		//Initialize Laser attributes
+		setLaserLength(laserL);
+		setLaserWidth(laserW);
+		//laser color = playercolor
 	}
 
 	//initialize METHODS FOR CLASS PLAYER
 
 	//SETS TEXT FOR NUMERICAL DISPLAY OF HEALTH OVERLAYED ONTO BARS
-	void initHealthText(sf::Text &healthText, sf::Font &arial)
-	{
-		// loads text for putting health in string format
-		if (!arial.loadFromFile("arial.ttf")) 	//loads font to use for text drawing
-		{
-			std::cout << "Error loading text" << std::endl;
-		}
-		int textSize = 35;
-		sf::Vector2f centerHealthBar = sf::Vector2f(90.f, -8.f);		//vector adjusts health string text display for centering
-
-		healthText.setFont(arial);
-		healthText.setCharacterSize(textSize);
-		healthText.setFillColor(sf::Color::White);
-		healthText.setPosition(healthBarPosition + centerHealthBar);
-	}
 
 	void initHealthBar(sf::RenderWindow &window, float sHealth, float sMaxHealth)
 	{
 		maxHealth = sMaxHealth;
 
-		float healthBarX = window.getSize().x / 3.f;
+		float healthBarX = window.getSize().x / 2.f;
 		float healthBarY = window.getSize().y / 40.f;
 
 		healthBarPosition = sf::Vector2f(healthBarX , healthBarY);
-		sf::Vector2f startHealthBarSize = sf::Vector2f(sMaxHealth, healthBarWidth);
+		healthBarOrigin = sf::Vector2f(sMaxHealth / 2.f, healthBarHeight / 2.f);
+		sf::Vector2f startHealthBarSize = sf::Vector2f(sMaxHealth, healthBarHeight);
 
 		healthBarRed.setSize(startHealthBarSize);			//initiates red (background) health bar
+		healthBarRed.setOrigin(healthBarOrigin);
 		healthBarRed.setPosition(healthBarPosition);
 		healthBarRed.setFillColor(sf::Color::Red);
+		healthBarRed.setOutlineColor(sf::Color::Black);
+		healthBarRed.setOutlineThickness(4.f);
 
 		
-		setHealth(sHealth);								//initiates green health bar on top of it
+		setHealth(sHealth);				
+		healthBarGreen.setOrigin(healthBarOrigin);		
 		healthBarGreen.setPosition(healthBarPosition);
 		healthBarGreen.setFillColor(sf::Color::Green);
 	}
@@ -374,8 +364,28 @@ public:
 		maxShield = sMaxShield;
 
 		setShield(sShield);									//Player initiated with size 100 shield
+		shieldBar.setOrigin(healthBarOrigin);
 		shieldBar.setPosition(healthBarPosition);
 		shieldBar.setFillColor(sf::Color::Blue);
+	}
+
+	void initHealthText()
+	{
+		// loads text for putting health in string format
+		if (!arial.loadFromFile("arial.ttf")) 	//loads font to use for text drawing
+		{
+			std::cout << "Error loading text" << std::endl;
+		}
+		int textSize = 35;
+		float thickness = 2.f;
+		sf::Vector2f centerHealthBar = sf::Vector2f(-60.f, -8.f);		//vector adjusts health string text display for centering
+
+		healthText.setFont(arial);
+		healthText.setCharacterSize(textSize);
+		healthText.setFillColor(sf::Color::White);
+		healthText.setOutlineColor(sf::Color::Black);
+		healthText.setOutlineThickness(thickness);
+		centerHealthText();
 	}
 
 	void initSmallFollowerRadius(float newRadius)
@@ -383,9 +393,6 @@ public:
 		setSmallFollowerRadius(newRadius);
 		smallFollowArea.setOrigin(newRadius, newRadius);
 		smallFollowArea.setPosition(playerPosition);
-
-		std::cout << "small circle at x pos: " << smallFollowArea.getPosition().x << std::endl;
-		std::cout << "small circle at y pos: " << smallFollowArea.getPosition().y << std::endl;
 
 		smallFollowArea.setOutlineThickness(areaOutline);
 		smallFollowArea.setOutlineColor(sf::Color::Blue);
@@ -408,19 +415,38 @@ public:
 	{
 		health = newHealth;
 
-		sf::Vector2f  healthBarSize = sf::Vector2f(health, healthBarWidth);
+		sf::Vector2f  healthBarSize = sf::Vector2f(health, healthBarHeight);
+		healthBarGreen.setSize(healthBarSize);
 
 		healthText.setString(std::to_string(static_cast<int>(health)) + "/"
 			+ std::to_string(static_cast<int>(maxHealth)));				//updates graphics and text
-		healthBarGreen.setSize(healthBarSize);
+		centerHealthText();
 
+	}
+
+	void centerHealthText()
+	{
+		sf::Vector2f textDims = sf::Vector2f(healthText.getLocalBounds().width,
+			healthText.getLocalBounds().height);
+		sf::Vector2f centerText = sf::Vector2f(0,-6.f);	//requires bit of adj to center text 
+		
+		if (health < 10)				//more adj so it looks nice
+			centerText.x += 15.f;
+		else if (health < 100)
+			centerText.x += 10.f;
+
+		dot.setFillColor(sf::Color::Yellow);
+		dot.setOrigin(4.f, 4.f);
+		dot.setPosition(healthBarPosition);
+		healthText.setOrigin(textDims / 2.f);
+		healthText.setPosition(healthBarPosition + centerText);
 	}
 
 	void setShield(float newShield)
 	{
 		shield = newShield;
 
-		sf::Vector2f  shieldBarSize = sf::Vector2f(shield * 3.f, healthBarWidth);
+		sf::Vector2f  shieldBarSize = sf::Vector2f(shield * 3.f, healthBarHeight);
 
 		healthText.setString(std::to_string(static_cast<int>(health + shield)) + "/"
 			+ std::to_string(static_cast<int>(maxHealth)));				//updates graphics and text
@@ -469,10 +495,14 @@ public:
 		largeFollowArea.setRadius(newRadius);
 	}
 
-	void setLaserLength()
-	{
-
+	void setLaserLength(int laserL) {
+		laserLength = laserL;
 	}
+
+	void setLaserWidth(int laserW) {
+		laserWidth = laserW;
+	}
+
 
 
 	//ALL GET METHODS OF CLASS PLAYER
@@ -498,6 +528,10 @@ public:
 	PlayerShape getPlayerShape()
 	{
 		return playerShape;
+	}
+
+	sf::Color getPlayerColor() {
+		return playerColor;
 	}
 
 	sf::Vector2f getPosition()
@@ -545,11 +579,6 @@ public:
 		return laserWidth;
 	}
 
-	sf::Color getLaserColor()
-	{
-		return laserColor;
-	}
-
 
 	//METHODS OF CLASS PLAYER MANAGING SCORE
 	int adjScore(int adj)
@@ -584,15 +613,13 @@ public:
 			break;
 		}
 
-		if (towerCollision)
-		{
+		if (towerCollision) {
 			//std::cout << "dist from tow center " << distanceFrom(playerPosition + moveVect, towerPos) << std::endl;
 			movingIntoTower = distanceFrom(playerPosition + moveVect, towerPos) <= towerRadius;
 		}
 
-		if (movingIntoTower)
-		{
-			moveVect = -moveVect / 5.f;
+		if (movingIntoTower) {
+			moveVect = sf::Vector2f(0,0);
 		}
 
 		playerShape.movePlayershape(moveVect);		//function in playershape has default argument move set to 5
@@ -644,6 +671,7 @@ public:
 
 	void drawHealthBar(sf::RenderWindow &window)
 	{
+		
 		window.draw(healthBarRed);
 		window.draw(healthBarGreen);
 		window.draw(shieldBar);
@@ -652,6 +680,8 @@ public:
 		window.draw(smallFollowArea);
 
 		window.draw(healthText);
+		//window.draw(dot);	//for troubleshooting
+		//window.draw(box);
 	}
 
 		

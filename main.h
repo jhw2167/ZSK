@@ -81,7 +81,7 @@ void drawTowers(sf::RenderWindow &window, std::vector<Tower> &towers);
 //INITIALIZE STATIC MEMBERS OF OBJECTS
 
 //Player object
-float Player::healthBarWidth = 30.f;
+float Player::healthBarHeight = 30.f;
 float Player::areaOutline = 4.f;
 sf::Color Player::pColors[] = {sf::Color::Red, sf::Color::Blue,
 	sf::Color::Green, sf::Color::Yellow};
