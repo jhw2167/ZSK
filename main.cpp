@@ -277,7 +277,7 @@ void attackPlayer(Player &player1, std::vector<Follower> &activeFollowers)
 	{
 		if (activeFollowers[i].getFollowerGlobalBounds().intersects(player1.getPlayerBounds()))		//if a follwer insects the player's global bounds
 		{
-			player1.adjHealth(-1);	//reduce player's health
+			player1.takeDamage(1);	//reduce player's health
 		}
 	}
 

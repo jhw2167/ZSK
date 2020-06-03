@@ -52,100 +52,28 @@ private:
 	float legLength;
 	float legWidth; 
 
-	enum direction { STILL = 0, UP, LEFT, DOWN, RIGHT };							
+	enum direction {STILL = 0, UP, LEFT, DOWN, RIGHT};							
 	//declares enum direction to handle player movement
+
+	sf::Color playerColor;
+	sf::Color bodyColor;
 
 public:
 
-	PlayerShape(float scale = 2.f, float startPos = 500.f,
-		sf::Color playerColor = sf::Color::Black)										
-		//Constructor for players shape, 
-		//"scale" places players size relative to window
+	PlayerShape(float scale = 10.f, sf::Color pColor = sf::Color::Red,
+		sf::Vector2f startPos = sf::Vector2f(100.f, 100.f) )										
 	{	
-		heartRadius = scale;
-		headRadius = scale * 2.f;
-
-		bodyHeight = scale * 12.f;
-		bodyLength = scale * 3.f;
-
-		armLength = scale * 16.f;
-		armHeight = scale * 2.f;
-
-		gunLength = scale * 4.f;
-		gunHeight = scale * 1.5f;
-
-		legLength = scale * 8.f;
-		legWidth = scale * 1.75f;
-
-		heart.setRadius(scale);
-		heart.setOrigin(heart.getRadius(), heart.getRadius());						//sets up player heart shape to be drawn
-		heart.setFillColor(sf::Color::Red);
-		heart.setPosition(startPos, startPos);
-
-		head.setRadius(headRadius);													//sets up player head 
-		head.setOrigin(head.getRadius(), head.getRadius());
-		head.setFillColor(playerColor);
-		head.setPosition(startPos, startPos - bodyHeight / 4.f);
-
-		body.setSize(sf::Vector2f(bodyLength, bodyHeight));							//player body
-		body.setFillColor(playerColor);
-		body.setOrigin(bodyLength / 2.f, 0);
-		body.setPosition(sf::Vector2f(startPos, startPos - bodyLength / 4.f));
-
-		arms.setSize(sf::Vector2f(armLength, armHeight));							//players arms as 1 rectangle object
-		arms.setFillColor(playerColor);
-		arms.setOrigin(armLength / 2.f, armHeight / 2.f);
-		arms.setPosition(startPos, startPos);
-
-		gun1.setSize(sf::Vector2f(gunHeight, gunLength));							//players gun
-		gun1.setFillColor(sf::Color::Blue);
-		gun1.setOrigin(gunHeight / 2.f, gunLength / 2.f);
-		gun1.setPosition(startPos + armLength / 2.f, startPos);
-
-		gun2.setSize(sf::Vector2f(gunLength, gunHeight));							//players gun
-		gun2.setFillColor(sf::Color::Blue);
-		gun2.setOrigin(gunLength / 3.f, gunHeight / 2.f);
-		gun2.setPosition(startPos + armLength / 2.f, startPos - gunLength / 2.f);
-		
-		leg1.setSize(sf::Vector2f(legWidth, legLength));							//players first leg
-		leg1.setFillColor(playerColor);
-		leg1.setOrigin(sf::Vector2f(legWidth / 2.f, 0));
-		leg1.setRotation(35);
-		leg1.setPosition(startPos - bodyLength / 3.f, startPos + (3.f/4.f) * bodyHeight);
-
-		leg2.setSize(sf::Vector2f(legWidth, legLength));							//players second leg
-		leg2.setFillColor(playerColor);
-		leg2.setOrigin(sf::Vector2f(legWidth / 2.f, 0));
-		leg2.setRotation(325);
-		leg2.setPosition(startPos + bodyLength / 3.f, startPos + (3.f/4.f) * bodyHeight);
-
-		playerBody[0] = body;					//adds each item to array to be drawn
-		playerBody[1] = arms;
-		playerBody[2] = gun1;
-		playerBody[3] = gun2;
-		playerBody[4] = leg1;
-		playerBody[5] = leg2;
-
+		setPlayerShape(scale);
+		setColor(pColor);
+		setPosition(startPos);
 	}
 
-	void drawPlayer(sf::RenderWindow &window)
-	{
-
-		for (int i = 0; i < 6; i++)
-		{
-			window.draw(playerBody[i]);
-		}
-		
-		window.draw(head);
-		window.draw(heart);
-
-	}
-
+	//SET FUNCTIONS
 	void setPosition(sf::Vector2f newPos)
 	{
 		heart.setPosition(newPos);
 
-		head.setPosition(newPos.x, newPos.y - bodyHeight / 4);
+		head.setPosition(newPos.x, newPos.y - bodyHeight / 2.f);
 
 		playerBody[BODY].setPosition(sf::Vector2f(newPos.x, newPos.y - bodyLength / 4.f));
 
@@ -161,6 +89,74 @@ public:
 
 	}
 
+	void setPlayerShape(float scale)
+	{
+		//"scale" places players size relative to window, color is color of players heart
+		heartRadius = scale;
+		headRadius = scale * 2.f;
+
+		bodyHeight = scale * 8.f;
+		bodyLength = scale * 3.f;
+
+		armLength = scale * 16.f;
+		armHeight = scale * 1.5f;
+
+		gunLength = scale * 4.f;
+		gunHeight = scale * 1.5f;
+
+		legLength = scale * 6.f;
+		legWidth = scale * 1.75f;
+
+		heart.setRadius(scale);
+		heart.setOrigin(heart.getRadius(), heart.getRadius());						//sets up player heart shape to be drawn
+
+		head.setRadius(headRadius);													//sets up player head 
+		head.setOrigin(head.getRadius(), head.getRadius());
+
+		body.setSize(sf::Vector2f(bodyLength, bodyHeight));							//player body
+		body.setOrigin(bodyLength / 2.f, 0);
+
+		arms.setSize(sf::Vector2f(armLength, armHeight));							//players arms as 1 rectangle object
+		arms.setOrigin(armLength / 2.f, armHeight / 2.f);
+
+		gun1.setSize(sf::Vector2f(gunHeight, gunLength));							//players gun
+		gun1.setOrigin(gunHeight / 2.f, gunLength / 2.f);
+
+		gun2.setSize(sf::Vector2f(gunLength, gunHeight));							//players gun
+		gun2.setOrigin(gunLength / 3.f, gunHeight / 2.f);
+
+		leg1.setSize(sf::Vector2f(legWidth, legLength));							//players first leg
+		leg1.setOrigin(sf::Vector2f(legWidth / 2.f, 0));
+		leg1.setRotation(35);
+
+		leg2.setSize(sf::Vector2f(legWidth, legLength));							//players second leg
+		leg2.setOrigin(sf::Vector2f(legWidth / 2.f, 0));
+		leg2.setRotation(325);
+
+		playerBody[0] = body;					//adds each item to array to be drawn
+		playerBody[1] = arms;
+		playerBody[2] = gun1;
+		playerBody[3] = gun2;
+		playerBody[4] = leg1;
+		playerBody[5] = leg2;
+	}
+
+	void setColor(sf::Color pColor, sf::Color bColor = sf::Color::Black)
+	{
+		heart.setFillColor(pColor);
+		head.setFillColor(bColor);
+		playerBody[BODY].setFillColor(bColor);
+		playerBody[ARMS].setFillColor(bColor);
+		playerBody[GUN1].setFillColor(pColor);
+		playerBody[GUN2].setFillColor(pColor);
+		playerBody[LEG1].setFillColor(bColor);
+		playerBody[LEG2].setFillColor(bColor);
+
+		playerColor = pColor;
+		bodyColor = bColor;
+	}
+
+	//GET FUNCTIONS
 	sf::Vector2f getPosition()					//Function returns players position at his heart for collisions
 	{
 		return heart.getPosition();
@@ -174,17 +170,6 @@ public:
 	sf::FloatRect getHeartBounds()
 	{
 		return heart.getGlobalBounds();
-	}
-
-	void movePlayershape(sf::Vector2f moveVect)
-	{
-		for (int i = 0; i < 6; i++)
-		{
-			playerBody[i].move(moveVect);
-		}
-
-		head.move(moveVect);
-		heart.move(moveVect);
 	}
 
 	float getLeftBounds()
@@ -205,6 +190,43 @@ public:
 	float getLowerBounds()
 	{
 		return playerBody[LEG1].getPosition().y + legLength;			//players lowerBounds with respect 
+	}
+
+	sf::Color getPlayerColor()
+	{
+		return playerColor;
+	}
+
+	sf::Color getBodyColor()
+	{
+		return bodyColor;
+	}
+
+	//MOVE
+	void movePlayershape(sf::Vector2f moveVect)
+	{
+		for (int i = 0; i < 6; i++)
+		{
+			playerBody[i].move(moveVect);
+		}
+
+		head.move(moveVect);
+		heart.move(moveVect);
+	}
+
+
+	//DRAW FUNCTIONS
+	void drawPlayer(sf::RenderWindow &window)
+	{
+
+		for (int i = 0; i < 6; i++)
+		{
+			window.draw(playerBody[i]);
+		}
+
+		window.draw(head);
+		window.draw(heart);
+
 	}
 
 };
@@ -229,23 +251,30 @@ private:
 
 	int playerNumber;
 	int score;
+
+	sf::Color playerColor;
+	static sf::Color pColors[];
+	
+
 	float health;
 	float maxHealth;
-	float shieldSize;
-	float healthBarWidth;
-	sf::Vector2f playerPosition;
 
+	float shield;
+	float maxShield;
+
+	static float healthBarWidth;
 	sf::Vector2f healthBarPosition;		
 	sf::RectangleShape healthBarRed;							//representaion of player's lost health
 	sf::RectangleShape healthBarGreen;							//visual representation of player's health
-	sf::RectangleShape shield;							//representaiton of player's shield (if applicable)
+	sf::RectangleShape shieldBar;							//representaiton of player's shield (if applicable)
 
 	sf::Text healthText;
 	sf::Font arial;								//Declares font to use for text drawing
 
 	enum direction {STILL, UP, LEFT, DOWN, RIGHT};				//declares enum direction to handle player movement
 	direction playerDirection;
-	sf::Vector2f moveVect = sf::Vector2f(STILL, STILL);
+	sf::Vector2f playerPosition;
+	sf::Vector2f moveVect;
 	
 	PlayerShape playerShape;
 	sf::RectangleShape pBox;
@@ -253,73 +282,198 @@ private:
 	Bullet bullet;											//declares bullet object to be used to fill vector of active bullets
 	std::vector<Bullet> activeBullets;
 
-	sf::CircleShape largeFollowArea;					//Furthist distance away which followers will follow you after gaining interest
-	sf::CircleShape smallFollowArea;					// minimum distance you need to be to a follower for it to begin following you
+	static float areaOutline;				//outline thickness of large and small follower circles
+	sf::CircleShape largeFollowArea;				//Furthest distance away which followers will follow you after gaining interest
+	sf::CircleShape smallFollowArea;				// minimum distance you need to be to a follower for it to begin following you
 
 	Tower *towerPTR;
 
-	int laserLength;									//each player has individual stats for the laser a tower shoots
-	int laserWidth;
+	int laserLength;			//Max distance tower projectiles travel for player
+	int laserWidth;				//Max width of player projectiles, levels 1->2->3
 	sf::Color laserColor;
 
 public: 
 
 		//CONSTRUCTOR 
-	Player(sf::RenderWindow &window, sf::Vector2f startPos, int pNumber = 1,
-		float startHealth = 300.f, float startShieldSize = 0, int startScore = 0, float smallRadius = 60.f,
-		float largeRadius = 180.f, float areaOutline = 4.f, int laserL = 100.f, int laserW = 1,
-		sf::Color laserC = sf::Color::Cyan,  bool showBox = true)
+	Player(sf::RenderWindow &window, sf::Vector2f startPos, int pNumber = 1, float scale = 2.f, float startHealth = 300.f, 
+		float startMaxHealth = 300.f, float startShield = 100.f, float startMaxShield = 100.f, int startScore = 0, float smallRadius = 60.f,
+		float largeRadius = 180.f, int laserL = 100.f, int laserW = 1,  bool showBox = true)
 	{
+		//Initialize basic player components
 		playerNumber = pNumber;
-		health = startHealth;
-		maxHealth = startHealth;
-		shieldSize = startShieldSize;
+		playerColor = pColors[pNumber - 1];
 		score = startScore;
 
-		playerShape = PlayerShape();
-		setPlayerBox(playerShape, showBox);
-
 		playerDirection = STILL;
+		moveVect = sf::Vector2f(STILL, STILL);
+
+		//Initialize player box and position
+		playerShape = PlayerShape(scale, playerColor, startPos);
+		setPlayerBox(playerShape, showBox);
 		setPosition(startPos);
 
-		healthBarWidth = 30.f;
-		healthBarPosition = sf::Vector2f(window.getSize().x / 3.f, 20.f);
-		sf::Vector2f startHealthBarSize = sf::Vector2f(startHealth, healthBarWidth);
+		//initialize player spawn health and shield bars
+		initHealthBar(window, startHealth, startMaxHealth);
+		initShieldBar(window, startShield, startMaxShield);
+		initHealthText(healthText, arial);
 
-		healthBarRed.setSize(startHealthBarSize);								//initiates red health bar
-		healthBarRed.setPosition(healthBarPosition);
-		healthBarRed.setFillColor(sf::Color::Red);
-																				//initiates green health bar on top of it
-		healthBarGreen.setSize(startHealthBarSize);
-		healthBarGreen.setPosition(healthBarPosition);
-		healthBarGreen.setFillColor(sf::Color::Green);
-
-		shield.setSize(sf::Vector2f(shieldSize, healthBarWidth));								//Player not initiated with shield, 0 size
-		shield.setPosition(healthBarPosition);
-		shield.setFillColor(sf::Color::Blue);
-
-		setText(healthText, arial);		// loads text for putting health in string format
-
-		largeFollowArea.setRadius(largeRadius);
-		largeFollowArea.setOrigin(largeFollowArea.getRadius(), largeFollowArea.getRadius());
-		largeFollowArea.setPosition(playerShape.getPosition());
-		largeFollowArea.setOutlineColor(sf::Color::Green);
-		largeFollowArea.setOutlineThickness(areaOutline);
-		largeFollowArea.setFillColor(sf::Color::Transparent);
 		
+		
+		//Initialize large and small follower areas
+		initSmallFollowerRadius(smallRadius);
+		initLargeFollowerRadius(largeRadius);
 
-		smallFollowArea.setRadius(smallRadius);
-		smallFollowArea.setOrigin(smallFollowArea.getRadius(), smallFollowArea.getRadius());
-		smallFollowArea.setPosition(playerShape.getPosition());
-		smallFollowArea.setOutlineColor(sf::Color::Blue);
-		smallFollowArea.setOutlineThickness(areaOutline);
-		smallFollowArea.setFillColor(sf::Color::Transparent);
-
+	
 		laserLength = laserL;
 		laserWidth = laserW;
-		laserColor = laserC;
+		laserColor = playerColor;
 
 	}
+
+	//initialize METHODS FOR CLASS PLAYER
+
+	//SETS TEXT FOR NUMERICAL DISPLAY OF HEALTH OVERLAYED ONTO BARS
+	void initHealthText(sf::Text &healthText, sf::Font &arial)
+	{
+		// loads text for putting health in string format
+		if (!arial.loadFromFile("arial.ttf")) 	//loads font to use for text drawing
+		{
+			std::cout << "Error loading text" << std::endl;
+		}
+		int textSize = 35;
+		sf::Vector2f centerHealthBar = sf::Vector2f(90.f, -8.f);		//vector adjusts health string text display for centering
+
+		healthText.setFont(arial);
+		healthText.setCharacterSize(textSize);
+		healthText.setFillColor(sf::Color::White);
+		healthText.setPosition(healthBarPosition + centerHealthBar);
+	}
+
+	void initHealthBar(sf::RenderWindow &window, float sHealth, float sMaxHealth)
+	{
+		maxHealth = sMaxHealth;
+
+		float healthBarX = window.getSize().x / 3.f;
+		float healthBarY = window.getSize().y / 40.f;
+
+		healthBarPosition = sf::Vector2f(healthBarX , healthBarY);
+		sf::Vector2f startHealthBarSize = sf::Vector2f(sMaxHealth, healthBarWidth);
+
+		healthBarRed.setSize(startHealthBarSize);			//initiates red (background) health bar
+		healthBarRed.setPosition(healthBarPosition);
+		healthBarRed.setFillColor(sf::Color::Red);
+
+		
+		setHealth(sHealth);								//initiates green health bar on top of it
+		healthBarGreen.setPosition(healthBarPosition);
+		healthBarGreen.setFillColor(sf::Color::Green);
+	}
+
+	void initShieldBar(sf::RenderWindow &window, float sShield, float sMaxShield) 
+	{
+		maxShield = sMaxShield;
+
+		setShield(sShield);									//Player initiated with size 100 shield
+		shieldBar.setPosition(healthBarPosition);
+		shieldBar.setFillColor(sf::Color::Blue);
+	}
+
+	void initSmallFollowerRadius(float newRadius)
+	{
+		setSmallFollowerRadius(newRadius);
+		smallFollowArea.setOrigin(newRadius, newRadius);
+		smallFollowArea.setPosition(playerPosition);
+
+		std::cout << "small circle at x pos: " << smallFollowArea.getPosition().x << std::endl;
+		std::cout << "small circle at y pos: " << smallFollowArea.getPosition().y << std::endl;
+
+		smallFollowArea.setOutlineThickness(areaOutline);
+		smallFollowArea.setOutlineColor(sf::Color::Blue);
+		smallFollowArea.setFillColor(sf::Color::Transparent);
+	}
+
+	void initLargeFollowerRadius(float newRadius)
+	{
+		largeFollowArea.setRadius(newRadius);
+		largeFollowArea.setOrigin(newRadius, newRadius);
+		largeFollowArea.setPosition(playerPosition);
+
+		largeFollowArea.setOutlineThickness(areaOutline);
+		largeFollowArea.setOutlineColor(sf::Color::Green);
+		largeFollowArea.setFillColor(sf::Color::Transparent);
+	}
+
+	//ALL SET METHODS OF CLASS PLAYER
+	void setHealth(float newHealth)
+	{
+		health = newHealth;
+
+		sf::Vector2f  healthBarSize = sf::Vector2f(health, healthBarWidth);
+
+		healthText.setString(std::to_string(static_cast<int>(health)) + "/"
+			+ std::to_string(static_cast<int>(maxHealth)));				//updates graphics and text
+		healthBarGreen.setSize(healthBarSize);
+
+	}
+
+	void setShield(float newShield)
+	{
+		shield = newShield;
+
+		sf::Vector2f  shieldBarSize = sf::Vector2f(shield * 3.f, healthBarWidth);
+
+		healthText.setString(std::to_string(static_cast<int>(health + shield)) + "/"
+			+ std::to_string(static_cast<int>(maxHealth)));				//updates graphics and text
+		shieldBar.setSize(shieldBarSize);
+
+	}
+
+	int setScore(int newScore)
+	{
+		score = newScore;
+	}
+
+	void setPosition(sf::Vector2f newPos)
+	{
+		playerPosition = newPos;
+		playerShape.setPosition(newPos);
+		pBox.setPosition(newPos);
+	}
+
+	void setPlayerBox(PlayerShape &shape, bool showBoxes)
+	{
+		float length = shape.getRightBounds() - shape.getLeftBounds();
+		float height = shape.getLowerBounds() - shape.getUpperBounds();
+
+		pBox = sf::RectangleShape(sf::Vector2f(length, height));
+
+		sf::Color outlineColor = sf::Color::Transparent;
+		if (showBoxes)
+			outlineColor = sf::Color::Black;
+
+		float thickness = 2.f;
+		pBox.setFillColor(sf::Color::Transparent);
+		pBox.setOutlineThickness(thickness);
+		pBox.setOutlineColor(outlineColor);
+
+		pBox.setOrigin(length / 2.f, shape.getPosition().y - shape.getUpperBounds());
+	}
+
+	void setSmallFollowerRadius(float newRadius)
+	{
+		smallFollowArea.setRadius(newRadius);
+	}
+
+	void setLargeFollowerRadius(float newRadius)
+	{
+		largeFollowArea.setRadius(newRadius);
+	}
+
+	void setLaserLength()
+	{
+
+	}
+
 
 	//ALL GET METHODS OF CLASS PLAYER
 	int getPlayerNumber()
@@ -335,6 +489,10 @@ public:
 	float getHealth()
 	{
 		return health;
+	}
+
+	float getShield() {
+		return shield;
 	}
 
 	PlayerShape getPlayerShape()
@@ -392,63 +550,6 @@ public:
 		return laserColor;
 	}
 
-
-	//ALL SET METHODS OF CLASS PLAYER
-	void setHealth(float newHealth)
-	{
-		health = newHealth;
-	}
-
-	int setScore(int newScore)
-	{
-		score = newScore;
-	}
-
-	void setPosition(sf::Vector2f newPos)
-	{
-		playerPosition = newPos;
-		playerShape.setPosition(newPos);
-		pBox.setPosition(newPos);
-	}
-
-	void setPlayerBox(PlayerShape &shape, bool showBoxes)
-	{
-		float length = shape.getRightBounds() - shape.getLeftBounds();
-		float height = shape.getLowerBounds() - shape.getUpperBounds();
-
-		pBox = sf::RectangleShape(sf::Vector2f(length, height));
-
-		sf::Color outlineColor = sf::Color::Transparent;
-		if (showBoxes)
-			outlineColor = sf::Color::Black;
-
-		float thickness = 2.f;
-		pBox.setFillColor(sf::Color::Transparent);
-		pBox.setOutlineThickness(thickness);
-		pBox.setOutlineColor(outlineColor);
-
-		pBox.setOrigin(length / 2.f, shape.getPosition().y - shape.getUpperBounds());
-	}
-
-	//SETS TEXT FOR NUMERICAL DISPLAY OF HEALTH OVERLAYED ONTO BARS
-	void setText(sf::Text &healthText, sf::Font &arial)
-	{
-
-		if (!arial.loadFromFile("arial.ttf")) 	//loads font to use for text drawing
-		{
-			std::cout << "Error loading text" << std::endl;
-		}
-		int textSize = 40;
-		sf::Vector2f centerHealthBar = sf::Vector2f(90.f, -10.f);		//vector adjusts health string text display for centering
-
-		healthText.setFont(arial);
-		healthText.setCharacterSize(textSize);
-		healthText.setFillColor(sf::Color::White);
-		healthText.setPosition(healthBarPosition + centerHealthBar);
-		healthText.setString(std::to_string(static_cast<int>(health)) + "/"
-			+ std::to_string(static_cast<int>(maxHealth)));
-
-	}
 
 	//METHODS OF CLASS PLAYER MANAGING SCORE
 	int adjScore(int adj)
@@ -514,39 +615,18 @@ public:
 
 
 	//METHODS RELATED TO MANAGING A PLAYER'S HEALTH
-	bool adjHealth(float adj)
+	void takeDamage(float dmg)
 	{
-		if (health == 0)			//First checks to see if health is already 0, and returns immediately if so
-			return true;
+		//dmg is a POSITIVE value inherently, i.e to reduce health pass
+		//positive damage values
+		float combinedHealth = health + shield - dmg;
 
-		bool usingShield = shieldSize + adj <= maxHealth && shieldSize + adj > 0;
+		float newShield = std::min( std::max(combinedHealth - maxHealth, 0.f), maxShield);
+		float newHealth = std::max(std::min(combinedHealth - newShield, maxHealth), 0.f);
+		//Sets new health and shield values with max and min functions
 
-		if (usingShield && health == maxHealth)				//if they player has a shield, add/subtract from the shield
-		{
-			shieldSize += adj;
-		}
-			
-
-		else if (health + adj <= maxHealth)				//if the health + adjustment is less than max health then deal with health
-		{
-			health += adj;
-		}
-			
-		else if (health + adj > maxHealth && !usingShield)		//if the adjustment is greater than max health and the player is not using a shield
-		{
-			health = maxHealth;									//set health to max and add difference to shield
-			shieldSize += (health + adj - maxHealth);
-		}
-
-		sf::Vector2f  healthBarSize = sf::Vector2f(health, healthBarWidth);
-		sf::Vector2f shieldBarSize = sf::Vector2f(shieldSize, healthBarWidth);
-
-		healthText.setString(std::to_string(static_cast<int>(health)) + "/"
-			+ std::to_string(static_cast<int>(maxHealth)));				//updates graphics and text
-		healthBarGreen.setSize(healthBarSize);
-		shield.setSize(shieldBarSize);
-
-		return false;
+		setHealth(newHealth);
+		setShield(newShield);
 	}
 
 
@@ -566,7 +646,7 @@ public:
 	{
 		window.draw(healthBarRed);
 		window.draw(healthBarGreen);
-		window.draw(shield);
+		window.draw(shieldBar);
 
 		window.draw(largeFollowArea);
 		window.draw(smallFollowArea);
