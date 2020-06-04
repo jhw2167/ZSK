@@ -2,11 +2,12 @@
 //header file to construct and design the player object for the game
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Window.hpp>
+#include <SFML/OpenGL.hpp>
+
 #include <iostream>
 #include <cmath>
 #include <math.h>
-#include <SFML/Window.hpp>
-#include <SFML/OpenGL.hpp>
 #include <fstream>
 #include <iomanip>
 #include <string>
@@ -17,6 +18,8 @@
 #include <cstdlib>
 
 #include "BulletObject.h"
+
+
 
 class PlayerShape {
 private:
@@ -255,7 +258,6 @@ private:
 	sf::Color playerColor;
 	static sf::Color pColors[];
 	
-
 	float health;
 	float maxHealth;
 
@@ -273,7 +275,7 @@ private:
 	sf::Font arial;								//Declares font to use for text drawing
 
 	enum direction {STILL, UP, LEFT, DOWN, RIGHT};				//declares enum direction to handle player movement
-	float moveSpeed;
+	float playerSpeed;
 	direction playerDirection;
 	sf::Vector2f playerPosition;
 	sf::Vector2f moveVect;
@@ -309,13 +311,13 @@ public:
 		//CONSTRUCTOR 
 	Player(sf::RenderWindow &window, sf::Vector2f startPos, int pNumber = 1, float scale = 2.f, float startHealth = 300.f, 
 		float startMaxHealth = 300.f, float startShield = 100.f, float startMaxShield = 100.f, float mSpeed = 5.f, int startScore = 0, float smallRadius = 60.f,
-		float largeRadius = 180.f, int laserL = 100.f, int laserW = 1,  bool showBox = true)
+		float largeRadius = 180.f, int laserL = 100.f, int laserW = 1,  bool showBox = false)
 	{
 		//Initialize basic player components
 		playerNumber = pNumber;
 		playerColor = pColors[pNumber - 1];
 		score = startScore;
-		moveSpeed = mSpeed;
+		playerSpeed = mSpeed;
 
 		playerDirection = STILL;
 		moveVect = sf::Vector2f(STILL, STILL);
@@ -470,8 +472,8 @@ public:
 		score = newScore;
 	}
 
-	void setMoveSpeed(float newSpeed) {
-		moveSpeed = newSpeed;
+	void setplayerSpeed(float newSpeed) {
+		playerSpeed = newSpeed;
 	}
 
 	void setPosition(sf::Vector2f newPos)
@@ -556,8 +558,8 @@ public:
 		return playerColor;
 	}
 
-	float getMoveSpeed() {
-		return moveSpeed;
+	float getplayerSpeed() {
+		return playerSpeed;
 	}
 
 	sf::Vector2f getPosition()
@@ -647,14 +649,13 @@ public:
 			break;
 		}
 
-		moveVect *= moveSpeed;							//gives moveVect its magnitude
+		moveVect *= playerSpeed;							//gives moveVect its magnitude
 		if (towerCollision > 0) {
-			movingIntoTower = towerCollisions(dir, towerCollision, towerPos, towerRadius);
+			moveVect = towerCollisions(dir, towerCollision, towerPos, towerRadius);
 		}
 			
-		if (!movingIntoTower) {
-			movePlayer(moveVect);
-		}
+		movePlayer(moveVect);
+		
 	}
 
 
@@ -689,32 +690,37 @@ public:
 
 
 	//METHODS RELATING TO PLAYERS INERACTION WITH TOWERS
-	bool towerCollisions(int dir, int towerNum, sf::Vector2f towerPos,
+	sf::Vector2f towerCollisions(int dir, int towerNum, sf::Vector2f towerPos,
 		float towerRadius) {
 
 		float pushX = 0.f;
 		float pushY = 0.f;
+		sf::Vector2f dirVect = sf::Vector2f(1, 1);		
 
 		switch (towerNum)				//We want to keep players from intersecting towers completely
 		{									//So we set the hard barrier at their bounding box, pBox
 		case 1:
 			pushX = -pBox.getLocalBounds().width / 2.f;
 			pushY = -pBox.getLocalBounds().height / 3.f;
+			dirVect = sf::Vector2f(1, 1);
 			break;
 
 		case 2:
 			pushX = pBox.getLocalBounds().width / 2.f;
 			pushY = -pBox.getLocalBounds().height / 3.f;
+			dirVect = sf::Vector2f(-1, 1);
 			break;
 
 		case 3:
 			pushX = -pBox.getLocalBounds().width / 2.f;
-			pushY = pBox.getLocalBounds().height / 2.f;
+			pushY = pBox.getLocalBounds().height / 3.f;
+			dirVect = sf::Vector2f(1, -1);
 			break;
 
 		case 4:
 			pushX = pBox.getLocalBounds().width / 2.f;
-			pushY = pBox.getLocalBounds().height / 2.f;
+			pushY = pBox.getLocalBounds().height / 3.f;
+			dirVect = sf::Vector2f(-1, -1);
 			break;
 		}
 
@@ -722,71 +728,36 @@ public:
 			sf::Vector2f pBoxAdj = sf::Vector2f(pushX, pushY);
 			bool movingIntoTower = distanceFrom(playerPosition + moveVect + pBoxAdj, towerPos) <= towerRadius;
 
-			if (movingIntoTower)
-			{
-				movePlayer(moveVect);
-				avoidTower(dir, towerNum, towerRadius, pBoxAdj);
+			sf::Vector2f safeSpeed = moveVect;
+			if (movingIntoTower) {
+				sf::Vector2f relCoords = abs(towerPos - playerPosition);
+				safeSpeed = avoidTower(dirVect, relCoords, towerNum);
 			}
 				
-
-			return movingIntoTower;
+			return safeSpeed;
 	}
 
-	void avoidTower(int dir, int towerNum, float towerRadius, sf::Vector2f pBoxAdj)
+	float invSpeedSq(float x, float y, float radius)
+	{	//x and y are position floats, returns y_s^2
+		//Using player position, ratio of x^2 and y^2 coords on quarter circle from {0, 100}
+		//must equal ratio of speeds x_s^2 and y_s^2 on bounds {0, playerSpeed}
+
+		float ratio = (pow(x, 2) / pow(y, 2));
+		return pow(radius , 2) / (ratio + 1);
+	}
+
+	sf::Vector2f avoidTower(sf::Vector2f dir, sf::Vector2f relPos, int towerNum)
 	{
-		float x = playerPosition.x;
-		float y = playerPosition.y;
+		sf::Vector2f safeSpeed = sf::Vector2f(0, 0); 
+		//safepos is speed that keeps player outside of towerbounds
 
-		pBoxAdj.x = abs(pBoxAdj.x);
-		pBoxAdj.y = abs(pBoxAdj.y);
+		safeSpeed.y = invSpeedSq(relPos.x, relPos.y, playerSpeed);
+		safeSpeed.x = pow(playerSpeed, 2) - safeSpeed.y;
 
-		sf::Vector2f safePos = sf::Vector2f(0, 0); //safepos is pos outside of towerbounds
+		safeSpeed.x = sqrt(safeSpeed.x) * dir.x;
+		safeSpeed.y = sqrt(safeSpeed.y) * dir.y;
 
-		switch (towerNum)				//We want to keep players from intersecting towers completely
-		{									//So we set the hard barrier at their bounding box, pBox
-		case 1:
-			if (dir == UP)					//for smooth moving against towers
-				safePos.x = pBoxAdj.x + circle(y - pBoxAdj.y, towerRadius);
-			else if (dir == LEFT)
-				safePos.y = pBoxAdj.y + circle(x - pBoxAdj.x, towerRadius);
-
-			std::cout << "player x: " << x << std::endl;
-			std::cout << "player y: " << y << std::endl;
-
-			std::cout << "player adj y: " << pBoxAdj.y << std::endl;
-
-
-			break;
-
-		case 2:
-
-			if (dir == UP)					//for smooth moving against towers
-				safePos.x = wLength - pBoxAdj.x - circle(y - pBoxAdj.y, towerRadius);
-			else if (dir == RIGHT)
-				safePos.y = pBoxAdj.y + circle(wLength - pBoxAdj.x - x, towerRadius);
-			break;
-
-		case 3:
-			if (dir == DOWN)					//for smooth moving against towers
-				safePos.x = wLength - pBoxAdj.x - circle(wHeight - pBoxAdj.y - y, towerRadius);
-			else if (dir == RIGHT)
-				safePos.y = wHeight - pBoxAdj.y - circle(wLength - pBoxAdj.x - x, towerRadius);
-			break;
-
-		case 4:
-
-			if (dir == DOWN)					//for smooth moving against towers
-				safePos.x = pBoxAdj.x + circle(wHeight - pBoxAdj.y - y, towerRadius);
-			else if (dir == LEFT)
-				safePos.y = wHeight - pBoxAdj.y - circle(x - pBoxAdj.x, towerRadius);
-			break;
-		}
-
-		std::cout << "Safe pos x: " << safePos.x << std::endl;
-		std::cout << "Safe pos y: " << safePos.y << std::endl;
-
-
-		setPosition(safePos);
+		return safeSpeed;
 	}
 
 

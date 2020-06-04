@@ -5,17 +5,17 @@ c:\users\jack\source\repos\zskv2-0\zskv2-0\bulletobject.h(36): warning C4244: 'a
               T=int
           ]
 c:\users\jack\source\repos\zskv2-0\zskv2-0\bulletobject.h(85): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-c:\users\jack\source\repos\zskv2-0\zskv2-0\playerobject.h(526): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\playerobject.h(528): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=unsigned int
           ]
-c:\users\jack\source\repos\zskv2-0\zskv2-0\playerobject.h(527): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\playerobject.h(529): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=unsigned int
           ]
-c:\users\jack\source\repos\zskv2-0\zskv2-0\playerobject.h(667): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\playerobject.h(668): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
 c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(74): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
           with
           [
@@ -54,10 +54,10 @@ c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(209): warning C4244:
               T=unsigned int
           ]
 c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(212): warning C4305: '=': truncation from 'double' to 'float'
-c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(254): warning C4244: 'initializing': conversion from 'time_t' to 'int', possible loss of data
-c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(258): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(256): warning C4244: 'initializing': conversion from 'time_t' to 'int', possible loss of data
 c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(260): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(437): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(262): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(439): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
 c:\users\jack\source\repos\zskv2-0\zskv2-0\couttests.h(74): warning C4018: '<': signed/unsigned mismatch
 c:\users\jack\source\repos\zskv2-0\zskv2-0\main.cpp(216): warning C4018: '<': signed/unsigned mismatch
 c:\users\jack\source\repos\zskv2-0\zskv2-0\main.cpp(314): warning C4018: '<': signed/unsigned mismatch

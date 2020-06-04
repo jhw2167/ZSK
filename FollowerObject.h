@@ -229,8 +229,10 @@ public:
 		fBox = sf::RectangleShape(sf::Vector2f(length, height));
 
 		sf::Color outlineColor = sf::Color::Transparent;
-		if (showBoxes)
+
+		if (showBoxes){
 			outlineColor = sf::Color::Black;
+		}
 
 		float thickness = 1.f;
 		fBox.setFillColor(sf::Color::Transparent);

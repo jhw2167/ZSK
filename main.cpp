@@ -210,8 +210,8 @@ void followerMechanics(sf::RenderWindow &window, sf::Mouse mouseObject,
 	std::vector<Tower> &towers)
 {
 	static int temperSpawnRate = 0; temperSpawnRate++;				//moderates spawn rate
-	static int maxFollowers = 1;
-	static int tmperRate = 10;
+	static int maxFollowers = 5;
+	static int tmperRate = 50;
 	
 	if ((temperSpawnRate % tmperRate == 0) && (activeFollowers.size() < maxFollowers))
 	{
