@@ -27,28 +27,38 @@ private:
 	
 	sf::Vector2f towerPosition;
 
-	sf::CircleShape tower;
+	sf::CircleShape towerShape;
 	sf::Sprite laser1;						//Laser will be comprised of a series of drawn sprites
 	sf::RectangleShape laser;
 
 public:
 
-	Tower(float tRadius = 100.f, int tNumber = 0)			//Constructs minimal tower objcet
+	Tower(sf::RenderWindow &window, int tNumber = 0, float tRadius = 100.f)			//Constructs minimal tower objcet
 	{
-		towerRadius = tRadius;
 		towerNumber = tNumber;
 
-		tower.setRadius(towerRadius);
-		tower.setFillColor(sf::Color::Black);
-		tower.setOrigin(tower.getRadius(), tower.getRadius());
-		tower.setPosition(0, 0);
-		towerPosition = tower.getPosition();
-
-		//laser.setSize()
-
+		initTowerShape(tRadius);
+		setPosition(window, tNumber);
 		towerOwnedBy = NOTOWNED;
-
 	}
+
+	Tower(int tNumber = 0, float tRadius = 100.f)
+	{
+		towerNumber = tNumber;
+		initTowerShape(tRadius);
+		towerOwnedBy = NOTOWNED;
+	}
+
+	//Tower init methods
+	void initTowerShape(float tRadius)
+	{
+		towerRadius = tRadius;
+		towerShape.setRadius(towerRadius);
+
+		towerShape.setFillColor(sf::Color::Black);
+		towerShape.setOrigin(towerRadius, towerRadius);
+	}
+
 
 
 	//TOWER SET METHODS
@@ -58,30 +68,30 @@ public:
 
 		switch (towerNumber) {
 		case 1:
-			tower.setPosition(0, 0);
+			towerShape.setPosition(0, 0);
 			break;
 		case 2:
-			tower.setPosition(window.getSize().x, 0);
+			towerShape.setPosition(window.getSize().x, 0);
 			break;
 		case 3:
-			tower.setPosition(0, window.getSize().y);
+			towerShape.setPosition(0, window.getSize().y);
 			break;
 		case 4:
-			tower.setPosition(window.getSize().x, window.getSize().y);
+			towerShape.setPosition(window.getSize().x, window.getSize().y);
 			break;
 		case 0:														//case zero tower not intented to be shown or utilized, 
-			tower.setPosition(-100.f, -100.f);												//its instantiation helps with mechanics such as checking tower collisions
+			towerShape.setPosition(-100.f, -100.f);					//its instantiation helps with mechanics such as checking tower collisions
 			break;
 		}
 
-		towerPosition = tower.getPosition();						//sets towerPosition var equal to placement of circle shape for easy access
+		towerPosition = towerShape.getPosition();						//sets towerPosition var equal to placement of circle shape for easy access
 	}
 
 
 	//TOWER GET METHODS
 	sf::Vector2f getTowerGlobalBounds()
 	{
-		tower.getGlobalBounds();
+		towerShape.getGlobalBounds();
 	}
 
 	sf::Vector2f getPosition()
@@ -94,10 +104,14 @@ public:
 		return towerRadius;
 	}
 
+	sf::CircleShape getTowerShape() {
+		return towerShape;
+	}
+
 	//TOWER OWNERSHIP METHODS
 	bool checkTowerOwnership(sf::Vector2i mousePos, towerOwned i)
 	{
-		if (tower.getGlobalBounds().contains(mousePos.x, mousePos.y));
+		if (towerShape.getGlobalBounds().contains(mousePos.x, mousePos.y));
 		towerOwnedBy = i;
 
 		return towerOwnedBy;				//will return either 0 for unowned or >0 integer that equates to true boolean
@@ -111,13 +125,15 @@ public:
 
 
 	//TOWER COLLISIONS
-	bool checkTowerCollision(sf::Vector2f playerPos)
+	bool checkTowerCollision(Player &player)
 	{
-		if (distanceFrom(playerPos) <= towerRadius)
-			return true;
+		bool collision = player.getPlayerBounds().intersects(towerShape.getGlobalBounds());
 
-		return false;
+		return collision;
 	}
+
+	//if (distanceFrom(playerPos) <= towerRadius)
+		//return true;
 
 	float distanceFrom(sf::Vector2f objectPos)											//calculates vector distance from player or tower object
 	{
@@ -142,7 +158,7 @@ public:
 	//TOWER DRAW METHODS
 	void drawTowers(sf::RenderWindow &window)
 	{
-		window.draw(tower);
+		window.draw(towerShape);
 	}
 
 };

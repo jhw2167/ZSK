@@ -255,9 +255,10 @@ public:
 
 		float tRadius = towerObject.getTowerRadius();
 
-		float randTopBotSpawn = (rand() % ((int)windowLength - (2 * (int)tRadius)) + (int)tRadius);
+		float randTopBotSpawn = (rand() % ((int)windowHeight - ( 2 * (int)tRadius) ) + (int)tRadius);
 		//random spawnpoint between two towers on top and bottom of map
-		float randLeftRightSpawn = (rand() % ((int)windowHeight - (2 * (int)tRadius)) + (int)tRadius);
+		float randLeftRightSpawn = (rand() % ((int)windowLength - ( 2 * (int)tRadius) ) + (int)tRadius);
+
 
 		if (!followingPlayer)			//if not following player (all cases when follower is newly spawned), spawn point is randomized
 		{
@@ -333,7 +334,7 @@ public:
 
 	
 	//MOVE FOLLOWER
-	void moveFollower(bool collision, Player &player1, std::vector<Tower> towers)
+	void moveFollower(bool collision, Player &player1, std::vector<Tower> &towers)
 	{
 
 		isFollowingPlayer(player1);			//checks to see if following player
@@ -365,14 +366,6 @@ public:
 		}
 
 		fPosition = fShape.getPosition();
-
-		static int temp = 0; temp++;
-		if (temp % 500 == 0)
-		{
-			std::cout << "The x position of follower is: " << fPosition.x << std::endl;
-			std::cout << "The y position of follower is: " << fPosition.y << std::endl;
-		}
-			
 	}
 
 

@@ -33,11 +33,11 @@ with a bit of a twist adding the tower dynamic to assist zombie slaying*/
 #include "coutTests.h"
 
 //FUNCTONS HANDLING PLAYER
-void movePlayerLogic(Player &player1, std::vector<Tower> &towers, float windowLength, float windowHeight);
+void movePlayerLogic(sf::RenderWindow &window, Player &player1, std::vector<Tower> &towers);
 
 
 //ALL FUNCTIONS HANDLING BULLETS
-void shootingMechanics(sf::RenderWindow &window, sf::Mouse mouseObject, Player player1, std::vector<Bullet> &activeBullets);
+void shootingMechanics(sf::RenderWindow &window, sf::Mouse mouseObject, Player &player1, std::vector<Bullet> &activeBullets);
 
 Bullet addBullet(sf::Vector2i cursorVect, Player &player1);
 
@@ -86,4 +86,8 @@ float Player::areaOutline = 4.f;
 sf::Color Player::pColors[] = {sf::Color::Red, sf::Color::Blue,
 	sf::Color::Green, sf::Color::Yellow};
 
+const sf::Vector2f Player::upVect = sf::Vector2f(0.f, -1.f);
+const sf::Vector2f Player::lfVect = sf::Vector2f(-1.f, 0.f);
+const sf::Vector2f Player::dnVect = sf::Vector2f(0.f, 1.f);
+const sf::Vector2f Player::rtVect = sf::Vector2f(1.f, 0.f);
 

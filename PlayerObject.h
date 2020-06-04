@@ -273,9 +273,15 @@ private:
 	sf::Font arial;								//Declares font to use for text drawing
 
 	enum direction {STILL, UP, LEFT, DOWN, RIGHT};				//declares enum direction to handle player movement
+	float moveSpeed;
 	direction playerDirection;
 	sf::Vector2f playerPosition;
 	sf::Vector2f moveVect;
+
+	const static sf::Vector2f upVect;	//direction vectors, declared in main.h
+	const static sf::Vector2f lfVect;
+	const static sf::Vector2f dnVect;
+	const static sf::Vector2f rtVect;
 	
 	PlayerShape playerShape;
 	sf::RectangleShape pBox;
@@ -295,17 +301,21 @@ private:
 	sf::CircleShape dot = sf::CircleShape(4.f);
 	sf::RectangleShape box;
 
+	float wLength;
+	float wHeight;
+
 public: 
 
 		//CONSTRUCTOR 
 	Player(sf::RenderWindow &window, sf::Vector2f startPos, int pNumber = 1, float scale = 2.f, float startHealth = 300.f, 
-		float startMaxHealth = 300.f, float startShield = 100.f, float startMaxShield = 100.f, int startScore = 0, float smallRadius = 60.f,
+		float startMaxHealth = 300.f, float startShield = 100.f, float startMaxShield = 100.f, float mSpeed = 5.f, int startScore = 0, float smallRadius = 60.f,
 		float largeRadius = 180.f, int laserL = 100.f, int laserW = 1,  bool showBox = true)
 	{
 		//Initialize basic player components
 		playerNumber = pNumber;
 		playerColor = pColors[pNumber - 1];
 		score = startScore;
+		moveSpeed = mSpeed;
 
 		playerDirection = STILL;
 		moveVect = sf::Vector2f(STILL, STILL);
@@ -328,6 +338,8 @@ public:
 		setLaserLength(laserL);
 		setLaserWidth(laserW);
 		//laser color = playercolor
+
+		setWindowDims(window);
 	}
 
 	//initialize METHODS FOR CLASS PLAYER
@@ -454,9 +466,12 @@ public:
 
 	}
 
-	int setScore(int newScore)
-	{
+	void setScore(int newScore) {
 		score = newScore;
+	}
+
+	void setMoveSpeed(float newSpeed) {
+		moveSpeed = newSpeed;
 	}
 
 	void setPosition(sf::Vector2f newPos)
@@ -464,6 +479,9 @@ public:
 		playerPosition = newPos;
 		playerShape.setPosition(newPos);
 		pBox.setPosition(newPos);
+
+		largeFollowArea.setPosition(playerShape.getPosition());			//Follow circles stay around players
+		smallFollowArea.setPosition(playerShape.getPosition());
 	}
 
 	void setPlayerBox(PlayerShape &shape, bool showBoxes)
@@ -503,7 +521,11 @@ public:
 		laserWidth = laserW;
 	}
 
-
+	void setWindowDims(sf::RenderWindow &window)
+	{
+		wLength = window.getSize().x;
+		wHeight = window.getSize().y;
+	}
 
 	//ALL GET METHODS OF CLASS PLAYER
 	int getPlayerNumber()
@@ -534,6 +556,10 @@ public:
 		return playerColor;
 	}
 
+	float getMoveSpeed() {
+		return moveSpeed;
+	}
+
 	sf::Vector2f getPosition()
 	{
 		return playerPosition;
@@ -546,7 +572,7 @@ public:
 
 	sf::FloatRect getPlayerBounds()
 	{
-		return playerShape.getHeartBounds();
+		return pBox.getGlobalBounds();
 	}
 
 	sf::FloatRect getSmallFollowAreaBounds()
@@ -588,48 +614,50 @@ public:
 
 
 	//METHODS RELATED TO MOVING PLAYER DIRECTLY
-	void movePlayer(int dir, bool towerCollision, sf::Vector2f towerPos,
-		float towerRadius, int speed = 5)					//moves player based on int speed and int direction (enum dir) provided by main function
+	void movePlayer(sf::Vector2f mVect)								
 	{
-
-		bool movingIntoTower = false;								//local variable to check if a player tries to move into a tower bounds
-		//std::cout << "Inputted direction: " << dir << std::endl;
-
-		switch (dir)
-		{
-		case UP:
-			moveVect = sf::Vector2f(STILL, -speed);
-			break;
-
-		case LEFT:
-			moveVect = sf::Vector2f(-speed, STILL);
-			break;
-		case DOWN:
-			moveVect = sf::Vector2f(STILL, speed);
-			break;
-
-		case RIGHT:
-			moveVect = sf::Vector2f(speed, STILL);
-			break;
-		}
-
-		if (towerCollision) {
-			//std::cout << "dist from tow center " << distanceFrom(playerPosition + moveVect, towerPos) << std::endl;
-			movingIntoTower = distanceFrom(playerPosition + moveVect, towerPos) <= towerRadius;
-		}
-
-		if (movingIntoTower) {
-			moveVect = sf::Vector2f(0,0);
-		}
-
-		playerShape.movePlayershape(moveVect);		//function in playershape has default argument move set to 5
-		pBox.move(moveVect);
-		playerPosition += moveVect;
-
+		playerShape.movePlayershape(mVect);		//function in playershape has default argument move set to 5
+		pBox.move(mVect);
+		playerPosition += mVect;
 
 		largeFollowArea.setPosition(playerShape.getPosition());			//Follow circles stay around players
 		smallFollowArea.setPosition(playerShape.getPosition());
 	}
+
+	void moveLogic(int dir, int towerCollision, sf::Vector2f towerPos,
+		float towerRadius)
+	{
+		moveVect = sf::Vector2f(STILL, STILL);			//switch statement gives moveVect direction
+		bool movingIntoTower = false;
+		switch (dir)
+		{
+		case UP:
+			moveVect += upVect;
+			break;
+
+		case LEFT:
+			moveVect += lfVect;
+			break;
+		case DOWN:
+			moveVect += dnVect;
+			break;
+
+		case RIGHT:
+			moveVect += rtVect;
+			break;
+		}
+
+		moveVect *= moveSpeed;							//gives moveVect its magnitude
+		if (towerCollision > 0) {
+			movingIntoTower = towerCollisions(dir, towerCollision, towerPos, towerRadius);
+		}
+			
+		if (!movingIntoTower) {
+			movePlayer(moveVect);
+		}
+	}
+
+
 
 	float distanceFrom(sf::Vector2f object1Pos, sf::Vector2f object2Pos)											//calculates vector distance from player or tower object
 	{
@@ -639,6 +667,9 @@ public:
 		return pow(xDist * xDist + yDist * yDist, 0.5);							//calculates vector for distance from follower to player
 	}
 
+	float circle(float x, float radius) {				//formula for a circle!
+		return sqrt(pow(radius,2) - pow(x, 2));
+	}
 
 
 	//METHODS RELATED TO MANAGING A PLAYER'S HEALTH
@@ -658,8 +689,105 @@ public:
 
 
 	//METHODS RELATING TO PLAYERS INERACTION WITH TOWERS
+	bool towerCollisions(int dir, int towerNum, sf::Vector2f towerPos,
+		float towerRadius) {
+
+		float pushX = 0.f;
+		float pushY = 0.f;
+
+		switch (towerNum)				//We want to keep players from intersecting towers completely
+		{									//So we set the hard barrier at their bounding box, pBox
+		case 1:
+			pushX = -pBox.getLocalBounds().width / 2.f;
+			pushY = -pBox.getLocalBounds().height / 3.f;
+			break;
+
+		case 2:
+			pushX = pBox.getLocalBounds().width / 2.f;
+			pushY = -pBox.getLocalBounds().height / 3.f;
+			break;
+
+		case 3:
+			pushX = -pBox.getLocalBounds().width / 2.f;
+			pushY = pBox.getLocalBounds().height / 2.f;
+			break;
+
+		case 4:
+			pushX = pBox.getLocalBounds().width / 2.f;
+			pushY = pBox.getLocalBounds().height / 2.f;
+			break;
+		}
+
+			//std::cout << "dist from tow center " << distanceFrom(playerPosition + moveVect, towerPos) << std::endl;
+			sf::Vector2f pBoxAdj = sf::Vector2f(pushX, pushY);
+			bool movingIntoTower = distanceFrom(playerPosition + moveVect + pBoxAdj, towerPos) <= towerRadius;
+
+			if (movingIntoTower)
+			{
+				movePlayer(moveVect);
+				avoidTower(dir, towerNum, towerRadius, pBoxAdj);
+			}
+				
+
+			return movingIntoTower;
+	}
+
+	void avoidTower(int dir, int towerNum, float towerRadius, sf::Vector2f pBoxAdj)
+	{
+		float x = playerPosition.x;
+		float y = playerPosition.y;
+
+		pBoxAdj.x = abs(pBoxAdj.x);
+		pBoxAdj.y = abs(pBoxAdj.y);
+
+		sf::Vector2f safePos = sf::Vector2f(0, 0); //safepos is pos outside of towerbounds
+
+		switch (towerNum)				//We want to keep players from intersecting towers completely
+		{									//So we set the hard barrier at their bounding box, pBox
+		case 1:
+			if (dir == UP)					//for smooth moving against towers
+				safePos.x = pBoxAdj.x + circle(y - pBoxAdj.y, towerRadius);
+			else if (dir == LEFT)
+				safePos.y = pBoxAdj.y + circle(x - pBoxAdj.x, towerRadius);
+
+			std::cout << "player x: " << x << std::endl;
+			std::cout << "player y: " << y << std::endl;
+
+			std::cout << "player adj y: " << pBoxAdj.y << std::endl;
 
 
+			break;
+
+		case 2:
+
+			if (dir == UP)					//for smooth moving against towers
+				safePos.x = wLength - pBoxAdj.x - circle(y - pBoxAdj.y, towerRadius);
+			else if (dir == RIGHT)
+				safePos.y = pBoxAdj.y + circle(wLength - pBoxAdj.x - x, towerRadius);
+			break;
+
+		case 3:
+			if (dir == DOWN)					//for smooth moving against towers
+				safePos.x = wLength - pBoxAdj.x - circle(wHeight - pBoxAdj.y - y, towerRadius);
+			else if (dir == RIGHT)
+				safePos.y = wHeight - pBoxAdj.y - circle(wLength - pBoxAdj.x - x, towerRadius);
+			break;
+
+		case 4:
+
+			if (dir == DOWN)					//for smooth moving against towers
+				safePos.x = pBoxAdj.x + circle(wHeight - pBoxAdj.y - y, towerRadius);
+			else if (dir == LEFT)
+				safePos.y = wHeight - pBoxAdj.y - circle(x - pBoxAdj.x, towerRadius);
+			break;
+		}
+
+		std::cout << "Safe pos x: " << safePos.x << std::endl;
+		std::cout << "Safe pos y: " << safePos.y << std::endl;
+
+
+		setPosition(safePos);
+	}
 
 
 	//DRAWING METHODS OF CLASS PLAYER
@@ -667,6 +795,7 @@ public:
 	{
 		playerShape.drawPlayer(window);
 		window.draw(pBox);
+		drawHealthBar(window);
 	}
 
 	void drawHealthBar(sf::RenderWindow &window)
@@ -680,7 +809,7 @@ public:
 		window.draw(smallFollowArea);
 
 		window.draw(healthText);
-		//window.draw(dot);	//for troubleshooting
+		window.draw(dot);	//for troubleshooting
 		//window.draw(box);
 	}
 
