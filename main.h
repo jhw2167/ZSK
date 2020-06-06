@@ -33,12 +33,14 @@ with a bit of a twist adding the tower dynamic to assist zombie slaying*/
 #include "coutTests.h"
 
 //FUNCTONS HANDLING PLAYER
-void movePlayerLogic(sf::RenderWindow &window, Player &player1, std::vector<Tower> &towers);
+void movePlayerLogic(sf::RenderWindow &window, std::vector<Player> &players, std::vector<Tower> &towers);
 
 
 //ALL FUNCTIONS HANDLING BULLETS
-void shootingMechanics(sf::RenderWindow &window, sf::Mouse mouseObject, Player &player1, std::vector<Bullet> &activeBullets);
+void shootingMechanics(sf::RenderWindow &window, sf::Mouse &mouseObject,
+	std::vector<Player> &players);
 
+/*
 Bullet addBullet(sf::Vector2i cursorVect, Player &player1);
 
 void moveBullets(std::vector<Bullet> &activeBullets);
@@ -46,24 +48,25 @@ void moveBullets(std::vector<Bullet> &activeBullets);
 void deleteBullets(sf::RenderWindow &window, std::vector<Bullet> &activeBullets);
 
 void drawBullets(sf::RenderWindow &window, std::vector<Bullet> &activeBullets);
+*/
 
 
 //ALL FUNCTIONS HANDLING FOLLOWERS
 void followerMechanics(sf::RenderWindow &window, sf::Mouse mouseObject,
-	Player &player1, std::vector<Follower> &activeFollowers, std::vector<Bullet> &activeBullets,
+	std::vector<Player> &players, std::vector<Follower> &activeFollowers,
 	std::vector<Tower> &towers);
 
 //SPAWNS FOLLOWERS THEN ADDS TO VECTOR
-Follower spawnFollower(sf::RenderWindow &window, Player &player1);
+Follower spawnFollower(sf::RenderWindow &window);
 
 //MOVES FOLLOWERS BASED ON VELOCITY CALCULATION IN FOLLOWER OBJECT
-void moveFollowers(Player &player1, std::vector<Follower> &activeFollowers, std::vector<Tower> &towers);
+void moveFollowers(std::vector<Player> &players, std::vector<Follower> &activeFollowers, std::vector<Tower> &towers);
 
 //ASSESS IF FOLLOWERS HAVE BEEN SHOT BY A PLAYER AND DELETES OBJECTS ACCORDING
-void shootFollowers(std::vector<Follower> &activeFollowers, std::vector<Bullet> &activeBullets);
+void shootFollowers(std::vector<Player> &players, std::vector<Follower> &activeFollowers);
 
 //HANDLES ZOMBIES ATTACKING A PLAYER
-void attackPlayer(Player &player1, std::vector<Follower> &activeFollowers);
+void attackPlayer(std::vector<Player> &players, std::vector<Follower> &activeFollowers);
 
 //DRAWS FOLLOWERS IN WINDOW
 void drawFollowers(sf::RenderWindow &window, std::vector<Follower> &activeFollowers);
@@ -73,7 +76,7 @@ void drawFollowers(sf::RenderWindow &window, std::vector<Follower> &activeFollow
 void initializeTowers(sf::RenderWindow &window, std::vector<Tower> &towers, int numberOfTowers);
 
 //HANDLES POTENTIAL PLAYER-TOWER COLLISIONS
-int checkTowerCollision(Player &player1, std::vector<Tower> &towers);
+int checkTowerCollision(std::vector<Player> &players, std::vector<Tower> &towers);
 
 //DRAWS TOWERS ON MAP
 void drawTowers(sf::RenderWindow &window, std::vector<Tower> &towers);

@@ -311,9 +311,8 @@ public:
 		return fVelocity;
 	}
 
-	sf::FloatRect getFollowerGlobalBounds()		//taken as global bounds of follower's circleShape head
-	{
-		return fShape.getGlobalBounds();
+	sf::FloatRect getFollowerGlobalBounds() {			//taken as global bounds of follower's circleShape head
+		return fBox.getGlobalBounds();
 	}
 
 
@@ -336,18 +335,19 @@ public:
 
 	
 	//MOVE FOLLOWER
-	void moveFollower(bool collision, Player &player1, std::vector<Tower> &towers)
+	void moveFollower(bool collision, Player &player, std::vector<Tower> &towers)
 	{
 
-		isFollowingPlayer(player1);			//checks to see if following player
+		isFollowingPlayer(player);			//checks to see if following player
 		
 		if (followingPlayer)				//if not following player it does not need to reset its velocity
 		{
-			bool decelerate = fShape.getGlobalBounds().intersects(player1.getPlayerBounds());
+			bool decelerate = fShape.getGlobalBounds().intersects(player.getPlayerBounds());
 
-			accelerate(player1, decelerate);						//follower accerlates if following a player or decelerate if they contact him
+			accelerate(player, decelerate);						
+			//follower accerlates if following a player or decelerate if they contact him
 
-			setFollowerVelocity(player1.getPosition());
+			setFollowerVelocity(player.getPosition());
 			//unless follower is close enough to a given player it will constantly reset its velocity 
 		}
 		

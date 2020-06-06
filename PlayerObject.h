@@ -244,7 +244,7 @@ public:
 
 
 //BEGIN CLASS PLAYER
-
+class Follower;
 class Tower;				//forward declaration of class tower so player has access
 
 class Player
@@ -295,8 +295,6 @@ private:
 	sf::CircleShape largeFollowArea;				//Furthest distance away which followers will follow you after gaining interest
 	sf::CircleShape smallFollowArea;				// minimum distance you need to be to a follower for it to begin following you
 
-	Tower *towerPTR;
-
 	int laserLength;			//Max distance tower projectiles travel for player
 	int laserWidth;				//Max width of player projectiles, levels 1->2->3
 	
@@ -344,10 +342,8 @@ public:
 		setWindowDims(window);
 	}
 
-	//initialize METHODS FOR CLASS PLAYER
 
-	//SETS TEXT FOR NUMERICAL DISPLAY OF HEALTH OVERLAYED ONTO BARS
-
+	//INITIALIZE METHODS FOR CLASS PLAYER
 	void initHealthBar(sf::RenderWindow &window, float sHealth, float sMaxHealth)
 	{
 		maxHealth = sMaxHealth;
@@ -423,6 +419,7 @@ public:
 		largeFollowArea.setOutlineColor(sf::Color::Green);
 		largeFollowArea.setFillColor(sf::Color::Transparent);
 	}
+
 
 	//ALL SET METHODS OF CLASS PLAYER
 	void setHealth(float newHealth)
@@ -528,6 +525,7 @@ public:
 		wLength = window.getSize().x;
 		wHeight = window.getSize().y;
 	}
+
 
 	//ALL GET METHODS OF CLASS PLAYER
 	int getPlayerNumber()
@@ -659,7 +657,6 @@ public:
 	}
 
 
-
 	float distanceFrom(sf::Vector2f object1Pos, sf::Vector2f object2Pos)											//calculates vector distance from player or tower object
 	{
 		float xDist = abs(object1Pos.x - object2Pos.x);			//calculates x and y distances away follower is from player
@@ -761,12 +758,80 @@ public:
 	}
 
 
+	//METHODS RELATING TO MANAGINE PLAYERS BULLETS
+	void shoot(sf::Vector2i cursorPos)
+	{
+		static int temperShooting = 0;					//tempershooting will prevent players from shooting excessively
+
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+		{	
+			if (temperShooting > 10)
+			{
+				addBullet(cursorPos);		//adds bullet to vector of active bullets
+				temperShooting = 0;
+			}
+			else
+				temperShooting--;
+		}
+		temperShooting++;			//variable is iterated continuosly to allow multiple shots
+	}
+
+	void addBullet(sf::Vector2i cursorPos) {
+		activeBullets.push_back(Bullet(getGunPosition(), cursorPos));
+	}
+
+	void moveBullets() 
+	{
+		for (size_t i = 0; i < activeBullets.size(); i++) {
+			activeBullets[i].moveBullet();
+		}
+	}
+
+	void deleteBullet(int i) {
+		activeBullets.erase(activeBullets.begin() + i);
+	}
+
+	void checkBulletInBounds(sf::RenderWindow &window) 
+	{
+		for (size_t i = 0; i < activeBullets.size(); i++) {
+			if (activeBullets[i].isOutOBounds(window)) {
+				deleteBullet(i);
+			}
+		}
+	}
+
+
+	//METHODS RELATING TO SHOOTING FOLLOWERS
+	void shootFollowers(sf::FloatRect followerBounds)
+	{
+		for (size_t i = 0; i < activeBullets.size(); i++)
+		{
+				if (activeBullets.at(i).getBulletGlobalBounds().intersects(			//checks to see if bullet intersects each follower
+					followerBounds)) {
+					//std::cout << "size BEFORE:  " << activeBullets.size() << std::endl;
+					activeBullets.erase(activeBullets.begin() + i);
+					//std::cout << "    size AFTER:  " << activeBullets.size() << std::endl;
+					//activeFollowers.erase(activeFollowers.begin() + j);
+					break;
+				}
+		}
+	}
+
+	void killFollower()
+	{
+		//if the follower has health = 1, the follower is deleted
+		//else its health is reduced
+	}
+
+
 	//DRAWING METHODS OF CLASS PLAYER
 	void drawPlayer(sf::RenderWindow &window)
 	{
 		playerShape.drawPlayer(window);
 		window.draw(pBox);
+
 		drawHealthBar(window);
+		drawBullets(window);
 	}
 
 	void drawHealthBar(sf::RenderWindow &window)
@@ -782,6 +847,13 @@ public:
 		window.draw(healthText);
 		window.draw(dot);	//for troubleshooting
 		//window.draw(box);
+	}
+
+	void drawBullets(sf::RenderWindow &window) 
+	{
+		for (size_t i = 0; i < activeBullets.size(); i++) {
+			activeBullets[i].drawBullet(window);
+		}
 	}
 
 		

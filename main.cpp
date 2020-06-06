@@ -20,8 +20,10 @@ int main(int argc, char *argv[])
 	int numberOfPlayers = 1;
 	sf::Vector2f startPos = sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f);
 	Player player1(window, startPos);							//Must declare and initialize drawn objects AFTER window is created
+	std::vector<Player> players;
+	players.push_back(player1);
 
-	std::vector<Bullet> activeBullets;				//key vectors for managing bullets and followers
+	//std::vector<Bullet> activeBullets;				//key vectors for managing bullets and followers
 	std::vector<Follower> activeFollowers;
 	std::vector<Tower> towers;
 	int numberOfTowers = 4;
@@ -49,30 +51,30 @@ int main(int argc, char *argv[])
 		//MANAGE PLAYER
 
 		//MOVE PLAYER
-		movePlayerLogic(window, player1, towers);
+		movePlayerLogic(window, players, towers);
 		//Calls move player function if keyboard is activated
 
 		//SHOOTING
-		shootingMechanics(window, mouseObject, player1, activeBullets);
+		shootingMechanics(window, mouseObject, players);
 		//Directs shooting mechanics
 
 
 		//MANAGE FOLLOWERS
-		followerMechanics(window, mouseObject, player1, activeFollowers,
-			activeBullets, towers);										//Directs follower mechanics
+		followerMechanics(window, mouseObject, players, activeFollowers,
+			 towers);										//Directs follower mechanics
 
 
 
 		//HANDLING THE WINDOW
-		window.clear(sf::Color::White);		
+		window.clear(sf::Color::White);
 		//clears and draws elements in window
 
 
 		//DRAWING
 
-		player1.drawPlayer(window);			//drawing player related elements
+		players.at(0).drawPlayer(window);			//drawing player related elements
 		drawFollowers(window, activeFollowers);
-		drawBullets(window, activeBullets);
+		//drawBullets(window, activeBullets);
 		drawTowers(window, towers);
 
 		//DISPLAY
@@ -89,42 +91,45 @@ int main(int argc, char *argv[])
 
 
 
-void movePlayerLogic(sf::RenderWindow &window,
-	Player &player1, std::vector<Tower> &towers)
+void movePlayerLogic(sf::RenderWindow &window, std::vector<Player> &players, std::vector<Tower> &towers)
 {
-	int towerNum = checkTowerCollision(player1, towers);		//towerNum is initialized to element number  of tower player is colliding with
+	int towerNum = checkTowerCollision(players, towers);		//towerNum is initialized to element number  of tower player is colliding with
 	enum dir{ UP = 1, LEFT, DOWN, RIGHT };								
 	
-	//moves player up if not at upwardbounds
+	for (size_t i = 0; i < players.size(); i++)
+	{
+		//moves player up if not at upwardbounds
 	//Yes there needs to be a function call after each if to support directional travel
 	//no, you cannot pass the key pressed event.
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-		if (player1.getPlayerShape().getUpperBounds() > 0)
-			player1.moveLogic(UP, towerNum, towers.at(towerNum).getPosition(),
-				towers.at(towerNum).getTowerRadius());
-	}
-	//move player left if not at left bounds
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {			
-		if (player1.getPlayerShape().getLeftBounds() > 0)
-			player1.moveLogic(LEFT, towerNum, towers.at(towerNum).getPosition(),
-				towers.at(towerNum).getTowerRadius());
-	}
-	//down
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-		if (player1.getPlayerShape().getLowerBounds() < window.getSize().y)
-			player1.moveLogic(DOWN, towerNum, towers.at(towerNum).getPosition(),
-				towers.at(towerNum).getTowerRadius());
-	}
-	//and right
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-		if (player1.getPlayerShape().getRightBounds() < window.getSize().x )
-			player1.moveLogic(RIGHT, towerNum, towers.at(towerNum).getPosition(),
-				towers.at(towerNum).getTowerRadius());
-	}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+			if (players.at(i).getPlayerShape().getUpperBounds() > 0)
+				players.at(i).moveLogic(UP, towerNum, towers.at(towerNum).getPosition(),
+					towers.at(towerNum).getTowerRadius());
+		}
+		//move player left if not at left bounds
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+			if (players.at(i).getPlayerShape().getLeftBounds() > 0)
+				players.at(i).moveLogic(LEFT, towerNum, towers.at(towerNum).getPosition(),
+					towers.at(towerNum).getTowerRadius());
+		}
+		//down
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+			if (players.at(i).getPlayerShape().getLowerBounds() < window.getSize().y)
+				players.at(i).moveLogic(DOWN, towerNum, towers.at(towerNum).getPosition(),
+					towers.at(towerNum).getTowerRadius());
+		}
+		//and right
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+			if (players.at(i).getPlayerShape().getRightBounds() < window.getSize().x)
+				players.at(i).moveLogic(RIGHT, towerNum, towers.at(towerNum).getPosition(),
+					towers.at(towerNum).getTowerRadius());
+		}
 
-	/*Second parameter in function call accepts bool type, integer type is passed because any int > 0, (i.e. tower num 1,2,3 or 4)
-	is interpreted as bool TRUE, if checkTowerColliion() fails to
-	find colliding tower, it passes tower at elem 0 which is out of bounds*/
+		/*Second parameter in function call accepts bool type, integer type is passed because any int > 0, (i.e. tower num 1,2,3 or 4)
+		is interpreted as bool TRUE, if checkTowerColliion() fails to
+		find colliding tower, it passes tower at elem 0 which is out of bounds*/
+	}
+	
 
 }
 //END PLAYER MOVEMENT LOGIC
@@ -132,37 +137,28 @@ void movePlayerLogic(sf::RenderWindow &window,
 
 //BEGIN SHOOTING MECHANICS AND RELEVANT FUNCTIONS
 
-void shootingMechanics(sf::RenderWindow &window, sf::Mouse mouseObject,
-	Player &player1, std::vector<Bullet> &activeBullets)
+void shootingMechanics(sf::RenderWindow &window, sf::Mouse &mouseObject,
+	std::vector<Player> &players)
 {
-	static int temperShooting = 0;					//tempershooting will prevent players from shooting excessively
-
-	if (temperShooting > 10)
+	for (size_t i = 0; i < players.size(); i++)
 	{
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
-		{
-			activeBullets.push_back(addBullet(mouseObject.getPosition(window), player1));		//adds bullet to vector of active bullets
-			temperShooting = 0;
-		}
+		players.at(i).shoot(mouseObject.getPosition());
+		players.at(i).moveBullets();
+		players.at(i).checkBulletInBounds(window);
 	}
-	temperShooting++;					//variable is iterated continuosly to allow multiple shots
-
-	moveBullets(activeBullets);
-
-	drawBullets(window, activeBullets);
-
-	deleteBullets(window, activeBullets);
-
 }
+	
 
-
+/*
 //ADD BULLETS
 Bullet addBullet(sf::Vector2i cursorVect, Player &player1)				
 //calls bulletObject to shoot out a bullet from player to cursor
 {
-	Bullet bullet(player1.getGunPosition(), cursorVect);
+	//Bullet bullet(player1.getGunPosition(), cursorVect);
+	player1.addBullet(cursorVect);
 	return bullet;
 }
+
 
 
 //MOVE BULLETS
@@ -198,7 +194,7 @@ void drawBullets(sf::RenderWindow &window, std::vector<Bullet> &activeBullets)		
 	}
 
 }
-
+*/
 //END SHOOTING MECHANICS AND RELEVANT FUNCTIONS
 
 
@@ -206,28 +202,28 @@ void drawBullets(sf::RenderWindow &window, std::vector<Bullet> &activeBullets)		
 //BEGINS FOLLWER MECHANICS AND RELVANT FUNCTONS
 
 void followerMechanics(sf::RenderWindow &window, sf::Mouse mouseObject,
-	Player &player1, std::vector<Follower> &activeFollowers, std::vector<Bullet> &activeBullets,
+	std::vector<Player> &players, std::vector<Follower> &activeFollowers,
 	std::vector<Tower> &towers)
 {
 	static int temperSpawnRate = 0; temperSpawnRate++;				//moderates spawn rate
-	static int maxFollowers = 5;
-	static int tmperRate = 50;
+	static int maxFollowers = 3;
+	static int tmperRate = 500;
 	
 	if ((temperSpawnRate % tmperRate == 0) && (activeFollowers.size() < maxFollowers))
 	{
-		activeFollowers.push_back(spawnFollower(window, player1));				//adds new follower to vector of active follower
+		activeFollowers.push_back(spawnFollower(window));				//adds new follower to vector of active follower
 		std::cout << "Spawning fol, total num: " << activeFollowers.size() << std::endl;
 	}
 	
-	moveFollowers(player1, activeFollowers, towers);					//moves followers
-	shootFollowers(activeFollowers, activeBullets);
-	attackPlayer(player1, activeFollowers);
+	moveFollowers(players, activeFollowers, towers);					//moves followers
+	shootFollowers(players, activeFollowers);
+	attackPlayer(players, activeFollowers);
 
 }
 
 
 //SPAWNS FOLLOWERS THEN ADDS TO VECTOR
-Follower spawnFollower(sf::RenderWindow &window, Player &player1)				//calls follower object to set followers position and velocity
+Follower spawnFollower(sf::RenderWindow &window)				//calls follower object to set followers position and velocity
 {
 	Follower follower(window);
 	follower.randomSpawn();
@@ -237,54 +233,53 @@ Follower spawnFollower(sf::RenderWindow &window, Player &player1)				//calls fol
 
 
 //MOVES FOLLOWERS BASED ON VELOCITY CALCULATION IN FOLLOWER OBJECT
-void moveFollowers(Player &player1, std::vector<Follower> &activeFollowers, std::vector<Tower> &towers)
+void moveFollowers(std::vector<Player> &players, std::vector<Follower> &activeFollowers, std::vector<Tower> &towers)
 {
-	for (size_t i = 0; i < activeFollowers.size(); i++)
-	{
-		activeFollowers[i].moveFollower(activeFollowers[i].followerCollision(activeFollowers, i), player1, towers);
-		//checks follower for follower collision then moves and adjust velocity as necesary
-		//if follower is in collision with another follower, function "bounces" them off each other
-		//otherwise just moves follwer at current velocity
-
-		//check if follower is still inBounds
-
-		//if(activeFollowers[i].outOfBounds())
-			//activeFollowers.erase(activeFollowers.begin() + i);
+	for (size_t i = 0; i < players.size(); i++) {
+		for (size_t j = 0; j < activeFollowers.size(); j++)
+		{
+			activeFollowers[j].moveFollower(activeFollowers[j].followerCollision(activeFollowers, j),
+				players.at(i), towers);
+			//checks follower for follower collision then moves and adjust velocity as necesary
+			//if follower is in collision with another follower, function "bounces" them off each other
+			//otherwise just moves follwer at current velocity
+		}
 	}
+	
 
 }
 
 //HANDLES FOLLOWER BULLET INTERACTIONS
-void shootFollowers(std::vector<Follower> &activeFollowers, std::vector<Bullet> &activeBullets)
+void shootFollowers(std::vector<Player> &players, std::vector<Follower> &activeFollowers)
 {
-
-	for (size_t i = 0; i < activeBullets.size(); i++)
-	{
+	for (size_t i = 0; i < players.size(); i++) {
 		for (size_t j = 0; j < activeFollowers.size(); j++)
 		{
-			if (activeBullets.at(i).getBulletGlobalBounds().intersects(			//checks to see if bullet intersects each follower
-				activeFollowers.at(j).getFollowerGlobalBounds()))
-			{
-				//std::cout << "size BEFORE:  " << activeBullets.size() << std::endl;
-				activeBullets.erase(activeBullets.begin() + i);
-				//std::cout << "    size AFTER:  " << activeBullets.size() << std::endl;
-				activeFollowers.erase(activeFollowers.begin() + j);
-				break;
-			}
+			players.at(i).shootFollowers( activeFollowers.at(j).getFollowerGlobalBounds() );
 		}
+
+		//return array of followers shot by this player
+		//aggregate all dead followers into 1 array by arr1 || arr2
+		
 	}
 }
 
 //HANDELS FOLLOWERS ATTACKING A PLAYER; REDUCES PLAYER'S HEALTH
-void attackPlayer(Player &player1, std::vector<Follower> &activeFollowers)
+void attackPlayer(std::vector<Player> &players, std::vector<Follower> &activeFollowers)
 {
-	for (size_t i = 0; i < activeFollowers.size(); i++)
+	for (size_t i = 0; i < players.size(); i++)
 	{
-		if (activeFollowers[i].getFollowerGlobalBounds().intersects(player1.getPlayerBounds()))		//if a follwer insects the player's global bounds
+		for (size_t j = 0; j < activeFollowers.size(); j++)
 		{
-			player1.takeDamage(1);	//reduce player's health
+			if (activeFollowers[j].getFollowerGlobalBounds().intersects(
+				players.at(i).getPlayerBounds()))	{	//if a follwer insects the player's global bounds
+
+				int dmg = 1;					//later dmg = given followers damage
+				players.at(i).takeDamage(dmg);	//reduce player's health
+			}
 		}
 	}
+	
 
 }
 
@@ -292,12 +287,9 @@ void attackPlayer(Player &player1, std::vector<Follower> &activeFollowers)
 //DRAWS FOLLOWERS IN WINDOW
 void drawFollowers(sf::RenderWindow &window, std::vector<Follower> &activeFollowers)				//function to tell Follower objects to draw themselves
 {
-
-	for (size_t i = 0; i < activeFollowers.size(); i++)
-	{
+	for (size_t i = 0; i < activeFollowers.size(); i++) {
 		activeFollowers[i].drawFollower(window);
 	}
-
 }
 
 //END FUNCTIONS HANDLING FOLLOWERS
@@ -317,16 +309,20 @@ void initializeTowers(sf::RenderWindow &window, std::vector<Tower> &towers, int 
 }
 
 
-int checkTowerCollision(Player &player1, std::vector<Tower> &towers) 
+int checkTowerCollision(std::vector<Player> &players, std::vector<Tower> &towers)
 {
 	int collidingTower = 0;		//tower num (1-4) of colliding tower, or 0 for none
 	//We can make this better, only check for collision if close to tower
-	for (size_t i = 0; i < towers.size(); i++)
+
+	for (size_t i = 0; i < players.size(); i++)
 	{
-		if (towers[i].checkTowerCollision(player1) ){
-			collidingTower = i;
+		for (size_t j = 0; j < towers.size(); j++)
+		{
+			if (towers[j].checkTowerCollision(players.at(i))) {
+				collidingTower = j;
+			}
+
 		}
-			
 	}
 
 	return collidingTower;

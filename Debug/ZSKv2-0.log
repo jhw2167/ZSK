@@ -5,17 +5,17 @@ c:\users\jack\source\repos\zskv2-0\zskv2-0\bulletobject.h(36): warning C4244: 'a
               T=int
           ]
 c:\users\jack\source\repos\zskv2-0\zskv2-0\bulletobject.h(85): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-c:\users\jack\source\repos\zskv2-0\zskv2-0\playerobject.h(528): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\playerobject.h(525): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=unsigned int
           ]
-c:\users\jack\source\repos\zskv2-0\zskv2-0\playerobject.h(529): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\playerobject.h(526): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=unsigned int
           ]
-c:\users\jack\source\repos\zskv2-0\zskv2-0\playerobject.h(668): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\playerobject.h(665): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
 c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(74): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
           with
           [
@@ -59,6 +59,7 @@ c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(260): warning C4244:
 c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(262): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
 c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(439): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
 c:\users\jack\source\repos\zskv2-0\zskv2-0\couttests.h(74): warning C4018: '<': signed/unsigned mismatch
-c:\users\jack\source\repos\zskv2-0\zskv2-0\main.cpp(216): warning C4018: '<': signed/unsigned mismatch
-c:\users\jack\source\repos\zskv2-0\zskv2-0\main.cpp(314): warning C4018: '<': signed/unsigned mismatch
+c:\users\jack\source\repos\zskv2-0\zskv2-0\main.cpp(212): warning C4018: '<': signed/unsigned mismatch
+c:\users\jack\source\repos\zskv2-0\zskv2-0\main.cpp(278): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\main.cpp(306): warning C4018: '<': signed/unsigned mismatch
   ZSKv2-0.vcxproj -> C:\Users\jack\source\repos\ZSKv2-0\Debug\ZSKv2-0.exe
