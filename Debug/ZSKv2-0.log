@@ -61,5 +61,5 @@ c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(473): warning C4244:
 c:\users\jack\source\repos\zskv2-0\zskv2-0\couttests.h(74): warning C4018: '<': signed/unsigned mismatch
 c:\users\jack\source\repos\zskv2-0\zskv2-0\main.cpp(179): warning C4018: '<': signed/unsigned mismatch
 c:\users\jack\source\repos\zskv2-0\zskv2-0\main.cpp(241): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\jack\source\repos\zskv2-0\zskv2-0\main.cpp(269): warning C4018: '<': signed/unsigned mismatch
+c:\users\jack\source\repos\zskv2-0\zskv2-0\main.cpp(268): warning C4018: '<': signed/unsigned mismatch
   ZSKv2-0.vcxproj -> C:\Users\jack\source\repos\ZSKv2-0\Debug\ZSKv2-0.exe

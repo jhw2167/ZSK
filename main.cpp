@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 	//vectorTests();
 
 
-	float windowLength = 1600.f;
+	float windowLength = 1500.f;
 	float windowHeight = 1200.f;
 
 	sf::RenderWindow window(sf::VideoMode(static_cast<int>(windowLength), static_cast<int>(windowHeight)), "Zombie Slayer Killer");
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 
 	}
 
-	//getchar();
+	getchar();
 
 	return 0;
 }
@@ -173,8 +173,8 @@ void spawnFollower(sf::RenderWindow &window, std::vector<Follower> &activeFollow
 //calls follower object to set followers position and velocity
 {
 	static int temperSpawnRate = 0; temperSpawnRate++;				//moderates spawn rate
-	static int maxFollowers = 2;
-	static int tmperRate = 10;
+	static int maxFollowers = 20;
+	static int tmperRate = 50;
 
 	if ((temperSpawnRate % tmperRate == 0) && (activeFollowers.size() < maxFollowers))
 	{
@@ -245,7 +245,6 @@ void attackPlayer(std::vector<Player> &players, std::vector<Follower> &activeFol
 	
 
 }
-
 
 //DRAWS FOLLOWERS IN WINDOW
 void drawFollowers(sf::RenderWindow &window, std::vector<Follower> &activeFollowers)				//function to tell Follower objects to draw themselves

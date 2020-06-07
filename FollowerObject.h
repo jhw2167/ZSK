@@ -381,7 +381,7 @@ public:
 				retargetCount++;
 		}
 		
-				//checks if follwer is out of bounds and redirects it as necesary
+		
 
 		for (size_t i = 0; i < towers.size() ; i++) {	//checks each tower for potential collision
 			towerCollision(towers[i]);
@@ -390,7 +390,7 @@ public:
 		sf::Vector2f newPos = fShape.getPosition() + fVelocity;
 		if (collision) {
 			newPos += bounce;
-			outOfBounds(newPos);
+			outOfBounds(newPos, collision);
 			moveFollower(fVelocity + bounce);
 		}
 		else {
@@ -475,17 +475,38 @@ public:
 
 	
 	//OUT OF BOUNDS AND FOLLOWER COLLISION BEHAVIOR
-	void outOfBounds(sf::Vector2f pos)
+	void outOfBounds(sf::Vector2f pos, bool col = false)
 	{
+		float buffer = 0.f;
+		//need an off screen boundry for the velocity reversal or follower gets
+		//stuck moving further outside
 		bool xOut = pos.x < 0 || pos.x > windowLength;
 		bool yOut = pos.y < 0 || pos.y > windowHeight;
-		//determines if followers are out by x or y coordinates
 
-		if (xOut)										//redirects followers if they go offscreen
-			fVelocity.x = -fVelocity.x;
+		if (!col)
+		{
+			if (xOut)
+				fVelocity.x = -fVelocity.x;
 
-		if (yOut)
-			fVelocity.y = -fVelocity.y;
+			if (yOut)
+				fVelocity.y = -fVelocity.y;
+		}
+		else
+		{
+			if (xOut)
+			{
+				fVelocity.x = -fVelocity.x;
+				bounce.x = -bounce.x;
+			}
+				
+			if (yOut)
+			{
+				fVelocity.y = -fVelocity.y;
+				bounce.y = -bounce.y;
+			}
+				
+		}
+	
 	}
 
 	bool towerCollision(Tower tower)				//if there is a tower collision, redirect follower's velocity
