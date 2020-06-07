@@ -308,7 +308,7 @@ public:
 
 		//CONSTRUCTOR 
 	Player(sf::RenderWindow &window, sf::Vector2f startPos, int pNumber = 1, float scale = 2.f, float startHealth = 300.f, 
-		float startMaxHealth = 300.f, float startShield = 100.f, float startMaxShield = 100.f, float mSpeed = 5.f, int startScore = 0, float smallRadius = 60.f,
+		float startMaxHealth = 300.f, float startShield = 100.f, float startMaxShield = 100.f, float mSpeed = 6.f, int startScore = 0, float smallRadius = 60.f,
 		float largeRadius = 180.f, int laserL = 100.f, int laserW = 1,  bool showBox = false)
 	{
 		//Initialize basic player components

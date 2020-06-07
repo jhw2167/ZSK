@@ -11,8 +11,8 @@ int main(int argc, char *argv[])
 	//vectorTests();
 
 
-	float windowLength = 1200.f;
-	float windowHeight = 800.f;
+	float windowLength = 1600.f;
+	float windowHeight = 1200.f;
 
 	sf::RenderWindow window(sf::VideoMode(static_cast<int>(windowLength), static_cast<int>(windowHeight)), "Zombie Slayer Killer");
 	window.setFramerateLimit(60);
@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 
 	}
 
-	getchar();
+	//getchar();
 
 	return 0;
 }
@@ -193,7 +193,7 @@ void moveFollowers(std::vector<Player> &players, std::vector<Follower> &activeFo
 	for (size_t i = 0; i < players.size(); i++) {
 		for (size_t j = 0; j < activeFollowers.size(); j++)
 		{
-			activeFollowers[j].moveFollower(activeFollowers[j].followerCollision(activeFollowers, j),
+			activeFollowers[j].moveLogic(activeFollowers[j].followerCollision(activeFollowers, j),
 				players.at(i), towers);
 			//checks follower for follower collision then moves and adjust velocity as necesary
 			//if follower is in collision with another follower, function "bounces" them off each other

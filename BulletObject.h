@@ -35,7 +35,7 @@ public:
 
 	Bullet(sf::Vector2f startPos = sf::Vector2f(0.f, 0.f),
 		sf::Vector2i cursorPos = sf::Vector2i(50.f, 50.f), int bStrip = 1,
-		int bPen = 2, float scale = 2.f )
+		int bPen = 1, float scale = 2.f )
 	//Bullet constructor initializes size, shape and position 
 	//of bullet object
 	{
@@ -166,7 +166,7 @@ std::ostream& operator<< (std::ostream &out, const sf::Vector2f v1)
 {
 	out << "Vector x: " << v1.x << std::endl;
 	out << "Vector y: " << v1.y << std::endl;
-	//out << std::endl;
+	out << std::endl;
 
 	return out;
 }

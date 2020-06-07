@@ -33,7 +33,7 @@ private:
 
 public:
 
-	Tower(sf::RenderWindow &window, int tNumber = 0, float tRadius = 100.f)			//Constructs minimal tower objcet
+	Tower(sf::RenderWindow &window, int tNumber = 0, float tRadius = 200.f)			//Constructs minimal tower objcet
 	{
 		towerNumber = tNumber;
 
@@ -42,7 +42,7 @@ public:
 		towerOwnedBy = NOTOWNED;
 	}
 
-	Tower(int tNumber = 0, float tRadius = 100.f)
+	Tower(int tNumber = 0, float tRadius = 200.f)
 	{
 		towerNumber = tNumber;
 		initTowerShape(tRadius);

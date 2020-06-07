@@ -43,21 +43,21 @@ c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(114): warning C4244: 'a
 c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(114): warning C4390: ';': empty controlled statement found; is this the intent?
 c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(143): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
 c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(139): warning C4305: 'initializing': truncation from 'double' to 'float'
-c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(212): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(220): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=unsigned int
           ]
-c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(213): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(221): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=unsigned int
           ]
-c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(216): warning C4305: '=': truncation from 'double' to 'float'
-c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(260): warning C4244: 'initializing': conversion from 'time_t' to 'int', possible loss of data
-c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(264): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(266): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(459): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(224): warning C4305: '=': truncation from 'double' to 'float'
+c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(275): warning C4244: 'initializing': conversion from 'time_t' to 'int', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(279): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(281): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(473): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
 c:\users\jack\source\repos\zskv2-0\zskv2-0\couttests.h(74): warning C4018: '<': signed/unsigned mismatch
 c:\users\jack\source\repos\zskv2-0\zskv2-0\main.cpp(179): warning C4018: '<': signed/unsigned mismatch
 c:\users\jack\source\repos\zskv2-0\zskv2-0\main.cpp(241): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
