@@ -8,6 +8,9 @@ int main(int argc, char *argv[])
 {
 	//coutTests();				//calls cout tests for creating cout variable statements
 
+	//vectorTests();
+
+
 	float windowLength = 1200.f;
 	float windowHeight = 800.f;
 
@@ -83,7 +86,7 @@ int main(int argc, char *argv[])
 
 	}
 
-	//getchar();
+	getchar();
 
 	return 0;
 }
@@ -142,60 +145,11 @@ void shootingMechanics(sf::RenderWindow &window, sf::Mouse &mouseObject,
 {
 	for (size_t i = 0; i < players.size(); i++)
 	{
-		players.at(i).shoot(mouseObject.getPosition());
+		players.at(i).shoot(mouseObject.getPosition(window));
 		players.at(i).moveBullets();
 		players.at(i).checkBulletInBounds(window);
 	}
 }
-	
-
-/*
-//ADD BULLETS
-Bullet addBullet(sf::Vector2i cursorVect, Player &player1)				
-//calls bulletObject to shoot out a bullet from player to cursor
-{
-	//Bullet bullet(player1.getGunPosition(), cursorVect);
-	player1.addBullet(cursorVect);
-	return bullet;
-}
-
-
-
-//MOVE BULLETS
-void moveBullets(std::vector<Bullet> &activeBullets)
-{
-	for (size_t i = 0; i < activeBullets.size(); i++)
-	{
-		activeBullets[i].moveBullet();
-	}
-}
-
-//DELETE BULLETS
-void deleteBullets(sf::RenderWindow &window, std::vector<Bullet> &activeBullets)
-{
-	for (size_t i = 0; i < activeBullets.size(); i++)
-	{
-		if (activeBullets[i].isOutOBounds(window))
-		{
-			activeBullets.erase(activeBullets.begin() + i);
-		}
-		
-	}
-	
-}
-
-
-//DRAW BULLETS
-void drawBullets(sf::RenderWindow &window, std::vector<Bullet> &activeBullets)				//function to tell bullet objects to draw themselves
-{
-	for (size_t i = 0; i < activeBullets.size(); i++)
-	{
-		activeBullets[i].drawBullet(window);
-	}
-
-}
-*/
-//END SHOOTING MECHANICS AND RELEVANT FUNCTIONS
 
 
 //*********************************************//
@@ -205,17 +159,9 @@ void followerMechanics(sf::RenderWindow &window, sf::Mouse mouseObject,
 	std::vector<Player> &players, std::vector<Follower> &activeFollowers,
 	std::vector<Tower> &towers)
 {
-	static int temperSpawnRate = 0; temperSpawnRate++;				//moderates spawn rate
-	static int maxFollowers = 3;
-	static int tmperRate = 500;
-	
-	if ((temperSpawnRate % tmperRate == 0) && (activeFollowers.size() < maxFollowers))
-	{
-		activeFollowers.push_back(spawnFollower(window));				//adds new follower to vector of active follower
-		std::cout << "Spawning fol, total num: " << activeFollowers.size() << std::endl;
-	}
-	
-	moveFollowers(players, activeFollowers, towers);					//moves followers
+	spawnFollower(window, activeFollowers);
+	moveFollowers(players, activeFollowers, towers);					
+
 	shootFollowers(players, activeFollowers);
 	attackPlayer(players, activeFollowers);
 
@@ -223,12 +169,21 @@ void followerMechanics(sf::RenderWindow &window, sf::Mouse mouseObject,
 
 
 //SPAWNS FOLLOWERS THEN ADDS TO VECTOR
-Follower spawnFollower(sf::RenderWindow &window)				//calls follower object to set followers position and velocity
+void spawnFollower(sf::RenderWindow &window, std::vector<Follower> &activeFollowers)				
+//calls follower object to set followers position and velocity
 {
-	Follower follower(window);
-	follower.randomSpawn();
+	static int temperSpawnRate = 0; temperSpawnRate++;				//moderates spawn rate
+	static int maxFollowers = 2;
+	static int tmperRate = 10;
 
-	return follower;
+	if ((temperSpawnRate % tmperRate == 0) && (activeFollowers.size() < maxFollowers))
+	{
+		Follower follower(window);
+		follower.randomSpawn();
+		activeFollowers.push_back(follower) ;				//adds new follower to vector of active follower
+		//std::cout << "Spawning fol, total num: " << activeFollowers.size() << std::endl;
+	}
+
 }
 
 
@@ -243,6 +198,7 @@ void moveFollowers(std::vector<Player> &players, std::vector<Follower> &activeFo
 			//checks follower for follower collision then moves and adjust velocity as necesary
 			//if follower is in collision with another follower, function "bounces" them off each other
 			//otherwise just moves follwer at current velocity
+
 		}
 	}
 	
@@ -252,10 +208,17 @@ void moveFollowers(std::vector<Player> &players, std::vector<Follower> &activeFo
 //HANDLES FOLLOWER BULLET INTERACTIONS
 void shootFollowers(std::vector<Player> &players, std::vector<Follower> &activeFollowers)
 {
+	std::vector<bool> erasefollower;
 	for (size_t i = 0; i < players.size(); i++) {
 		for (size_t j = 0; j < activeFollowers.size(); j++)
 		{
-			players.at(i).shootFollowers( activeFollowers.at(j).getFollowerGlobalBounds() );
+			int dmg = players.at(i).shootFollower( 
+				activeFollowers.at(j).getFollowerGlobalBounds() );
+
+			if (dmg > 0) {
+				activeFollowers.erase(activeFollowers.begin() + j);
+				j--;
+			}
 		}
 
 		//return array of followers shot by this player
@@ -272,7 +235,7 @@ void attackPlayer(std::vector<Player> &players, std::vector<Follower> &activeFol
 		for (size_t j = 0; j < activeFollowers.size(); j++)
 		{
 			if (activeFollowers[j].getFollowerGlobalBounds().intersects(
-				players.at(i).getPlayerBounds()))	{	//if a follwer insects the player's global bounds
+				players.at(i).getHeartBounds()))	{	//if a follwer insects the player's global bounds
 
 				int dmg = 1;					//later dmg = given followers damage
 				players.at(i).takeDamage(dmg);	//reduce player's health

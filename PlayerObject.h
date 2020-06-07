@@ -570,10 +570,14 @@ public:
 		return playerShape.getGunPosition();
 	}
 
-	sf::FloatRect getPlayerBounds()
-	{
+	sf::FloatRect getPlayerBounds() {
 		return pBox.getGlobalBounds();
 	}
+
+	sf::FloatRect getHeartBounds() {
+		return playerShape.getHeartBounds();
+	}
+
 
 	sf::FloatRect getSmallFollowAreaBounds()
 	{
@@ -721,7 +725,6 @@ public:
 			break;
 		}
 
-			//std::cout << "dist from tow center " << distanceFrom(playerPosition + moveVect, towerPos) << std::endl;
 			sf::Vector2f pBoxAdj = sf::Vector2f(pushX, pushY);
 			bool movingIntoTower = distanceFrom(playerPosition + moveVect + pBoxAdj, towerPos) <= towerRadius;
 
@@ -802,25 +805,37 @@ public:
 
 
 	//METHODS RELATING TO SHOOTING FOLLOWERS
-	void shootFollowers(sf::FloatRect followerBounds)
+	int shootFollower(sf::FloatRect followerBounds)
 	{
-		for (size_t i = 0; i < activeBullets.size(); i++)
-		{
+		for (size_t i = 0; i < activeBullets.size(); i++) {
 				if (activeBullets.at(i).getBulletGlobalBounds().intersects(			//checks to see if bullet intersects each follower
 					followerBounds)) {
-					//std::cout << "size BEFORE:  " << activeBullets.size() << std::endl;
-					activeBullets.erase(activeBullets.begin() + i);
-					//std::cout << "    size AFTER:  " << activeBullets.size() << std::endl;
-					//activeFollowers.erase(activeFollowers.begin() + j);
-					break;
+
+					int dmg = dmgFollower(i);
+					return dmg;
 				}
 		}
+		return 0;
 	}
 
-	void killFollower()
+	int dmgFollower(int i)
 	{
+		//bullet needs to know its strip
+		int dmg = activeBullets[i].getStrip();
+		int pen = activeBullets[i].getPen();
+		pen--;
+
+		if (pen < 1)
+			activeBullets.erase(activeBullets.begin() + i);
+		else
+			activeBullets[i].setPen(pen);
+
+		return dmg;
+
 		//if the follower has health = 1, the follower is deleted
 		//else its health is reduced
+		//This should be performed in follower class, player only
+		//needs to know if it shot a follower
 	}
 
 
@@ -845,7 +860,7 @@ public:
 		window.draw(smallFollowArea);
 
 		window.draw(healthText);
-		window.draw(dot);	//for troubleshooting
+		//window.draw(dot);	//for troubleshooting
 		//window.draw(box);
 	}
 

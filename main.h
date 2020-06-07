@@ -40,16 +40,6 @@ void movePlayerLogic(sf::RenderWindow &window, std::vector<Player> &players, std
 void shootingMechanics(sf::RenderWindow &window, sf::Mouse &mouseObject,
 	std::vector<Player> &players);
 
-/*
-Bullet addBullet(sf::Vector2i cursorVect, Player &player1);
-
-void moveBullets(std::vector<Bullet> &activeBullets);
-
-void deleteBullets(sf::RenderWindow &window, std::vector<Bullet> &activeBullets);
-
-void drawBullets(sf::RenderWindow &window, std::vector<Bullet> &activeBullets);
-*/
-
 
 //ALL FUNCTIONS HANDLING FOLLOWERS
 void followerMechanics(sf::RenderWindow &window, sf::Mouse mouseObject,
@@ -57,7 +47,7 @@ void followerMechanics(sf::RenderWindow &window, sf::Mouse mouseObject,
 	std::vector<Tower> &towers);
 
 //SPAWNS FOLLOWERS THEN ADDS TO VECTOR
-Follower spawnFollower(sf::RenderWindow &window);
+void spawnFollower(sf::RenderWindow &window, std::vector<Follower> &activeFollowers);
 
 //MOVES FOLLOWERS BASED ON VELOCITY CALCULATION IN FOLLOWER OBJECT
 void moveFollowers(std::vector<Player> &players, std::vector<Follower> &activeFollowers, std::vector<Tower> &towers);
@@ -94,3 +84,24 @@ const sf::Vector2f Player::lfVect = sf::Vector2f(-1.f, 0.f);
 const sf::Vector2f Player::dnVect = sf::Vector2f(0.f, 1.f);
 const sf::Vector2f Player::rtVect = sf::Vector2f(1.f, 0.f);
 
+//follower objects
+int Follower::f_id = 0;
+
+//TESTS
+
+void vectorTests()
+{
+	std::cout << " Our new test " << std::endl << std::endl;
+	std::vector<int> nums{ 2, 5, 7 };
+
+	for (size_t i = 0; i < nums.size(); i++)
+	{
+		std::cout << "Nums at i = " << i << " is " << nums[i] << std::endl;
+		std::cout << "Nums size is: " << nums.size() << std::endl;
+		nums.erase(nums.begin());
+		i--;
+	}
+
+	getchar();
+
+}

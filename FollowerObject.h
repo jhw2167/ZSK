@@ -177,6 +177,9 @@ class Follower
 {
 private:
 
+	static int f_id;			//all followers have same f_id value that increments
+	int id;						//each follower has unique id
+
 	FollowerShape fShape;
 
 	sf::Vector2f fPosition;
@@ -187,6 +190,9 @@ private:
 	float momentum;											//followers will gain speed as they follower a player
 	int aUp, aLeft, aDown, aRight = 0;						//static ints will track how many times a follower has been accelerating in a given direction
 	enum direction {STILL = 0, UP, LEFT, DOWN, RIGHT};		//declares enum direction to handle player movement
+
+	int retargetRate;
+	int retargetCount;
 
 	sf::Vector2f bounce;			//vector with random x y coordinates for collisions
 	sf::RectangleShape fBox;		//sets transparent box around follower for mechanics
@@ -201,6 +207,8 @@ public:
 	Follower(sf::RenderWindow &window, sf::Color fColor = sf::Color::Black, 
 		float scale = 2.f, bool showBoxes = false)
 	{
+		id = f_id++;
+
 		showBoxes = true;
 		fShape = FollowerShape(fColor, scale);
 		setFollowerBox(fShape, showBoxes);
@@ -315,11 +323,16 @@ public:
 		return fBox.getGlobalBounds();
 	}
 
+	int get_id()	{
+		return id;
+	}
+
 
 
 	//SET UP AND MANAGE FOLLOWER MOVEMENT
 	void setFollowerVelocity(sf::Vector2f destinationVector, float speed = 3.f)		//moves follower by adding unit vector to move function
 	{
+
 		float yCoord = destinationVector.y - fShape.getPosition().y;				//destination vector is either player position or random movement
 																					//when follower is not following player
 		float xCoord = destinationVector.x - fShape.getPosition().x;
@@ -330,6 +343,20 @@ public:
 		float yVelocity = ((yCoord / mag) * speed * pow(momentum, aUp + aDown));
 
 		fVelocity = sf::Vector2f(xVelocity, yVelocity);
+
+		
+		static int tmpr = 0;
+
+		if (tmpr % 200 == 0)
+		{
+			std::cout << std::endl << "fVelocity for " << id << " is: : " << std::endl <<
+				fVelocity; // << std::endl << std::endl;
+
+			std::cout << std::endl << "playerPosition is:  " << destinationVector 
+				<< std::endl << std::endl;
+		}
+		tmpr++;
+		
 		//creates follower velocity vector as function of direction vector and speed
 	}
 
@@ -337,18 +364,17 @@ public:
 	//MOVE FOLLOWER
 	void moveFollower(bool collision, Player &player, std::vector<Tower> &towers)
 	{
-
 		isFollowingPlayer(player);			//checks to see if following player
 		
 		if (followingPlayer)				//if not following player it does not need to reset its velocity
 		{
-			bool decelerate = fShape.getGlobalBounds().intersects(player.getPlayerBounds());
+			bool decelerate = fShape.getGlobalBounds().intersects(player.getHeartBounds());
 
 			accelerate(player, decelerate);						
 			//follower accerlates if following a player or decelerate if they contact him
 
 			setFollowerVelocity(player.getPosition());
-			//unless follower is close enough to a given player it will constantly reset its velocity 
+			//unless follower is close enough to a given player it will constantly reset its velocity
 		}
 		
 		outOfBounds();		//checks if follwer is out of bounds and redirects it as necesary
@@ -357,7 +383,6 @@ public:
 			towerCollision(towers[i]);
 		}
 		
-
 		if (collision) {
 			fShape.move(fVelocity + bounce);	// "bounces" followers in case of collision
 			fBox.move(fVelocity + bounce);
@@ -372,13 +397,13 @@ public:
 
 
 	//ACCELERATES FOLLOWER
-	void accelerate(Player &player1, bool decelerate = false)					//accelerates the follower over time based on passed value from main
+	void accelerate(Player &player, bool decelerate = false)					//accelerates the follower over time based on passed value from main
 	{
-		float playersCurrX = player1.getPosition().x;			//floats get player's position to determine which direction hes traveling
-		static float playersOldX = 0;
+		float playersCurrX = player.getPosition().x;			//floats get player's position to determine which direction hes traveling
+		float playersOldX = 0;
 
-		float playersCurrY = player1.getPosition().y;
-		static float playersOldY = 0;
+		float playersCurrY = player.getPosition().y;
+		float playersOldY = 0;
 
 		
 		bool movingLeft = playersCurrX < playersOldX;			//bools determine which direction player has been traveling
@@ -386,6 +411,7 @@ public:
 
 		bool movingUp = playersCurrY < playersOldY;
 		bool movingDown = playersCurrY > playersOldY;
+
 
 		if (movingLeft)
 		{
@@ -412,21 +438,23 @@ public:
 		playersOldX = playersCurrX;					//sets the new old coordinates equal to current coordinates for next function call
 		playersOldY = playersCurrY;
 		
-		if (decelerate)								// all exponents set to 0 to decelerate follower
-			aUp, aLeft, aDown, aRight = 0;
+		if (decelerate)	{					// all exponents set to 0 to decelerate follower
+			aUp = aLeft = aDown = aRight = 0;
+		}
+		
 	}
 
-	bool isFollowingPlayer(Player &player1)
+	bool isFollowingPlayer(Player &player)
 	{
 		bool wasFollowing = followingPlayer;
 
 		if (!followingPlayer)
-			followingPlayer = distanceFrom(player1.getPosition()) <= player1.getSmallFollowAreaRadius();
+			followingPlayer = distanceFrom(player.getPosition()) <= player.getSmallFollowAreaRadius();
 		else
-			followingPlayer = distanceFrom(player1.getPosition()) <= player1.getLargeFollowAreaRadius();
+			followingPlayer = distanceFrom(player.getPosition()) <= player.getLargeFollowAreaRadius();
 
 		if (wasFollowing && !followingPlayer)
-			setFollowerVelocity(player1.getPosition());
+			setFollowerVelocity(player.getPosition());
 
 		return followingPlayer;
 	}
@@ -467,7 +495,6 @@ public:
 		}
 
 	}
-
 
 	bool followerCollision(std::vector<Follower> &activeFollowers, int i)		//checks for a collision with passed object follower and returns bool
 	{
