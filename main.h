@@ -47,7 +47,7 @@ void followerMechanics(sf::RenderWindow &window, sf::Mouse mouseObject,
 	std::vector<Tower> &towers);
 
 //SPAWNS FOLLOWERS THEN ADDS TO VECTOR
-void spawnFollower(sf::RenderWindow &window, std::vector<Follower> &activeFollowers);
+void spawnFollower(sf::RenderWindow &window, std::vector<Follower> &activeFollowers, float &towerRadius);
 
 //MOVES FOLLOWERS BASED ON VELOCITY CALCULATION IN FOLLOWER OBJECT
 void moveFollowers(std::vector<Player> &players, std::vector<Follower> &activeFollowers, std::vector<Tower> &towers);

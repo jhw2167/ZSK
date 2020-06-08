@@ -294,6 +294,9 @@ private:
 	static float areaOutline;				//outline thickness of large and small follower circles
 	sf::CircleShape largeFollowArea;				//Furthest distance away which followers will follow you after gaining interest
 	sf::CircleShape smallFollowArea;				// minimum distance you need to be to a follower for it to begin following you
+	float smallFolRad;
+	float minLargeFolRad;
+	float maxLargeFolRad;
 
 	int laserLength;			//Max distance tower projectiles travel for player
 	int laserWidth;				//Max width of player projectiles, levels 1->2->3
@@ -309,7 +312,7 @@ public:
 		//CONSTRUCTOR 
 	Player(sf::RenderWindow &window, sf::Vector2f startPos, int pNumber = 1, float scale = 2.f, float startHealth = 300.f, 
 		float startMaxHealth = 300.f, float startShield = 100.f, float startMaxShield = 100.f, float mSpeed = 6.f, int startScore = 0, float smallRadius = 60.f,
-		float largeRadius = 180.f, int laserL = 100.f, int laserW = 1,  bool showBox = false)
+		float maxLargeRadius = 240.f, int laserL = 100.f, int laserW = 1,  bool showBox = false)
 	{
 		//Initialize basic player components
 		playerNumber = pNumber;
@@ -331,8 +334,11 @@ public:
 		initHealthText();
 		
 		//Initialize large and small follower areas
+		smallFolRad = smallRadius;
+		maxLargeFolRad = maxLargeRadius;
+		minLargeFolRad = smallRadius + 20.f;
 		initSmallFollowerRadius(smallRadius);
-		initLargeFollowerRadius(largeRadius);
+		initLargeFollowerRadius(minLargeFolRad);
 
 		//Initialize Laser attributes
 		setLaserLength(laserL);
@@ -446,9 +452,6 @@ public:
 		else if (health < 100)
 			centerText.x += 10.f;
 
-		dot.setFillColor(sf::Color::Yellow);
-		dot.setOrigin(4.f, 4.f);
-		dot.setPosition(healthBarPosition);
 		healthText.setOrigin(textDims / 2.f);
 		healthText.setPosition(healthBarPosition + centerText);
 	}
@@ -507,9 +510,18 @@ public:
 		smallFollowArea.setRadius(newRadius);
 	}
 
-	void setLargeFollowerRadius(float newRadius)
-	{
+	void setLargeFollowerRadius(float newRadius) {
 		largeFollowArea.setRadius(newRadius);
+		largeFollowArea.setOrigin(newRadius, newRadius);
+	}
+
+	void setMinLFR(float newRadius) {
+		minLargeFolRad = newRadius;
+		largeFollowArea.setRadius(newRadius);
+	}
+
+	void setMaxLFR(float newRadius) {
+		maxLargeFolRad = newRadius;
 	}
 
 	void setLaserLength(int laserL) {
@@ -578,7 +590,6 @@ public:
 		return playerShape.getHeartBounds();
 	}
 
-
 	sf::FloatRect getSmallFollowAreaBounds()
 	{
 		return smallFollowArea.getGlobalBounds();
@@ -599,6 +610,10 @@ public:
 		return largeFollowArea.getRadius();
 	}
 
+	float getMinLFR() {
+		return minLargeFolRad;
+	}
+
 	int getLaserLength()
 	{
 		return laserLength;
@@ -611,10 +626,11 @@ public:
 
 
 	//METHODS OF CLASS PLAYER MANAGING SCORE
-	int adjScore(int adj)
+	void adjScore(int adj)
 	{
 		score += adj;
 	}
+
 
 
 	//METHODS RELATED TO MOVING PLAYER DIRECTLY
@@ -804,7 +820,7 @@ public:
 	}
 
 
-	//METHODS RELATING TO SHOOTING FOLLOWERS
+	//METHODS RELATING TO FOLLOWERS
 	int shootFollower(sf::FloatRect followerBounds)
 	{
 		for (size_t i = 0; i < activeBullets.size(); i++) {
@@ -836,6 +852,15 @@ public:
 		//else its health is reduced
 		//This should be performed in follower class, player only
 		//needs to know if it shot a follower
+	}
+
+	void growLargeFollowArea(float growRate = 2.f)
+	{	
+		float newRad = largeFollowArea.getRadius() + growRate;
+
+		if (maxLargeFolRad >= newRad)
+			setLargeFollowerRadius(newRad);
+			
 	}
 
 

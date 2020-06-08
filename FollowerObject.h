@@ -57,9 +57,9 @@ public:
 	//setter methods
 	void setSize(float scale)
 	{
-		headRadius = scale * 4.f;
-		legLength = scale * 8.f;
-		legWidth = scale * 1.75f;
+		headRadius = scale * 5.f;
+		legLength = scale * 10.f;
+		legWidth = scale * 2.f;
 
 		head.setRadius(headRadius);
 		head.setOrigin(head.getRadius() , head.getRadius());
@@ -182,8 +182,12 @@ private:
 
 	FollowerShape fShape;
 
-	sf::Vector2f fPosition;
+	int health;
+	int dmgDone;
+	sf::Text healthText;
+	sf::Font arial;
 
+	sf::Vector2f fPosition;
 	bool followingPlayer;
 
 	sf::Vector2f fVelocity;									//speed and direction vector for moving followers
@@ -204,18 +208,21 @@ private:
 	float windowLength;
 	float windowHeight;
 
-	Tower towerObject;
+	float towerRadius;
 
 public:
 
-	Follower(sf::RenderWindow &window, sf::Color fColor = sf::Color::Black, int retrgtRate = 10,
-		float scale = 2.f, bool showBoxes = false)
+	Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor = sf::Color::Black, int startHealth = 1, int retrgtRate = 10,
+		float scale = 2.f, bool showBoxes = true)
 	{
 		id = f_id++;
 
 		//showBoxes = true;
 		fShape = FollowerShape(fColor, scale);
-		setFollowerBox(fShape, showBoxes);
+		initFollowerBox(fShape, showBoxes);
+
+		initHealthText();
+		setHealth(startHealth);
 
 		windowLength = window.getSize().x ;
 		windowHeight = window.getSize().y;
@@ -231,16 +238,14 @@ public:
 		playersOldX = 0;			//initializations critical to move function
 		playersOldY = 0;
 
+		towerRadius = tRadius;
+		randomSpawn();
+
 	}
 
 
-	//SET UP FOLLOWER
-	void setFollowerColor(sf::Color color)
-	{
-		fShape.setColor(color);
-	}
-
-	void setFollowerBox(FollowerShape &shape, bool showBoxes)
+	//INITIALIZE FOLLOWER
+	void initFollowerBox(FollowerShape &shape, bool showBoxes = true)
 	{
 		float length = shape.getRightBounds() - shape.getLeftBounds();
 		float height = shape.getLowerBounds() - shape.getUpperBounds();
@@ -249,7 +254,7 @@ public:
 
 		sf::Color outlineColor = sf::Color::Transparent;
 
-		if (showBoxes){
+		if (showBoxes) {
 			outlineColor = sf::Color::Black;
 		}
 
@@ -261,11 +266,28 @@ public:
 		fBox.setOrigin(length / 2.f, shape.getHeadRadius());
 	}
 
-	void randomSpawn(sf::Vector2f newPos = sf::Vector2f(0, 0))
+
+	void initHealthText() {
+
+		if (!arial.loadFromFile("arial.ttf")) { 	//loads font to use for text drawing
+			std::cout << "Error loading text" << std::endl;
+		}
+		int textSize = 30;
+
+		healthText.setFont(arial);
+		healthText.setCharacterSize(textSize);
+		healthText.setFillColor(sf::Color::Red);
+	
+		float h = healthText.getLocalBounds().height;
+		float l = healthText.getLocalBounds().width;
+		healthText.setOrigin(l / 2.f, h / 2.f);
+
+		std::cout << "Loaded txt settings: " << std::endl;
+	}
+
+	void randomSpawn()
 	{
 		static int spawnerClock = 0;		//clock will rotate zombie's spawnlocale around the map
-
-		const float wLength = windowLength;
 
 		float xLine1 = 0.f;				//zombies will spawn at random locations on these lines and feed into the map
 		float xLine2 = windowLength;
@@ -274,13 +296,11 @@ public:
 
 		static int srand(time(0));
 
-		float tRadius = towerObject.getTowerRadius();
-
-		float randTopBotSpawn = (rand() % ((int)windowHeight - ( 2 * (int)tRadius) ) + (int)tRadius);
+		float randTopBotSpawn = (rand() % ((int)windowHeight - ( 2 * (int)towerRadius) ) + (int)towerRadius);
 		//random spawnpoint between two towers on top and bottom of map
-		float randLeftRightSpawn = (rand() % ((int)windowLength - ( 2 * (int)tRadius) ) + (int)tRadius);
+		float randLeftRightSpawn = (rand() % ((int)windowLength - ( 2 * (int)towerRadius) ) + (int)towerRadius);
 
-
+		sf::Vector2f newPos = sf::Vector2f();
 		if (!followingPlayer)			//if not following player (all cases when follower is newly spawned), spawn point is randomized
 		{
 			switch (spawnerClock % 4)
@@ -302,9 +322,8 @@ public:
 				break;
 			}
 		}
-		setPosition(newPos);
 
-		
+		setPosition(newPos);
 
 		setNewVelocity(sf::Vector2f(windowLength / 2.f, windowHeight / 2.f));			
 		//initializes follower velocity starting from its random spawn to the center of the map
@@ -312,15 +331,30 @@ public:
 		spawnerClock++;			//increments spawnerClock to adjust Spawns
 	}
 
-	void setPosition(sf::Vector2f newPos)
+	
+
+	//SET FOLLOWER ATTRIBUTES
+	void setFollowerColor(sf::Color &color) {
+		fShape.setColor(color);
+	}
+
+	void setPosition(sf::Vector2f &newPos)
 	{
 		fShape.setPosition(newPos);
 		fBox.setPosition(newPos);
 		fPosition = newPos;
+
+		healthText.setPosition(newPos);
+
 	}
 
-	void setVelocity(sf::Vector2f vel) {
+	void setVelocity(sf::Vector2f &vel) {
 		fVelocity = vel;
+	}
+
+	void setHealth(int newHealth) {
+		health = newHealth;
+		healthText.setString(std::to_string(newHealth));
 	}
 
 	//GET FOLLOWER ATTRIBUTES
@@ -356,8 +390,10 @@ public:
 
 		float xVelocity = ((xCoord / mag) * speed * pow(momentum, aRight + aLeft));
 		float yVelocity = ((yCoord / mag) * speed * pow(momentum, aUp + aDown));
+		
+		sf::Vector2f toPass = sf::Vector2f(xVelocity, yVelocity);
 
-		setVelocity(sf::Vector2f(xVelocity, yVelocity));
+		setVelocity(toPass);
 
 		//creates follower velocity vector as function of direction vector and speed
 	}
@@ -402,6 +438,8 @@ public:
 	void moveFollower(sf::Vector2f vel) {
 		fShape.move(vel);			
 		fBox.move(vel);
+
+		healthText.move(vel);
 
 		fPosition = fShape.getPosition();
 	}
@@ -574,7 +612,47 @@ public:
 	{
 		fShape.draw(window);
 		window.draw(fBox);
+		window.draw(healthText);
 	}
+
+	//COPY CONSTRUCTOR
+	Follower(const Follower &f2)
+	{
+		f_id = f2.f_id;
+		int id = f2.id;
+
+		fShape = FollowerShape(f2.fShape);
+		fBox = f2.fBox;
+
+		health = f2.health;
+		dmgDone = f2.dmgDone;
+		arial = f2.arial;
+		healthText = f2.healthText;
+		healthText.setFont(arial);
+		
+	
+		fPosition = f2.fPosition;
+		followingPlayer = f2.followingPlayer;
+
+		fVelocity = f2.fVelocity;
+		momentum = f2.momentum;
+		aUp, aLeft, aDown, aRight = 0;						
+		//enum direction { STILL = 0, UP, LEFT, DOWN, RIGHT };		
+
+		retargetRate = f2.retargetRate;
+		retargetCount = f2.retargetCount;
+
+		playersOldX = f2.playersOldX;
+		playersOldY = f2.playersOldY;
+
+		bounce = f2.bounce;
+		
+		windowLength = f2.windowLength;
+		windowHeight = f2.windowHeight;
+
+		towerRadius = f2.towerRadius;
+	}
+
 };
 
 

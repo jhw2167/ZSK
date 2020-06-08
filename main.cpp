@@ -131,6 +131,13 @@ void movePlayerLogic(sf::RenderWindow &window, std::vector<Player> &players, std
 		/*Second parameter in function call accepts bool type, integer type is passed because any int > 0, (i.e. tower num 1,2,3 or 4)
 		is interpreted as bool TRUE, if checkTowerColliion() fails to
 		find colliding tower, it passes tower at elem 0 which is out of bounds*/
+
+
+		//Grow follow area -- unrelated to movement but a good place to call
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Right) )
+			players.at(i).growLargeFollowArea();
+		else
+			players.at(i).setLargeFollowerRadius(players.at(i).getMinLFR());
 	}
 	
 
@@ -159,7 +166,8 @@ void followerMechanics(sf::RenderWindow &window, sf::Mouse mouseObject,
 	std::vector<Player> &players, std::vector<Follower> &activeFollowers,
 	std::vector<Tower> &towers)
 {
-	spawnFollower(window, activeFollowers);
+	float towerRadius = towers[0].getTowerRadius();
+	spawnFollower(window, activeFollowers, towerRadius);
 	moveFollowers(players, activeFollowers, towers);					
 
 	shootFollowers(players, activeFollowers);
@@ -169,17 +177,16 @@ void followerMechanics(sf::RenderWindow &window, sf::Mouse mouseObject,
 
 
 //SPAWNS FOLLOWERS THEN ADDS TO VECTOR
-void spawnFollower(sf::RenderWindow &window, std::vector<Follower> &activeFollowers)				
+void spawnFollower(sf::RenderWindow &window, std::vector<Follower> &activeFollowers, float &towerRadius)				
 //calls follower object to set followers position and velocity
 {
 	static int temperSpawnRate = 0; temperSpawnRate++;				//moderates spawn rate
-	static int maxFollowers = 20;
+	static int maxFollowers = 1;
 	static int tmperRate = 50;
 
 	if ((temperSpawnRate % tmperRate == 0) && (activeFollowers.size() < maxFollowers))
 	{
-		Follower follower(window);
-		follower.randomSpawn();
+		Follower follower(window, towerRadius);
 		activeFollowers.push_back(follower) ;				//adds new follower to vector of active follower
 		//std::cout << "Spawning fol, total num: " << activeFollowers.size() << std::endl;
 	}
@@ -214,6 +221,8 @@ void shootFollowers(std::vector<Player> &players, std::vector<Follower> &activeF
 		{
 			int dmg = players.at(i).shootFollower( 
 				activeFollowers.at(j).getFollowerGlobalBounds() );
+
+			//activeFollowers.takeDamage(dmg);
 
 			if (dmg > 0) {
 				activeFollowers.erase(activeFollowers.begin() + j);
