@@ -181,7 +181,7 @@ void spawnFollower(sf::RenderWindow &window, std::vector<Follower> &activeFollow
 //calls follower object to set followers position and velocity
 {
 	static int temperSpawnRate = 0; temperSpawnRate++;				//moderates spawn rate
-	static int maxFollowers = 10;
+	static int maxFollowers = 2;
 	static int tmperRate = 50;
 
 	if ((temperSpawnRate % tmperRate == 0) && (activeFollowers.size() < maxFollowers))

@@ -86,6 +86,7 @@ const sf::Vector2f Player::rtVect = sf::Vector2f(1.f, 0.f);
 
 //follower objects
 int Follower::f_id = 0;
+sf::Font Follower::arial;
 
 //TESTS
 

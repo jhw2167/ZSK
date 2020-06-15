@@ -185,7 +185,7 @@ private:
 	int health;
 	int dmgDone;
 	sf::Text healthText;
-	sf::Font arial;
+	static sf::Font arial;
 
 	sf::Vector2f fPosition;
 	bool followingPlayer;
@@ -615,7 +615,9 @@ public:
 		window.draw(healthText);
 	}
 
-	//COPY CONSTRUCTOR
+
+	/*
+	
 	Follower(const Follower &f2)
 	{
 		f_id = f2.f_id;
@@ -626,18 +628,19 @@ public:
 
 		health = f2.health;
 		dmgDone = f2.dmgDone;
-		arial = f2.arial;
+		//arial = f2.arial;
+		//arial.loadFromFile("arial.ttf");
 		healthText = f2.healthText;
 		healthText.setFont(arial);
-		
-	
+
+
 		fPosition = f2.fPosition;
 		followingPlayer = f2.followingPlayer;
 
 		fVelocity = f2.fVelocity;
 		momentum = f2.momentum;
-		aUp, aLeft, aDown, aRight = 0;						
-		//enum direction { STILL = 0, UP, LEFT, DOWN, RIGHT };		
+		aUp, aLeft, aDown, aRight = 0;
+		//enum direction { STILL = 0, UP, LEFT, DOWN, RIGHT };
 
 		retargetRate = f2.retargetRate;
 		retargetCount = f2.retargetCount;
@@ -646,13 +649,19 @@ public:
 		playersOldY = f2.playersOldY;
 
 		bounce = f2.bounce;
-		
+
 		windowLength = f2.windowLength;
 		windowHeight = f2.windowHeight;
 
 		towerRadius = f2.towerRadius;
 	}
 
-};
 
+
+	
+	*/
+	//COPY CONSTRUCTOR
+
+};
+	
 
