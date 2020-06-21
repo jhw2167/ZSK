@@ -244,8 +244,10 @@ public:
 
 
 //BEGIN CLASS PLAYER
+class FollowerShape;
 class Follower;
 class Tower;				//forward declaration of class tower so player has access
+
 
 class Player
 {
@@ -275,6 +277,7 @@ private:
 	sf::Font arial;								//Declares font to use for text drawing
 
 	sf::Text scoreText;
+	static FollowerShape scoreFigure;
 
 	enum direction {STILL, UP, LEFT, DOWN, RIGHT};				//declares enum direction to handle player movement
 	float playerSpeed;
@@ -307,7 +310,7 @@ private:
 public: 
 
 		//CONSTRUCTOR 
-	Player(sf::RenderWindow &window, sf::Vector2f startPos, int pNumber = 1, float scale = 2.f, float startHealth = 300.f, 
+	Player(sf::RenderWindow &window, int pNumber = 1, float scale = 2.f, float startHealth = 300.f, 
 		float startMaxHealth = 300.f, float startShield = 100.f, float startMaxShield = 100.f, float mSpeed = 6.f, int startScore = 0, float smallRadius = 60.f,
 		float maxLargeRadius = 240.f, int laserL = 100.f, int laserW = 1,  bool showBox = false)
 	{
@@ -324,8 +327,10 @@ public:
 		moveVect = sf::Vector2f(STILL, STILL);
 
 		//Initialize player box and position
+		sf::Vector2f startPos = sf::Vector2f(wLength / 2.f, wHeight / 2.f);
 		playerShape = PlayerShape(scale, playerColor, startPos);
 		setPlayerBox(playerShape, showBox);
+
 		setPosition(startPos);
 
 		//initialize player spawn health and shield bars
@@ -417,6 +422,16 @@ public:
 
 		scoreText.setPosition(pos);
 		setScore(0.f);
+
+		if (playerNumber == 1)
+			initScoreFigure(pos);
+
+	}
+
+	void initScoreFigure(sf::Vector2f &textPos) 
+	{
+		sf::Vector2f adj = sf::Vector2f(-10.f, 0);
+		scoreFigure.setPosition(textPos + adj);
 
 	}
 
@@ -887,7 +902,6 @@ public:
 	//DRAWING METHODS OF CLASS PLAYER
 	void drawPlayer(sf::RenderWindow &window)
 	{
-		window.draw(scoreText);
 		window.draw(pBox);
 
 		playerShape.drawPlayer(window);
@@ -918,7 +932,10 @@ public:
 		}
 	}
 
-		
+	void drawScore(sf::RenderWindow &window) {
+		window.draw(scoreText);
+		scoreFigure.draw(window);
+	}
 };
 
 

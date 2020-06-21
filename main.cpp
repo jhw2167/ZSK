@@ -21,8 +21,7 @@ int main(int argc, char *argv[])
 	gameArea.setOrigin(windowLength / 2.f, windowHeight / 2.f);
 
 	int numberOfPlayers = 1;
-	sf::Vector2f startPos = sf::Vector2f(window.getSize().x / 2.f, window.getSize().y / 2.f);
-	Player player1(window, startPos);							//Must declare and initialize drawn objects AFTER window is created
+	Player player1(window);							//Must declare and initialize drawn objects AFTER window is created
 	std::vector<Player> players;
 	players.push_back(player1);
 

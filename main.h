@@ -79,6 +79,8 @@ float Player::areaOutline = 4.f;
 sf::Color Player::pColors[] = {sf::Color::Red, sf::Color::Blue,
 	sf::Color::Green, sf::Color::Yellow};
 
+FollowerShape Player::scoreFigure = FollowerShape(sf::Color::Black, 3.f);
+
 //follower objects
 int Follower::f_id = 0;
 sf::Font Follower::arial;
