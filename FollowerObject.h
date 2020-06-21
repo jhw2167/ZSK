@@ -45,7 +45,7 @@ private:
 
 public:
 
-	FollowerShape(sf::Color color = sf::Color::Black, float scale = 2.f)
+	FollowerShape(sf::Color color = sf::Color::Black, float scale = 2.5f)
 	{
 		//setUp follower Shape and size
 		legAngle = 35;
@@ -167,12 +167,6 @@ public:
 
 
 
-
-
-
-
-
-
 class Follower
 {
 private:
@@ -213,7 +207,7 @@ private:
 public:
 
 	Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor = sf::Color::Black, int startHealth = 1, int retrgtRate = 10,
-		float scale = 2.f, bool showBoxes = true)
+		float scale = 2.5f, bool showBoxes = true)
 	{
 		id = f_id++;
 
@@ -272,17 +266,12 @@ public:
 		if (!arial.loadFromFile("arial.ttf")) { 	//loads font to use for text drawing
 			std::cout << "Error loading text" << std::endl;
 		}
-		int textSize = 30;
+		int textSize = 28;
 
 		healthText.setFont(arial);
 		healthText.setCharacterSize(textSize);
-		healthText.setFillColor(sf::Color::Red);
-	
-		float h = healthText.getLocalBounds().height;
-		float l = healthText.getLocalBounds().width;
-		healthText.setOrigin(l / 2.f, h / 2.f);
+		healthText.setFillColor(sf::Color::White);
 
-		std::cout << "Loaded txt settings: " << std::endl;
 	}
 
 	void randomSpawn()
@@ -325,7 +314,7 @@ public:
 
 		setPosition(newPos);
 
-		setNewVelocity(sf::Vector2f(windowLength / 2.f, windowHeight / 2.f));			
+		setNewVelocity( sf::Vector2f(windowLength / 2.f, windowHeight / 2.f) );			
 		//initializes follower velocity starting from its random spawn to the center of the map
 	
 		spawnerClock++;			//increments spawnerClock to adjust Spawns
@@ -340,10 +329,10 @@ public:
 
 	void setPosition(sf::Vector2f &newPos)
 	{
-		fShape.setPosition(newPos);
-		fBox.setPosition(newPos);
 		fPosition = newPos;
 
+		fShape.setPosition(newPos);
+		fBox.setPosition(newPos);
 		healthText.setPosition(newPos);
 
 	}
@@ -355,6 +344,11 @@ public:
 	void setHealth(int newHealth) {
 		health = newHealth;
 		healthText.setString(std::to_string(newHealth));
+
+		float h = healthText.getLocalBounds().height;
+		float l = healthText.getLocalBounds().width;
+
+		healthText.setOrigin(l , h / 1.2f);
 	}
 
 	//GET FOLLOWER ATTRIBUTES
@@ -379,7 +373,7 @@ public:
 
 
 	//SET UP AND MANAGE FOLLOWER MOVEMENT
-	void setNewVelocity(sf::Vector2f destinationVector, float speed = 3.f)		//moves follower by adding unit vector to move function
+	void setNewVelocity(sf::Vector2f const &destinationVector, float speed = 3.f)		//moves follower by adding unit vector to move function
 	{
 
 		float yCoord = destinationVector.y - fShape.getPosition().y;				//destination vector is either player position or random movement
@@ -435,7 +429,7 @@ public:
 		}
 	}
 
-	void moveFollower(sf::Vector2f vel) {
+	void moveFollower(sf::Vector2f const &vel) {
 		fShape.move(vel);			
 		fBox.move(vel);
 
@@ -503,7 +497,7 @@ public:
 		return followingPlayer;
 	}
 
-	float distanceFrom(sf::Vector2f objectPos)					//calculates vector distance from player or tower object
+	float distanceFrom(sf::Vector2f const &objectPos)					//calculates vector distance from player or tower object
 	{
 		float xDist = abs(objectPos.x - fShape.getPosition().x);			//calculates x and y distances away follower is from player
 		float yDist = abs(objectPos.y - fShape.getPosition().y);
@@ -513,7 +507,7 @@ public:
 
 	
 	//OUT OF BOUNDS AND FOLLOWER COLLISION BEHAVIOR
-	void outOfBounds(sf::Vector2f pos, bool col = false)
+	void outOfBounds(sf::Vector2f &pos, bool col = false)
 	{
 		float buffer = 0.f;
 		//need an off screen boundry for the velocity reversal or follower gets
@@ -547,9 +541,9 @@ public:
 	
 	}
 
-	bool towerCollision(Tower tower)				//if there is a tower collision, redirect follower's velocity
+	bool towerCollision(Tower &tower)				//if there is a tower collision, redirect follower's velocity
 	{
-		bool towerCollision = distanceFrom(tower.getPosition()) <= tower.getTowerRadius();
+		bool towerCollision = distanceFrom( tower.getPosition() ) <= tower.getTowerRadius();
 
 		if (towerCollision) {
 			fVelocity = -fVelocity;

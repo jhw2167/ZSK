@@ -274,16 +274,13 @@ private:
 	sf::Text healthText;
 	sf::Font arial;								//Declares font to use for text drawing
 
+	sf::Text scoreText;
+
 	enum direction {STILL, UP, LEFT, DOWN, RIGHT};				//declares enum direction to handle player movement
 	float playerSpeed;
 	direction playerDirection;
 	sf::Vector2f playerPosition;
 	sf::Vector2f moveVect;
-
-	const static sf::Vector2f upVect;	//direction vectors, declared in main.h
-	const static sf::Vector2f lfVect;
-	const static sf::Vector2f dnVect;
-	const static sf::Vector2f rtVect;
 	
 	PlayerShape playerShape;
 	sf::RectangleShape pBox;
@@ -314,6 +311,9 @@ public:
 		float startMaxHealth = 300.f, float startShield = 100.f, float startMaxShield = 100.f, float mSpeed = 6.f, int startScore = 0, float smallRadius = 60.f,
 		float maxLargeRadius = 240.f, int laserL = 100.f, int laserW = 1,  bool showBox = false)
 	{
+		//Init Window Dims
+		setWindowDims(window);
+
 		//Initialize basic player components
 		playerNumber = pNumber;
 		playerColor = pColors[pNumber - 1];
@@ -345,7 +345,8 @@ public:
 		setLaserWidth(laserW);
 		//laser color = playercolor
 
-		setWindowDims(window);
+		initScoreText();
+
 	}
 
 
@@ -402,6 +403,21 @@ public:
 		healthText.setOutlineColor(sf::Color::Black);
 		healthText.setOutlineThickness(thickness);
 		centerHealthText();
+	}
+
+	void initScoreText()
+	{
+		int textSize = 40;
+
+		scoreText.setFont(arial);
+		scoreText.setCharacterSize(textSize);
+		scoreText.setFillColor(sf::Color::Black);
+
+		sf::Vector2f pos = sf::Vector2f( wLength / 1.52f, 5.f );
+
+		scoreText.setPosition(pos);
+		setScore(0.f);
+
 	}
 
 	void initSmallFollowerRadius(float newRadius)
@@ -469,7 +485,11 @@ public:
 	}
 
 	void setScore(int newScore) {
+
 		score = newScore;
+
+		std::string newText = "x" + std::to_string(score);
+		scoreText.setString(newText);
 	}
 
 	void setplayerSpeed(float newSpeed) {
@@ -626,15 +646,12 @@ public:
 
 
 	//METHODS OF CLASS PLAYER MANAGING SCORE
-	void adjScore(int adj)
-	{
-		score += adj;
+	void adjScore(int adj) {
+		setScore(score + adj);
 	}
 
-
-
 	//METHODS RELATED TO MOVING PLAYER DIRECTLY
-	void movePlayer(sf::Vector2f mVect)								
+	void movePlayer(sf::Vector2f &mVect)								
 	{
 		playerShape.movePlayershape(mVect);		//function in playershape has default argument move set to 5
 		pBox.move(mVect);
@@ -644,26 +661,27 @@ public:
 		smallFollowArea.setPosition(playerShape.getPosition());
 	}
 
-	void moveLogic(int dir, int towerCollision, sf::Vector2f towerPos,
+	void moveLogic(int dir, int towerCollision, sf::Vector2f const &towerPos,
 		float towerRadius)
 	{
 		moveVect = sf::Vector2f(STILL, STILL);			//switch statement gives moveVect direction
 		bool movingIntoTower = false;
+
 		switch (dir)
 		{
 		case UP:
-			moveVect += upVect;
+			moveVect += sf::Vector2f(0.f, -1.f);
 			break;
 
 		case LEFT:
-			moveVect += lfVect;
+			moveVect += sf::Vector2f(-1.f, 0.f);
 			break;
 		case DOWN:
-			moveVect += dnVect;
+			moveVect += sf::Vector2f(0.f, 1.f);
 			break;
 
 		case RIGHT:
-			moveVect += rtVect;
+			moveVect += sf::Vector2f(1.f, 0.f);
 			break;
 		}
 
@@ -677,7 +695,7 @@ public:
 	}
 
 
-	float distanceFrom(sf::Vector2f object1Pos, sf::Vector2f object2Pos)											//calculates vector distance from player or tower object
+	float distanceFrom(sf::Vector2f &object1Pos, sf::Vector2f const &object2Pos)											//calculates vector distance from player or tower object
 	{
 		float xDist = abs(object1Pos.x - object2Pos.x);			//calculates x and y distances away follower is from player
 		float yDist = abs(object1Pos.y - object2Pos.y);
@@ -707,7 +725,7 @@ public:
 
 
 	//METHODS RELATING TO PLAYERS INERACTION WITH TOWERS
-	sf::Vector2f towerCollisions(int dir, int towerNum, sf::Vector2f towerPos,
+	sf::Vector2f towerCollisions(int dir, int towerNum, sf::Vector2f const &towerPos,
 		float towerRadius) {
 
 		float pushX = 0.f;
@@ -742,7 +760,8 @@ public:
 		}
 
 			sf::Vector2f pBoxAdj = sf::Vector2f(pushX, pushY);
-			bool movingIntoTower = distanceFrom(playerPosition + moveVect + pBoxAdj, towerPos) <= towerRadius;
+			sf::Vector2f destination = sf::Vector2f(playerPosition + moveVect + pBoxAdj);
+			bool movingIntoTower = distanceFrom(destination, towerPos) <= towerRadius;
 
 			sf::Vector2f safeSpeed = moveVect;
 			if (movingIntoTower) {
@@ -778,7 +797,7 @@ public:
 
 
 	//METHODS RELATING TO MANAGINE PLAYERS BULLETS
-	void shoot(sf::Vector2i cursorPos)
+	void shoot(sf::Vector2i const &cursorPos)
 	{
 		static int temperShooting = 0;					//tempershooting will prevent players from shooting excessively
 
@@ -795,7 +814,7 @@ public:
 		temperShooting++;			//variable is iterated continuosly to allow multiple shots
 	}
 
-	void addBullet(sf::Vector2i cursorPos) {
+	void addBullet(sf::Vector2i const &cursorPos) {
 		activeBullets.push_back(Bullet(getGunPosition(), cursorPos));
 	}
 
@@ -821,13 +840,15 @@ public:
 
 
 	//METHODS RELATING TO FOLLOWERS
-	int shootFollower(sf::FloatRect followerBounds)
+	int shootFollower(sf::FloatRect const &followerBounds)
 	{
 		for (size_t i = 0; i < activeBullets.size(); i++) {
 				if (activeBullets.at(i).getBulletGlobalBounds().intersects(			//checks to see if bullet intersects each follower
 					followerBounds)) {
 
 					int dmg = dmgFollower(i);
+					adjScore(dmg);
+
 					return dmg;
 				}
 		}
@@ -860,15 +881,16 @@ public:
 
 		if (maxLargeFolRad >= newRad)
 			setLargeFollowerRadius(newRad);
-			
 	}
 
 
 	//DRAWING METHODS OF CLASS PLAYER
 	void drawPlayer(sf::RenderWindow &window)
 	{
-		playerShape.drawPlayer(window);
+		window.draw(scoreText);
 		window.draw(pBox);
+
+		playerShape.drawPlayer(window);
 
 		drawHealthBar(window);
 		drawBullets(window);

@@ -79,11 +79,6 @@ float Player::areaOutline = 4.f;
 sf::Color Player::pColors[] = {sf::Color::Red, sf::Color::Blue,
 	sf::Color::Green, sf::Color::Yellow};
 
-const sf::Vector2f Player::upVect = sf::Vector2f(0.f, -1.f);
-const sf::Vector2f Player::lfVect = sf::Vector2f(-1.f, 0.f);
-const sf::Vector2f Player::dnVect = sf::Vector2f(0.f, 1.f);
-const sf::Vector2f Player::rtVect = sf::Vector2f(1.f, 0.f);
-
 //follower objects
 int Follower::f_id = 0;
 sf::Font Follower::arial;
