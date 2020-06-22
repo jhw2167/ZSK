@@ -22,12 +22,6 @@
 #include <random>
 #include <cstdlib>
 
-//Project includes
-#include "TowerObject.h"
-
-
-#ifndef FollowerShape
-
 //Start with FollowerShape class
 class FollowerShape
 {
@@ -171,5 +165,4 @@ public:
 };
 
 
-#endif // !FollowerShape
 

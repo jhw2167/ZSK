@@ -17,7 +17,9 @@
 #include <vector>
 #include <cstdlib>
 
+//project includes
 #include "BulletObject.h"
+#include "FollowerShape.h"
 
 
 
@@ -63,7 +65,7 @@ private:
 
 public:
 
-	PlayerShape(float scale = 10.f, sf::Color pColor = sf::Color::Red,
+	PlayerShape(float scale = 2.5f, sf::Color pColor = sf::Color::Red,
 		sf::Vector2f startPos = sf::Vector2f(100.f, 100.f) )										
 	{	
 		setPlayerShape(scale);
@@ -244,7 +246,6 @@ public:
 
 
 //BEGIN CLASS PLAYER
-class FollowerShape;
 class Follower;
 class Tower;				//forward declaration of class tower so player has access
 
@@ -262,6 +263,7 @@ private:
 	
 	float health;
 	float maxHealth;
+	int lives;
 
 	float shield;
 	float maxShield;
@@ -275,6 +277,9 @@ private:
 
 	sf::Text healthText;
 	sf::Font arial;								//Declares font to use for text drawing
+
+	sf::Text lifeText;
+	static PlayerShape lifeFigure;
 
 	sf::Text scoreText;
 	static FollowerShape scoreFigure;
@@ -310,7 +315,7 @@ private:
 public: 
 
 		//CONSTRUCTOR 
-	Player(sf::RenderWindow &window, int pNumber = 1, float scale = 2.f, float startHealth = 300.f, 
+	Player(sf::RenderWindow &window, int pNumber = 1, int startLives = 3, float scale = 2.5f, float startHealth = 300.f, 
 		float startMaxHealth = 300.f, float startShield = 100.f, float startMaxShield = 100.f, float mSpeed = 6.f, int startScore = 0, float smallRadius = 60.f,
 		float maxLargeRadius = 240.f, int laserL = 100.f, int laserW = 1,  bool showBox = false)
 	{
@@ -322,6 +327,7 @@ public:
 		playerColor = pColors[pNumber - 1];
 		score = startScore;
 		playerSpeed = mSpeed;
+		initLives(startLives);
 
 		playerDirection = STILL;
 		moveVect = sf::Vector2f(STILL, STILL);
@@ -350,7 +356,7 @@ public:
 		setLaserWidth(laserW);
 		//laser color = playercolor
 
-		initScoreText();
+		initScore();
 
 	}
 
@@ -359,6 +365,7 @@ public:
 	void initHealthBar(sf::RenderWindow &window, float sHealth, float sMaxHealth)
 	{
 		maxHealth = sMaxHealth;
+		//float stdLength = 300.f;
 
 		float healthBarX = window.getSize().x / 2.f;
 		float healthBarY = window.getSize().y / 40.f;
@@ -410,28 +417,45 @@ public:
 		centerHealthText();
 	}
 
-	void initScoreText()
+	void initScore()
 	{
-		int textSize = 40;
+		int textSize = 45;
 
 		scoreText.setFont(arial);
 		scoreText.setCharacterSize(textSize);
 		scoreText.setFillColor(sf::Color::Black);
 
-		sf::Vector2f pos = sf::Vector2f( wLength / 1.52f, 5.f );
+		sf::Vector2f pos = sf::Vector2f( wLength / 1.54f, 0.f );
 
 		scoreText.setPosition(pos);
 		setScore(0.f);
 
-		if (playerNumber == 1)
-			initScoreFigure(pos);
 
+		if (playerNumber == 1){
+			sf::Vector2f adj = sf::Vector2f(-25.f, 25.f);
+			scoreFigure.setPosition(pos + adj);
+
+		}
 	}
 
-	void initScoreFigure(sf::Vector2f &textPos) 
+	void initLives(int newLives)
 	{
-		sf::Vector2f adj = sf::Vector2f(-10.f, 0);
-		scoreFigure.setPosition(textPos + adj);
+		int textSize = 45;
+
+		lifeText.setFont(arial);
+		lifeText.setCharacterSize(textSize);
+		lifeText.setFillColor(sf::Color::Black);
+
+		sf::Vector2f pos = sf::Vector2f(wLength / 1.35f, 0.f);
+
+		lifeText.setPosition(pos);
+		setLives(newLives);
+
+		if (playerNumber == 1) {
+			sf::Vector2f adj = sf::Vector2f(-30.f, 22.f);
+			lifeFigure.setPosition(pos + adj);
+		}
+
 
 	}
 
@@ -459,6 +483,13 @@ public:
 
 
 	//ALL SET METHODS OF CLASS PLAYER
+	void setLives(int newLives) {
+		lives = newLives;
+
+		std::string newText = "x" + std::to_string(lives);
+		lifeText.setString(newText);
+	}
+
 	void setHealth(float newHealth)
 	{
 		health = newHealth;
@@ -499,8 +530,8 @@ public:
 
 	}
 
-	void setScore(int newScore) {
-
+	void setScore(int newScore) 
+	{
 		score = newScore;
 
 		std::string newText = "x" + std::to_string(score);
@@ -903,9 +934,9 @@ public:
 	void drawPlayer(sf::RenderWindow &window)
 	{
 		window.draw(pBox);
-
 		playerShape.drawPlayer(window);
 
+		drawScore(window);
 		drawHealthBar(window);
 		drawBullets(window);
 	}
@@ -935,6 +966,9 @@ public:
 	void drawScore(sf::RenderWindow &window) {
 		window.draw(scoreText);
 		scoreFigure.draw(window);
+
+		window.draw(lifeText);
+		lifeFigure.drawPlayer(window);
 	}
 };
 

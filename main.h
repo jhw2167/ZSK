@@ -80,6 +80,7 @@ sf::Color Player::pColors[] = {sf::Color::Red, sf::Color::Blue,
 	sf::Color::Green, sf::Color::Yellow};
 
 FollowerShape Player::scoreFigure = FollowerShape(sf::Color::Black, 3.f);
+PlayerShape Player::lifeFigure = PlayerShape(2.5f);
 
 //follower objects
 int Follower::f_id = 0;

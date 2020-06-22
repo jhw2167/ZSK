@@ -10,7 +10,6 @@ int main(int argc, char *argv[])
 
 	//vectorTests();
 
-
 	float windowLength = 1500.f;
 	float windowHeight = 1200.f;
 
@@ -25,7 +24,6 @@ int main(int argc, char *argv[])
 	std::vector<Player> players;
 	players.push_back(player1);
 
-	//std::vector<Bullet> activeBullets;				//key vectors for managing bullets and followers
 	std::vector<Follower> activeFollowers;
 	std::vector<Tower> towers;
 	int numberOfTowers = 4;
@@ -33,6 +31,8 @@ int main(int argc, char *argv[])
 
 	initializeTowers(window, towers, numberOfTowers);		//sets up towers for play
 	
+	bool startMenu = true;
+	bool gamePaused = false;
 
 	while (window.isOpen())
 	{
@@ -49,48 +49,96 @@ int main(int argc, char *argv[])
 			}
 
 		}
-
-		//MANAGE PLAYER
-
-		//MOVE PLAYER
-		movePlayerLogic(window, players, towers);
-		//Calls move player function if keyboard is activated
-
-		//SHOOTING
-		shootingMechanics(window, mouseObject, players);
-		//Directs shooting mechanics
-
-
-		//MANAGE FOLLOWERS
-		followerMechanics(window, mouseObject, players, activeFollowers,
-			 towers);										//Directs follower mechanics
-
-
-
-		//HANDLING THE WINDOW
 		window.clear(sf::Color::White);
-		//clears and draws elements in window
+		//clears window elements every loop
+
+		//process startMenu
+		if (startMenu)
+		{
+			startMenu = runStartMenu();
+
+		}
+
+		//process pause game screen
+		else if (gamePaused)
+		{
+
+		}
+
+		//else play the game!
+		else
+		{
+			/*MANAGE PLAYER*/
+
+			//MOVE PLAYER
+			movePlayerLogic(window, players, towers);
+
+			//SHOOTING
+			shootingMechanics(window, mouseObject, players);
 
 
-		//DRAWING
+			/*MANAGE FOLLOWER*/
+			followerMechanics(window, mouseObject, players, activeFollowers,
+				towers);									
 
-		players.at(0).drawPlayer(window);			//drawing player related elements
-		drawFollowers(window, activeFollowers);
-		//drawBullets(window, activeBullets);
-		drawTowers(window, towers);
+		   /*MANAGE WINDOW*/
 
-		//DISPLAY
+			//DRAWING
+			players.at(0).drawPlayer(window);			//drawing player related elements
+			drawFollowers(window, activeFollowers);
+			drawTowers(window, towers);			
+		}
 
+		//window display regardless
 		window.display();
 
 	}
 
-	getchar();
+	//getchar();
 
 	return 0;
 }
 //END MAIN METHOD
 
+
+bool runStartMenu(sf::RenderWindow &window)
+{
+	float wLength = window.getSize().x;
+	float wHeight = window.getSize().y;
+
+	static bool init = false;
+
+	if (!init)
+	{
+		static sf::Font arcade;
+		static sf::Text title1;
+		static sf::Text title2;
+
+		static sf::Text subtitle1;
+
+		static sf::Text startText;
+		static sf::Text quitText;
+
+		static sf::RectangleShape startRect;
+		static sf::RectangleShape quitRect;
+		static sf::RectangleShape settingsRect;
+	}
+
+	float titleX = wLength / 2.f;
+	float titleY = 40.f;
+
+	sf::Vector2f titlePos = sf::Vector2f(titleX, titleY);
+	healthBarOrigin = sf::Vector2f(sMaxHealth / 2.f, healthBarHeight / 2.f);
+	sf::Vector2f startHealthBarSize = sf::Vector2f(sMaxHealth, healthBarHeight);
+
+	healthBarRed.setSize(startHealthBarSize);			//initiates red (background) health bar
+	healthBarRed.setOrigin(healthBarOrigin);
+	healthBarRed.setPosition(healthBarPosition);
+	healthBarRed.setFillColor(sf::Color::Red);
+	healthBarRed.setOutlineColor(sf::Color::Black);
+	healthBarRed.setOutlineThickness(4.f);
+
+}
 
 
 void movePlayerLogic(sf::RenderWindow &window, std::vector<Player> &players, std::vector<Tower> &towers)

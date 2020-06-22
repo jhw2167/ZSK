@@ -126,6 +126,7 @@
     <ClInclude Include="BulletObject.h" />
     <ClInclude Include="coutTests.h" />
     <ClInclude Include="FollowerObject.h" />
+    <ClInclude Include="FollowerShape.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="PlayerObject.h" />
     <ClInclude Include="TowerObject.h" />
