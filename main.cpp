@@ -9,15 +9,7 @@ int main(int argc, char *argv[])
 	//coutTests();				//calls cout tests for creating cout variable statements
 	//vectorTests();
 
-	float windowLength = 1500.f;
-	float windowHeight = 1200.f;
-
-	sf::RenderWindow window(sf::VideoMode(static_cast<int>(windowLength), static_cast<int>(windowHeight)),
-		"Zombie Slayer Killer"); 
-	window.setFramerateLimit(60);
-	sf::RectangleShape gameArea = sf::RectangleShape(sf::Vector2f(windowLength, windowHeight));
-	gameArea.setFillColor(sf::Color::Transparent);
-	gameArea.setOrigin(windowLength / 2.f, windowHeight / 2.f);
+	Game game;
 
 	int numberOfPlayers = 1;
 	Player player1(window);							//Must declare and initialize drawn objects AFTER window is created

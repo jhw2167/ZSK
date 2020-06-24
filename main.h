@@ -1,39 +1,9 @@
-/*Zombie Slayer Killer (ZSK) early alpha code, main.h file
-ZSK is a third person, 2D simplistic shooter/follower arcade game
-with a bit of a twist adding the tower dynamic to assist zombie slaying*/
-
-// Visual Studious Visual C++ 2017 version 15.9.5
-// SMFL for Visual C++ 15, version 2.5.1 for 32 bit OS
-//Last updated *5/30/2020*
+//main.h file
 
 #pragma once
 
 //Main file brings all objects together to create the game
-
-//SFML includes
-#include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/OpenGL.hpp>
-#include <SFML/Audio.hpp>
-#include <SFML/Network.hpp>
-#include <SFML/System.hpp>
-
-//Std lib includes
-#include <iostream>
-#include <cmath>
-#include <math.h>
-#include <fstream>
-#include <iomanip>
-#include <string>
-#include <array>
-#include <algorithm>
-#include <ctime>
-#include <vector>
-#include <cstdlib>
-
-//Project includes
-#include "FollowerObject.h"
-#include "coutTests.h"
+#include "Game.h"
 
 //FUNCTONS HANDLING PLAYER
 void movePlayerLogic(sf::RenderWindow &window, std::vector<Player> &players, std::vector<Tower> &towers);
