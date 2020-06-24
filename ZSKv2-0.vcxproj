@@ -120,6 +120,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -127,6 +128,7 @@
     <ClInclude Include="coutTests.h" />
     <ClInclude Include="FollowerObject.h" />
     <ClInclude Include="FollowerShape.h" />
+    <ClInclude Include="Game.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="PlayerObject.h" />
     <ClInclude Include="TowerObject.h" />

@@ -7,13 +7,13 @@
 int main(int argc, char *argv[])
 {
 	//coutTests();				//calls cout tests for creating cout variable statements
-
 	//vectorTests();
 
 	float windowLength = 1500.f;
 	float windowHeight = 1200.f;
 
-	sf::RenderWindow window(sf::VideoMode(static_cast<int>(windowLength), static_cast<int>(windowHeight)), "Zombie Slayer Killer");
+	sf::RenderWindow window(sf::VideoMode(static_cast<int>(windowLength), static_cast<int>(windowHeight)),
+		"Zombie Slayer Killer"); 
 	window.setFramerateLimit(60);
 	sf::RectangleShape gameArea = sf::RectangleShape(sf::Vector2f(windowLength, windowHeight));
 	gameArea.setFillColor(sf::Color::Transparent);
@@ -31,68 +31,73 @@ int main(int argc, char *argv[])
 
 	initializeTowers(window, towers, numberOfTowers);		//sets up towers for play
 	
-	bool startMenu = true;
+	bool startMenu = false;
 	bool gamePaused = false;
+
+	sf::Event event;
+	//clock_t myClock = clock();
 
 	while (window.isOpen())
 	{
-		//clock_t myClock = clock();
-
-		sf::Event event;
 		sf::Mouse mouseObject;
 
 		while (window.pollEvent(event))
 		{
-			//std::cout << "Event is: " << event.KeyPressed << std::endl;
-			if (event.type == sf::Event::Closed){
+			switch (event.type)
+			{
+			case sf::Event::Closed:
 				window.close();
+				break;
+			
+			case sf::Event::KeyPressed:
+			
+				if (event.key.code == sf::Keyboard::Escape) {
+					window.close();
+				}
+				break;
 			}
-
+			
 		}
-		window.clear(sf::Color::White);
-		//clears window elements every loop
+		//End window.pollEvent
+
+
+		//*******Update Game Here***********
 
 		//process startMenu
-		if (startMenu)
-		{
-			startMenu = runStartMenu();
-
+		if (startMenu){
+			//startMenu = runStartMenu(window);
 		}
 
 		//process pause game screen
-		else if (gamePaused)
-		{
+		else if (gamePaused) {
 
 		}
 
 		//else play the game!
 		else
 		{
-			/*MANAGE PLAYER*/
-
-			//MOVE PLAYER
 			movePlayerLogic(window, players, towers);
 
-			//SHOOTING
 			shootingMechanics(window, mouseObject, players);
 
-
-			/*MANAGE FOLLOWER*/
 			followerMechanics(window, mouseObject, players, activeFollowers,
-				towers);									
-
-		   /*MANAGE WINDOW*/
-
-			//DRAWING
-			players.at(0).drawPlayer(window);			//drawing player related elements
-			drawFollowers(window, activeFollowers);
-			drawTowers(window, towers);			
+				towers);
 		}
+		//EndIf
+
+		//Render Game Here
+		window.clear(sf::Color::White);
+
+		 //DRAWING
+		players.at(0).drawPlayer(window);			
+		drawFollowers(window, activeFollowers);
+		drawTowers(window, towers);
 
 		//window display regardless
 		window.display();
 
 	}
+	//End While(window.open())
 
 	//getchar();
 
@@ -100,45 +105,50 @@ int main(int argc, char *argv[])
 }
 //END MAIN METHOD
 
+//Run StartMenu
+/******* TEMPORARILY BLOCKED *******
 
 bool runStartMenu(sf::RenderWindow &window)
 {
-	float wLength = window.getSize().x;
-	float wHeight = window.getSize().y;
+	static float wLength = window.getSize().x;
+	static float wHeight = window.getSize().y;
 
 	static bool init = false;
 
+	static sf::Font arcade;
+	static sf::Text title1;
+	static sf::Text title2;
+
+	static sf::Text subtitle1;
+
+	static sf::Text startText;
+	static sf::Text quitText;
+
+	static sf::RectangleShape startRect;
+	static sf::RectangleShape quitRect;
+	static sf::RectangleShape settingsRect;
+
+	init = (wLength == window.getSize().x) && (wHeight == window.getSize().y);
+
 	if (!init)
 	{
-		static sf::Font arcade;
-		static sf::Text title1;
-		static sf::Text title2;
+		float titleX = wLength / 2.f;
+		float titleY = 40.f;
 
-		static sf::Text subtitle1;
+		sf::Vector2f titlePos = sf::Vector2f(titleX, titleY);
+		sf::Vector2f rectOrigin = sf::Vector2f(0, 0);
+		sf::Vector2f rectSize = sf::Vector2f(wLength / 2.f, 50.f);
 
-		static sf::Text startText;
-		static sf::Text quitText;
+		startRect.setOrigin(rectOrigin);
 
-		static sf::RectangleShape startRect;
-		static sf::RectangleShape quitRect;
-		static sf::RectangleShape settingsRect;
 	}
 
-	float titleX = wLength / 2.f;
-	float titleY = 40.f;
 
-	sf::Vector2f titlePos = sf::Vector2f(titleX, titleY);
-	healthBarOrigin = sf::Vector2f(sMaxHealth / 2.f, healthBarHeight / 2.f);
-	sf::Vector2f startHealthBarSize = sf::Vector2f(sMaxHealth, healthBarHeight);
-
-	healthBarRed.setSize(startHealthBarSize);			//initiates red (background) health bar
-	healthBarRed.setOrigin(healthBarOrigin);
-	healthBarRed.setPosition(healthBarPosition);
-	healthBarRed.setFillColor(sf::Color::Red);
-	healthBarRed.setOutlineColor(sf::Color::Black);
-	healthBarRed.setOutlineThickness(4.f);
 
 }
+
+*/
+
 
 
 void movePlayerLogic(sf::RenderWindow &window, std::vector<Player> &players, std::vector<Tower> &towers)

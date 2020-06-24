@@ -14,6 +14,9 @@ with a bit of a twist adding the tower dynamic to assist zombie slaying*/
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 #include <SFML/OpenGL.hpp>
+#include <SFML/Audio.hpp>
+#include <SFML/Network.hpp>
+#include <SFML/System.hpp>
 
 //Std lib includes
 #include <iostream>
@@ -70,6 +73,11 @@ int checkTowerCollision(std::vector<Player> &players, std::vector<Tower> &towers
 
 //DRAWS TOWERS ON MAP
 void drawTowers(sf::RenderWindow &window, std::vector<Tower> &towers);
+
+
+//Define Global STRUCT datatype -- StartMenu
+
+
 
 //INITIALIZE STATIC MEMBERS OF OBJECTS
 
