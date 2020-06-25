@@ -1,5 +1,5 @@
 //manages Follower object that spawned randomly
-
+#pragma once
 
 //Project includes
 #include "FollowerShape.h"

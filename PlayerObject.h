@@ -1,4 +1,4 @@
-
+#pragma once
 //header file to construct and design the player object for the game
 
 #include <SFML/Graphics.hpp>

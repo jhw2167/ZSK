@@ -1,5 +1,4 @@
 //main.h file
-
 #pragma once
 
 //Main file brings all objects together to create the game
@@ -7,7 +6,6 @@
 
 //FUNCTONS HANDLING PLAYER
 void movePlayerLogic(sf::RenderWindow &window, std::vector<Player> &players, std::vector<Tower> &towers);
-
 
 //ALL FUNCTIONS HANDLING BULLETS
 void shootingMechanics(sf::RenderWindow &window, sf::Mouse &mouseObject,

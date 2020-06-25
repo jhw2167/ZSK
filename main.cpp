@@ -6,96 +6,28 @@
 
 int main(int argc, char *argv[])
 {
-	//coutTests();				//calls cout tests for creating cout variable statements
+	//coutTests();				
+	//calls cout tests for creating cout variable statements
+
 	//vectorTests();
 
 	Game game;
 
-	int numberOfPlayers = 1;
-	Player player1(window);							//Must declare and initialize drawn objects AFTER window is created
-	std::vector<Player> players;
-	players.push_back(player1);
-
-	std::vector<Follower> activeFollowers;
-	std::vector<Tower> towers;
-	int numberOfTowers = 4;
-
-
-	initializeTowers(window, towers, numberOfTowers);		//sets up towers for play
-	
-	bool startMenu = false;
-	bool gamePaused = false;
-
-	sf::Event event;
-	//clock_t myClock = clock();
-
-	while (window.isOpen())
+	while (game.windowIsOpen())
 	{
-		sf::Mouse mouseObject;
+		//Update Game
+		game.update();
 
-		while (window.pollEvent(event))
-		{
-			switch (event.type)
-			{
-			case sf::Event::Closed:
-				window.close();
-				break;
-			
-			case sf::Event::KeyPressed:
-			
-				if (event.key.code == sf::Keyboard::Escape) {
-					window.close();
-				}
-				break;
-			}
-			
-		}
-		//End window.pollEvent
-
-
-		//*******Update Game Here***********
-
-		//process startMenu
-		if (startMenu){
-			//startMenu = runStartMenu(window);
-		}
-
-		//process pause game screen
-		else if (gamePaused) {
-
-		}
-
-		//else play the game!
-		else
-		{
-			movePlayerLogic(window, players, towers);
-
-			shootingMechanics(window, mouseObject, players);
-
-			followerMechanics(window, mouseObject, players, activeFollowers,
-				towers);
-		}
-		//EndIf
-
-		//Render Game Here
-		window.clear(sf::Color::White);
-
-		 //DRAWING
-		players.at(0).drawPlayer(window);			
-		drawFollowers(window, activeFollowers);
-		drawTowers(window, towers);
-
-		//window display regardless
-		window.display();
-
+		//Render Game
+		game.render();
 	}
-	//End While(window.open())
 
 	//getchar();
 
 	return 0;
 }
 //END MAIN METHOD
+
 
 //Run StartMenu
 /******* TEMPORARILY BLOCKED *******
@@ -146,8 +78,8 @@ bool runStartMenu(sf::RenderWindow &window)
 void movePlayerLogic(sf::RenderWindow &window, std::vector<Player> &players, std::vector<Tower> &towers)
 {
 	int towerNum = checkTowerCollision(players, towers);		//towerNum is initialized to element number  of tower player is colliding with
-	enum dir{ UP = 1, LEFT, DOWN, RIGHT };								
-	
+	enum dir { UP = 1, LEFT, DOWN, RIGHT };
+
 	for (size_t i = 0; i < players.size(); i++)
 	{
 		//moves player up if not at upwardbounds
@@ -183,12 +115,12 @@ void movePlayerLogic(sf::RenderWindow &window, std::vector<Player> &players, std
 
 
 		//Grow follow area -- unrelated to movement but a good place to call
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Right) )
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
 			players.at(i).growLargeFollowArea();
 		else
 			players.at(i).setLargeFollowerRadius(players.at(i).getMinLFR());
 	}
-	
+
 
 }
 //END PLAYER MOVEMENT LOGIC
@@ -229,16 +161,6 @@ void followerMechanics(sf::RenderWindow &window, sf::Mouse mouseObject,
 void spawnFollower(sf::RenderWindow &window, std::vector<Follower> &activeFollowers, float &towerRadius)				
 //calls follower object to set followers position and velocity
 {
-	static int temperSpawnRate = 0; temperSpawnRate++;				//moderates spawn rate
-	static int maxFollowers = 2;
-	static int tmperRate = 50;
-
-	if ((temperSpawnRate % tmperRate == 0) && (activeFollowers.size() < maxFollowers))
-	{
-		Follower follower(window, towerRadius);
-		activeFollowers.push_back(follower) ;				//adds new follower to vector of active follower
-		//std::cout << "Spawning fol, total num: " << activeFollowers.size() << std::endl;
-	}
 
 }
 
@@ -246,17 +168,7 @@ void spawnFollower(sf::RenderWindow &window, std::vector<Follower> &activeFollow
 //MOVES FOLLOWERS BASED ON VELOCITY CALCULATION IN FOLLOWER OBJECT
 void moveFollowers(std::vector<Player> &players, std::vector<Follower> &activeFollowers, std::vector<Tower> &towers)
 {
-	for (size_t i = 0; i < players.size(); i++) {
-		for (size_t j = 0; j < activeFollowers.size(); j++)
-		{
-			activeFollowers[j].moveLogic(activeFollowers[j].followerCollision(activeFollowers, j),
-				players.at(i), towers);
-			//checks follower for follower collision then moves and adjust velocity as necesary
-			//if follower is in collision with another follower, function "bounces" them off each other
-			//otherwise just moves follwer at current velocity
-
-		}
-	}
+	
 	
 
 }
@@ -264,52 +176,18 @@ void moveFollowers(std::vector<Player> &players, std::vector<Follower> &activeFo
 //HANDLES FOLLOWER BULLET INTERACTIONS
 void shootFollowers(std::vector<Player> &players, std::vector<Follower> &activeFollowers)
 {
-	std::vector<bool> erasefollower;
-	for (size_t i = 0; i < players.size(); i++) {
-		for (size_t j = 0; j < activeFollowers.size(); j++)
-		{
-			int dmg = players.at(i).shootFollower( 
-				activeFollowers.at(j).getFollowerGlobalBounds() );
-
-			//activeFollowers.takeDamage(dmg);
-
-			if (dmg > 0) {
-				activeFollowers.erase(activeFollowers.begin() + j);
-				j--;
-			}
-		}
-
-		//return array of followers shot by this player
-		//aggregate all dead followers into 1 array by arr1 || arr2
-		
-	}
+	
 }
 
 //HANDELS FOLLOWERS ATTACKING A PLAYER; REDUCES PLAYER'S HEALTH
 void attackPlayer(std::vector<Player> &players, std::vector<Follower> &activeFollowers)
 {
-	for (size_t i = 0; i < players.size(); i++)
-	{
-		for (size_t j = 0; j < activeFollowers.size(); j++)
-		{
-			if (activeFollowers[j].getFollowerGlobalBounds().intersects(
-				players.at(i).getHeartBounds()))	{	//if a follwer insects the player's global bounds
-
-				int dmg = 1;					//later dmg = given followers damage
-				players.at(i).takeDamage(dmg);	//reduce player's health
-			}
-		}
-	}
 	
-
 }
 
 //DRAWS FOLLOWERS IN WINDOW
 void drawFollowers(sf::RenderWindow &window, std::vector<Follower> &activeFollowers)				//function to tell Follower objects to draw themselves
 {
-	for (size_t i = 0; i < activeFollowers.size(); i++) {
-		activeFollowers[i].drawFollower(window);
-	}
 }
 
 //END FUNCTIONS HANDLING FOLLOWERS
@@ -322,37 +200,17 @@ void drawFollowers(sf::RenderWindow &window, std::vector<Follower> &activeFollow
 
 void initializeTowers(sf::RenderWindow &window, std::vector<Tower> &towers, int numberOfTowers)		//sets up towers for game
 {
-	//adds an additional tower out of play that assists with mechanics
-	for (size_t i = 0; i < numberOfTowers + 1; i++){
-		towers.push_back(Tower(window, i));
-	}
 }
 
 
 int checkTowerCollision(std::vector<Player> &players, std::vector<Tower> &towers)
 {
-	int collidingTower = 0;		//tower num (1-4) of colliding tower, or 0 for none
-	//We can make this better, only check for collision if close to tower
-
-	for (size_t i = 0; i < players.size(); i++)
-	{
-		for (size_t j = 0; j < towers.size(); j++)
-		{
-			if (towers[j].checkTowerCollision(players.at(i))) {
-				collidingTower = j;
-			}
-
-		}
-	}
-
-	return collidingTower;
+	return 0;
 }
 
 
 //HANDLING TOWER DRAWING
 void drawTowers(sf::RenderWindow &window, std::vector<Tower> &towers)
 {
-	for (size_t i = 0; i < towers.size(); i++) {
-		towers[i].drawTowers(window);
-	}
+	
 }

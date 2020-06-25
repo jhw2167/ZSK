@@ -51,11 +51,61 @@ private:
 	sf::VideoMode vidMode;
 	sf::Event event;
 
+	//Game Based Vectors
+	std::vector<Player> players;
+	std::vector<Follower> activeFollowers;
+	std::vector<Tower> towers;
 
+	//Simple Game Values
+	int numPlayers;
+	int maxPlayers;
+	int numberOfTowers;
+
+	int gameState;
+	//0 - Startmenu, 1 - in game, 2 - pauseMenu	
+
+
+
+	/******************/
 	//Private functions
+	/*****************/
+
+	/* Init Functions*/
+	void initTowers();
 	void initVars();
 	void initWindow();
 
+	//Game Update functions
+
+	/* LEVEL 1 - Start Menu*/
+	void runStartMenu();
+	void pauseMenu();
+
+
+	/* LEVEL 1  -  Call From Update*/
+	void movePlayerLogic();
+	void shootingMechanics();
+	void followerMechanics();
+
+	/* LEVEL 2  -  Followers*/
+	void spawnFollowers();
+	void moveFollowers();
+	void shootFollowers();
+	void attackPlayer();
+
+	/* LEVEL 2  -  Towers*/
+	int checkTowerCollision();
+
+
+	/* LEVEL 3  -  Draw Functions*/
+	void drawPlayers();
+	void drawFollowers();
+	void drawTowers();
+
+	void drawStartMenu();
+	void drawPauseMenu();
+
+	//END PRIVATE FUNCTIONS
 
 public:
 
@@ -63,8 +113,17 @@ public:
 	Game();
 	virtual ~Game();
 
+	//SETTERS
+
+	//GETTERS
+	const bool windowIsOpen() const;
+
 
 	//Functions
+	void addPlayer();
+
+	void pollEvents();
+
 	void update();
 	void render();
 };

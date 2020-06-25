@@ -1,6 +1,5 @@
 //Explicit header file for defining shape of a given follower
 //inclluded by Player.h and Follower.h
-
 #pragma once
 
 //SFML Includes

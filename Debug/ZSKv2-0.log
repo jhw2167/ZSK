@@ -1,11 +1,11 @@
 ﻿  Game.cpp
-c:\users\jack\source\repos\zskv2-0\zskv2-0\followershape.h(138): warning C4305: 'initializing': truncation from 'double' to 'float'
-c:\users\jack\source\repos\zskv2-0\zskv2-0\bulletobject.h(39): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\followershape.h(137): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\jack\source\repos\zskv2-0\zskv2-0\bulletobject.h(40): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
           with
           [
               T=int
           ]
-c:\users\jack\source\repos\zskv2-0\zskv2-0\bulletobject.h(79): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\bulletobject.h(80): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 c:\users\jack\source\repos\zskv2-0\zskv2-0\playerobject.h(431): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
 c:\users\jack\source\repos\zskv2-0\zskv2-0\playerobject.h(603): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
           with
@@ -18,22 +18,22 @@ c:\users\jack\source\repos\zskv2-0\zskv2-0\playerobject.h(604): warning C4244: '
               T=unsigned int
           ]
 c:\users\jack\source\repos\zskv2-0\zskv2-0\playerobject.h(749): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(74): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(75): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=unsigned int
           ]
-c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(77): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(78): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=unsigned int
           ]
-c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(80): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(81): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=unsigned int
           ]
-c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(114): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(115): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
           with
           [
               T=int
@@ -42,8 +42,8 @@ c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(114): warning C4244: 'a
           [
               T=float
           ]
-c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(114): warning C4390: ';': empty controlled statement found; is this the intent?
-c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(143): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(115): warning C4390: ';': empty controlled statement found; is this the intent?
+c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(144): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
 c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(59): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
           with
           [
@@ -59,15 +59,20 @@ c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(124): warning C4244:
 c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(126): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
 c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(128): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
 c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(343): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-c:\users\jack\source\repos\zskv2-0\zskv2-0\couttests.h(74): warning C4018: '<': signed/unsigned mismatch
+c:\users\jack\source\repos\zskv2-0\zskv2-0\couttests.h(75): warning C4018: '<': signed/unsigned mismatch
+c:\users\jack\source\repos\zskv2-0\zskv2-0\game.cpp(30): warning C4018: '<': signed/unsigned mismatch
+c:\users\jack\source\repos\zskv2-0\zskv2-0\game.cpp(48): warning C4244: '=': conversion from 'float' to 'unsigned int', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\game.cpp(49): warning C4244: '=': conversion from 'float' to 'unsigned int', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\game.cpp(149): warning C4018: '<': signed/unsigned mismatch
+c:\users\jack\source\repos\zskv2-0\zskv2-0\game.cpp(204): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
   main.cpp
-c:\users\jack\source\repos\zskv2-0\zskv2-0\followershape.h(138): warning C4305: 'initializing': truncation from 'double' to 'float'
-c:\users\jack\source\repos\zskv2-0\zskv2-0\bulletobject.h(39): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\followershape.h(137): warning C4305: 'initializing': truncation from 'double' to 'float'
+c:\users\jack\source\repos\zskv2-0\zskv2-0\bulletobject.h(40): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
           with
           [
               T=int
           ]
-c:\users\jack\source\repos\zskv2-0\zskv2-0\bulletobject.h(79): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\bulletobject.h(80): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 c:\users\jack\source\repos\zskv2-0\zskv2-0\playerobject.h(431): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
 c:\users\jack\source\repos\zskv2-0\zskv2-0\playerobject.h(603): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
           with
@@ -80,22 +85,22 @@ c:\users\jack\source\repos\zskv2-0\zskv2-0\playerobject.h(604): warning C4244: '
               T=unsigned int
           ]
 c:\users\jack\source\repos\zskv2-0\zskv2-0\playerobject.h(749): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(74): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(75): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=unsigned int
           ]
-c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(77): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(78): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=unsigned int
           ]
-c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(80): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(81): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=unsigned int
           ]
-c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(114): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(115): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
           with
           [
               T=int
@@ -104,8 +109,8 @@ c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(114): warning C4244: 'a
           [
               T=float
           ]
-c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(114): warning C4390: ';': empty controlled statement found; is this the intent?
-c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(143): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(115): warning C4390: ';': empty controlled statement found; is this the intent?
+c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(144): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
 c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(59): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
           with
           [
@@ -121,10 +126,7 @@ c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(124): warning C4244:
 c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(126): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
 c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(128): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
 c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(343): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-c:\users\jack\source\repos\zskv2-0\zskv2-0\couttests.h(74): warning C4018: '<': signed/unsigned mismatch
-c:\users\jack\source\repos\zskv2-0\zskv2-0\main.cpp(244): warning C4018: '<': signed/unsigned mismatch
-c:\users\jack\source\repos\zskv2-0\zskv2-0\main.cpp(307): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\jack\source\repos\zskv2-0\zskv2-0\main.cpp(334): warning C4018: '<': signed/unsigned mismatch
+c:\users\jack\source\repos\zskv2-0\zskv2-0\couttests.h(75): warning C4018: '<': signed/unsigned mismatch
   Generating Code...
 main.obj : error LNK2005: "class std::basic_ostream<char,struct std::char_traits<char> > & __cdecl operator<<(class std::basic_ostream<char,struct std::char_traits<char> > &,class sf::Vector2<int>)" (??6@YAAAV?$basic_ostream@DU?$char_traits@D@std@@@std@@AAV01@V?$Vector2@H@sf@@@Z) already defined in Game.obj
 main.obj : error LNK2005: "class std::basic_ostream<char,struct std::char_traits<char> > & __cdecl operator<<(class std::basic_ostream<char,struct std::char_traits<char> > &,class sf::Vector2<float>)" (??6@YAAAV?$basic_ostream@DU?$char_traits@D@std@@@std@@AAV01@V?$Vector2@M@sf@@@Z) already defined in Game.obj

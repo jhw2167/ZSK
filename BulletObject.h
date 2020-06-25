@@ -1,4 +1,5 @@
 //manages bullet object that is created when player shoots
+#pragma once
 
 //SFML includes
 #include <SFML/Graphics.hpp>
