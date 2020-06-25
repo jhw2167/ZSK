@@ -41,6 +41,8 @@ void Game::initVars()
 	maxPlayers = 4;
 
 	int gameState = 0;
+
+	initTowers();
 }
 
 void Game::initWindow()
@@ -259,8 +261,6 @@ void Game::drawStartMenu()
 void Game::drawPauseMenu()
 {
 }
-
-
 
 
 //END PRIVATE FUNCTIONS

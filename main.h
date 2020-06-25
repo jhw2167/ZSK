@@ -3,6 +3,7 @@
 
 //Main file brings all objects together to create the game
 #include "Game.h"
+#include "coutTests.h"
 
 //FUNCTONS HANDLING PLAYER
 void movePlayerLogic(sf::RenderWindow &window, std::vector<Player> &players, std::vector<Tower> &towers);
@@ -57,6 +58,8 @@ sf::Color Player::pColors[] = {sf::Color::Red, sf::Color::Blue,
 
 FollowerShape Player::scoreFigure = FollowerShape(sf::Color::Black, 3.f);
 PlayerShape Player::lifeFigure = PlayerShape(2.5f);
+
+sf::Font Player::arial;
 
 //follower objects
 int Follower::f_id = 0;

@@ -11,6 +11,7 @@
 	Visual Studious Visual C++ 2017 version 15.9.5
 	SMFL for Visual C++ 15, version 2.5.1 for 32 bit OS
 	Last updated *6/24/2020*
+	SFML Directory: C:/Development/SFML-2.5.1
 */
   
 
@@ -39,7 +40,6 @@
 
 //Project includes
 #include "FollowerObject.h"
-#include "coutTests.h"
 
 class Game
 {
@@ -63,7 +63,6 @@ private:
 
 	int gameState;
 	//0 - Startmenu, 1 - in game, 2 - pauseMenu	
-
 
 
 	/******************/
@@ -117,7 +116,6 @@ public:
 
 	//GETTERS
 	const bool windowIsOpen() const;
-
 
 	//Functions
 	void addPlayer();

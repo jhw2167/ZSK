@@ -276,7 +276,7 @@ private:
 	sf::RectangleShape shieldBar;							//representaiton of player's shield (if applicable)
 
 	sf::Text healthText;
-	sf::Font arial;								//Declares font to use for text drawing
+	static sf::Font arial;								//Declares font to use for text drawing
 
 	sf::Text lifeText;
 	static PlayerShape lifeFigure;
