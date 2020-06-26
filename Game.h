@@ -39,7 +39,7 @@
 #include <cstdlib>
 
 //Project includes
-#include "FollowerObject.h"
+#include "Follower.h"
 
 class Game
 {
