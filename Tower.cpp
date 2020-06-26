@@ -1,6 +1,6 @@
 //Implementation of Tower.h class
 
-#include "TowerObject.h"
+#include "Tower.h"
 	/*  Public Methods  */
 	
 
