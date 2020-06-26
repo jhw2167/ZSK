@@ -3,7 +3,7 @@
 
 //Project includes
 #include "FollowerShape.h"
-#include "TowerObject.h"
+#include "Tower.h"
 
 class Follower
 {
