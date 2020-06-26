@@ -15,7 +15,7 @@
 #include <vector>
 #include <cstdlib>
 
-#include "PlayerObject.h"
+#include "Player.h"
 
 class Tower {
 
