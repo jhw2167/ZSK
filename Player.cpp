@@ -2,7 +2,7 @@
 //Defines all player object methods
 //initializes player object static variables
 
-#include "PlayerObject.h"
+#include "Player.h"
 
 /******************************/
 /*  DEFINE PLAYERSHAPE CLASS  */
