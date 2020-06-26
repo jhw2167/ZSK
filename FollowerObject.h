@@ -44,408 +44,72 @@ private:
 
 public:
 
-	Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor = sf::Color::Black, int startHealth = 1, int retrgtRate = 10,
-		float scale = 2.5f, bool showBoxes = true)
-	{
-		id = f_id++;
-
-		//showBoxes = true;
-		fShape = FollowerShape(fColor, scale);
-		initFollowerBox(fShape, showBoxes);
-
-		initHealthText();
-		setHealth(startHealth);
-
-		windowLength = window.getSize().x ;
-		windowHeight = window.getSize().y;
-
-		followingPlayer = false;
-		momentum = 1.01;
-		aUp = aLeft = aDown = aRight = 0;
-		bounce = sf::Vector2f(5.f, 5.f);
-
-		retargetRate = retrgtRate;
-		retargetCount = 0;
-
-		playersOldX = 0;			//initializations critical to move function
-		playersOldY = 0;
-
-		towerRadius = tRadius;
-		randomSpawn();
-
-	}
+Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor = sf::Color::Black,
+	int startHealth = 1, int retrgtRate = 10,
+	float scale = 2.5f, bool showBoxes = true);
 
 
 	//INITIALIZE FOLLOWER
-	void initFollowerBox(FollowerShape &shape, bool showBoxes = true)
-	{
-		float length = shape.getRightBounds() - shape.getLeftBounds();
-		float height = shape.getLowerBounds() - shape.getUpperBounds();
+	void initFollowerBox(FollowerShape &shape, bool showBoxes = true);
 
-		fBox = sf::RectangleShape(sf::Vector2f(length, height));
+	void initHealthText();
 
-		sf::Color outlineColor = sf::Color::Transparent;
-
-		if (showBoxes) {
-			outlineColor = sf::Color::Black;
-		}
-
-		float thickness = 1.f;
-		fBox.setFillColor(sf::Color::Transparent);
-		fBox.setOutlineThickness(thickness);
-		fBox.setOutlineColor(outlineColor);
-
-		fBox.setOrigin(length / 2.f, shape.getHeadRadius());
-	}
+	void randomSpawn();
+	//End Init Methods
 
 
-	void initHealthText() {
+	/*  Setter Methods  */
+	void setFollowerColor(sf::Color &color);
 
-		if (!arial.loadFromFile("arial.ttf")) { 	//loads font to use for text drawing
-			std::cout << "Error loading text" << std::endl;
-		}
-		int textSize = 28;
+	void setPosition(sf::Vector2f &newPos);
 
-		healthText.setFont(arial);
-		healthText.setCharacterSize(textSize);
-		healthText.setFillColor(sf::Color::White);
+	void setVelocity(sf::Vector2f &vel);
 
-	}
+	void setHealth(int newHealth);
+	//End Setters
 
-	void randomSpawn()
-	{
-		static int spawnerClock = 0;		//clock will rotate zombie's spawnlocale around the map
+	/*  Accessor Methods  */
+	sf::Vector2f getFollowerPosition();
 
-		float xLine1 = 0.f;				//zombies will spawn at random locations on these lines and feed into the map
-		float xLine2 = windowLength;
-		float yLine1 = 0.f;
-		float yLine2 = windowHeight;
+	sf::Vector2f getFollowerVelocity();
 
-		static int srand(time(0));
+	sf::FloatRect getFollowerGlobalBounds();
 
-		float randTopBotSpawn = (rand() % ((int)windowHeight - ( 2 * (int)towerRadius) ) + (int)towerRadius);
-		//random spawnpoint between two towers on top and bottom of map
-		float randLeftRightSpawn = (rand() % ((int)windowLength - ( 2 * (int)towerRadius) ) + (int)towerRadius);
+	int get_id();
+	//End Accessor Methods
 
-		sf::Vector2f newPos = sf::Vector2f();
-		if (!followingPlayer)			//if not following player (all cases when follower is newly spawned), spawn point is randomized
-		{
-			switch (spawnerClock % 4)
-			{
-			case 0:
-				newPos = sf::Vector2f(xLine1, randTopBotSpawn);
-				break;
-
-			case 1:
-				newPos = sf::Vector2f(randLeftRightSpawn, yLine1);
-				break;
-
-			case 2:
-				newPos = sf::Vector2f(xLine2, randTopBotSpawn);
-				break;
-
-			case 3:
-				newPos = sf::Vector2f(randLeftRightSpawn, yLine2);
-				break;
-			}
-		}
-
-		setPosition(newPos);
-
-		setNewVelocity( sf::Vector2f(windowLength / 2.f, windowHeight / 2.f) );			
-		//initializes follower velocity starting from its random spawn to the center of the map
-	
-		spawnerClock++;			//increments spawnerClock to adjust Spawns
-	}
-
-	
-
-	//SET FOLLOWER ATTRIBUTES
-	void setFollowerColor(sf::Color &color) {
-		fShape.setColor(color);
-	}
-
-	void setPosition(sf::Vector2f &newPos)
-	{
-		fPosition = newPos;
-
-		fShape.setPosition(newPos);
-		fBox.setPosition(newPos);
-		healthText.setPosition(newPos);
-
-	}
-
-	void setVelocity(sf::Vector2f &vel) {
-		fVelocity = vel;
-	}
-
-	void setHealth(int newHealth) {
-		health = newHealth;
-		healthText.setString(std::to_string(newHealth));
-
-		float h = healthText.getLocalBounds().height;
-		float l = healthText.getLocalBounds().width;
-
-		healthText.setOrigin(l , h / 1.2f);
-	}
-
-	//GET FOLLOWER ATTRIBUTES
-	sf::Vector2f getFollowerPosition()
-	{
-		return fPosition;
-	}
-
-	sf::Vector2f getFollowerVelocity()
-	{
-		return fVelocity;
-	}
-
-	sf::FloatRect getFollowerGlobalBounds() {			//taken as global bounds of follower's circleShape head
-		return fBox.getGlobalBounds();
-	}
-
-	int get_id()	{
-		return id;
-	}
-
-
+		/*  Functions  */
 
 	//SET UP AND MANAGE FOLLOWER MOVEMENT
-	void setNewVelocity(sf::Vector2f const &destinationVector, float speed = 3.f)		//moves follower by adding unit vector to move function
-	{
+	void setNewVelocity(sf::Vector2f const &destinationVector, float speed = 3.f);
 
-		float yCoord = destinationVector.y - fShape.getPosition().y;				//destination vector is either player position or random movement
-																					//when follower is not following player
-		float xCoord = destinationVector.x - fShape.getPosition().x;
 
-		float mag = sqrt(pow(xCoord, 2) + pow(yCoord, 2));			//finds magnitude of vector to create unit vector
-
-		float xVelocity = ((xCoord / mag) * speed * pow(momentum, aRight + aLeft));
-		float yVelocity = ((yCoord / mag) * speed * pow(momentum, aUp + aDown));
-		
-		sf::Vector2f toPass = sf::Vector2f(xVelocity, yVelocity);
-
-		setVelocity(toPass);
-
-		//creates follower velocity vector as function of direction vector and speed
-	}
-
-	
 	//MOVE FOLLOWER LOGIC
-	void moveLogic(bool collision, Player &player, std::vector<Tower> &towers)
-	{
-		isFollowingPlayer(player);			//checks to see if following player
-		
-		if (followingPlayer)				//if not following player it does not need to reset its velocity
-		{
-			bool decelerate = fShape.getGlobalBounds().intersects(player.getHeartBounds());
+	void moveLogic(bool collision, Player &player, std::vector<Tower> &towers);
 
-			accelerate(player, decelerate);						
-			//follower accerlates if following a player or decelerate if they contact him
-
-			if (retargetCount % retargetRate == 0)
-				setNewVelocity(player.getPosition());
-			else
-				retargetCount++;
-		}
-		
-		
-
-		for (size_t i = 0; i < towers.size() ; i++) {	//checks each tower for potential collision
-			towerCollision(towers[i]);
-		}
-
-		sf::Vector2f newPos = fShape.getPosition() + fVelocity;
-		if (collision) {
-			newPos += bounce;
-			outOfBounds(newPos, collision);
-			moveFollower(fVelocity + bounce);
-		}
-		else {
-			outOfBounds(newPos);
-			moveFollower(fVelocity);
-		}
-	}
-
-	void moveFollower(sf::Vector2f const &vel) {
-		fShape.move(vel);			
-		fBox.move(vel);
-
-		healthText.move(vel);
-
-		fPosition = fShape.getPosition();
-	}
+	void moveFollower(sf::Vector2f const &vel);
 
 	//ACCELERATES FOLLOWER
-	void accelerate(Player &player, bool decelerate = false)					//accelerates the follower over time based on passed value from main
-	{
-		float playersCurrX = player.getPosition().x;			//floats get player's position to determine which direction hes traveling
-		float playersCurrY = player.getPosition().y;
+	void accelerate(Player &player, bool decelerate = false);
 
-		bool movingLeft = playersCurrX < playersOldX;			//bools determine which direction player has been traveling
-		bool movingRight = playersCurrX > playersOldX;
+	bool isFollowingPlayer(Player &player);
 
-		bool movingUp = playersCurrY < playersOldY;
-		bool movingDown = playersCurrY > playersOldY;
+	float distanceFrom(sf::Vector2f const &objectPos);
 
 
-		if (movingLeft)
-		{
-			aRight = 0;
-			aLeft++;											//counts number of times follwer is accelerated
-		}
-		else if (movingRight)
-		{
-			aLeft = 0;					
-			aRight++;
-		}
-
-		if (movingUp)
-		{
-			aDown = 0;
-			aUp++;
-		}
-		else if (movingDown)
-		{
-			aUp = 0;
-			aDown++;
-		}
-
-		playersOldX = playersCurrX;					//sets the new old coordinates equal to current coordinates for next function call
-		playersOldY = playersCurrY;
-		
-		if (decelerate)	{					// all exponents set to 0 to decelerate follower
-			aUp = aLeft = aDown = aRight = 0;
-		}
-		
-	}
-
-	bool isFollowingPlayer(Player &player)
-	{
-		bool wasFollowing = followingPlayer;
-
-		if (!followingPlayer)
-			followingPlayer = distanceFrom(player.getPosition()) <= player.getSmallFollowAreaRadius();
-		else
-			followingPlayer = distanceFrom(player.getPosition()) <= player.getLargeFollowAreaRadius();
-
-		if (wasFollowing && !followingPlayer)
-			setNewVelocity(player.getPosition());
-
-		return followingPlayer;
-	}
-
-	float distanceFrom(sf::Vector2f const &objectPos)					//calculates vector distance from player or tower object
-	{
-		float xDist = abs(objectPos.x - fShape.getPosition().x);			//calculates x and y distances away follower is from player
-		float yDist = abs(objectPos.y - fShape.getPosition().y);
-
-		return pow(xDist * xDist + yDist * yDist, 0.5);							//calculates vector for distance from follower to player
-	}
-
-	
 	//OUT OF BOUNDS AND FOLLOWER COLLISION BEHAVIOR
-	void outOfBounds(sf::Vector2f &pos, bool col = false)
-	{
-		float buffer = 0.f;
-		//need an off screen boundry for the velocity reversal or follower gets
-		//stuck moving further outside
-		bool xOut = pos.x < 0 || pos.x > windowLength;
-		bool yOut = pos.y < 0 || pos.y > windowHeight;
+	void outOfBounds(sf::Vector2f &pos, bool col = false);
 
-		if (!col)
-		{
-			if (xOut)
-				fVelocity.x = -fVelocity.x;
+	bool towerCollision(Tower &tower);
 
-			if (yOut)
-				fVelocity.y = -fVelocity.y;
-		}
-		else
-		{
-			if (xOut)
-			{
-				fVelocity.x = -fVelocity.x;
-				bounce.x = -bounce.x;
-			}
-				
-			if (yOut)
-			{
-				fVelocity.y = -fVelocity.y;
-				bounce.y = -bounce.y;
-			}
-				
-		}
-	
-	}
+	bool followerCollision(std::vector<Follower> &activeFollowers, int i);
 
-	bool towerCollision(Tower &tower)				//if there is a tower collision, redirect follower's velocity
-	{
-		bool towerCollision = distanceFrom( tower.getPosition() ) <= tower.getTowerRadius();
+	void setMinusBounce();
 
-		if (towerCollision) {
-			fVelocity = -fVelocity;
-		}
-		return towerCollision;
-	}
-
-	bool followerCollision(std::vector<Follower> &activeFollowers, int i)		//checks for a collision with passed object follower and returns bool
-	{
-		bool collision = false;
-
-		for (size_t j = i + 1; j < activeFollowers.size(); j++)
-		{
-			if (activeFollowers.at(i).getFollowerGlobalBounds().intersects(			//compare the followers at different elem position
-				activeFollowers.at(j).getFollowerGlobalBounds()))
-			{
-				activeFollowers.at(j).setMinusBounce();	
-				collision = true;
-			}
-
-		}
-		return collision;
-	}
-
-	void setMinusBounce()
-	{
-		static int bounceType = 0;
-
-		switch (bounceType % 4)
-		{
-		case 0:
-			bounce = bounce;			//no change to bounce vector
-			break;
-
-		case 1:
-			bounce.x = -bounce.x;		//bounces off in negative X direction
-			break;
-
-		case 2:
-			bounce.y = -bounce.y;		//negative y direction
-			break;
-
-		case 3:
-			bounce = -bounce;			//both negative directions
-			break;
-		}
-
-		bounceType++;					//increments to cycle through bounce types
-
-	}
-
-	void fixCenterVelocity()
-	{
-		sf::Vector2f center = sf::Vector2f(windowLength / 2.f, windowHeight / 2.f);
-		setNewVelocity(center);
-	}
+	void fixCenterVelocity();
 
 	//DRAW FOLLWER ASPECTS
-	void drawFollower(sf::RenderWindow &window)
-	{
-		fShape.draw(window);
-		window.draw(fBox);
-		window.draw(healthText);
-	}
+	void drawFollower(sf::RenderWindow &window);
 
 
 	/*

@@ -43,124 +43,46 @@ private:
 
 public:
 
-	FollowerShape(sf::Color color = sf::Color::Black, float scale = 2.5f)
-	{
-		//setUp follower Shape and size
-		legAngle = 35;
-		setSize(scale);
-		//set follower color
-		setColor(color);
-	}
+	/*	Constructor	*/
+	FollowerShape(sf::Color color = sf::Color::Black, float scale = 2.5f);
 
-	//setter methods
-	void setSize(float scale)
-	{
-		headRadius = scale * 5.f;
-		legLength = scale * 10.f;
-		legWidth = scale * 2.f;
 
-		head.setRadius(headRadius);
-		head.setOrigin(head.getRadius(), head.getRadius());
-		//origin at center of head
+		/*	Setter Methods	*/
+	void setSize(float scale);
 
-		leg1.setSize(sf::Vector2f(legWidth, legLength));
-		leg1.setOrigin(sf::Vector2f(legWidth / 2.f, 0));
-		leg1.setRotation(legAngle);
-		//Origin at center, left side of leg
+	void setColor(sf::Color color);
 
-		leg2.setSize(sf::Vector2f(legWidth, legLength));
-		leg2.setOrigin(sf::Vector2f(legWidth / 2.f, 0));
-		leg2.setRotation(360 - legAngle);
-		//Origin at center, left side of leg
-
-		fSize = scale;
-	}
-
-	void setColor(sf::Color color)
-	{
-		head.setFillColor(color);
-		leg1.setFillColor(color);
-		leg2.setFillColor(color);
-
-		fColor = color;
-	}
-
-	void setPosition(sf::Vector2f newPos)
-	{
-		head.setPosition(newPos);
-		leg1.setPosition(newPos);
-		leg2.setPosition(newPos);
-
-		fPos = newPos;
-	}
+	void setPosition(sf::Vector2f newPos);
 	//***END SETTER METHODS***
 
 
 
-	//getter methods
-	float getSize() {
-		return fSize;
-	}
+		/*	Accessor Methods	*/
+	float getSize();
 
-	sf::Color getColor() {
-		return fColor;
-	}
+	sf::Color getColor();
 
-	sf::Vector2f getPosition() {
-		return fPos;
-	}
-
-	sf::FloatRect getGlobalBounds()
-		//taken as global bounds of follower's circleShape head
-	{
-		return head.getGlobalBounds();
-	}
+	sf::Vector2f getPosition();
+		
+	sf::FloatRect getGlobalBounds();
 
 	//bounds with respect to center of follower head at fPos
-	float getLeftBounds()
-	{
-		return fPos.x - headRadius;
-	}
+	float getLeftBounds();
 
-	float getUpperBounds()
-	{
-		return fPos.y - headRadius;
-	}
+	float getUpperBounds();
 
-	float getRightBounds()
-	{
-		return fPos.x + headRadius;
-	}
+	float getRightBounds();
 
-	float getLowerBounds()
-	{
-		float degsToRads = 3.14159 / 180;
-		float dist = 2 * headRadius * cos(legAngle * degsToRads);
-		return fPos.y + dist;
-	}
+	float getLowerBounds();
 
-	float getHeadRadius() {
-		return headRadius;
-	}
+	float getHeadRadius();
 
 	//***END GETTER METHODS***
 
 	//other Methods
-	void move(sf::Vector2f moveVect)
-	{
-		head.move(moveVect);
-		leg1.move(moveVect);
-		leg2.move(moveVect);
+	void move(sf::Vector2f moveVect);
 
-		fPos += moveVect;
-	}
-
-	void draw(sf::RenderWindow &window)
-	{
-		window.draw(head);
-		window.draw(leg1);
-		window.draw(leg2);
-	}
+	void draw(sf::RenderWindow &window);
 };
 
 

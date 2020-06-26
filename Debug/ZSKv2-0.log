@@ -1,66 +1,41 @@
-﻿  Game.cpp
-c:\users\jack\source\repos\zskv2-0\zskv2-0\followershape.h(137): warning C4305: 'initializing': truncation from 'double' to 'float'
+﻿  Follower.cpp
 c:\users\jack\source\repos\zskv2-0\zskv2-0\bulletobject.h(39): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
           with
           [
               T=int
           ]
-c:\users\jack\source\repos\zskv2-0\zskv2-0\playerobject.h(431): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-c:\users\jack\source\repos\zskv2-0\zskv2-0\playerobject.h(603): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\follower.cpp(19): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=unsigned int
           ]
-c:\users\jack\source\repos\zskv2-0\zskv2-0\playerobject.h(604): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\follower.cpp(20): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
           with
           [
               T=unsigned int
           ]
-c:\users\jack\source\repos\zskv2-0\zskv2-0\playerobject.h(749): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(75): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
-          with
-          [
-              T=unsigned int
-          ]
-c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(78): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
-          with
-          [
-              T=unsigned int
-          ]
-c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(81): warning C4244: 'argument': conversion from 'T' to 'float', possible loss of data
-          with
-          [
-              T=unsigned int
-          ]
-c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(115): warning C4244: 'argument': conversion from 'T' to 'T', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\follower.cpp(23): warning C4305: '=': truncation from 'double' to 'float'
+c:\users\jack\source\repos\zskv2-0\zskv2-0\follower.cpp(84): warning C4244: 'initializing': conversion from 'time_t' to 'int', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\follower.cpp(86): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\follower.cpp(88): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\follower.cpp(320): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+  Game.cpp
+c:\users\jack\source\repos\zskv2-0\zskv2-0\bulletobject.h(39): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
           with
           [
               T=int
           ]
-          and
-          [
-              T=float
-          ]
-c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(115): warning C4390: ';': empty controlled statement found; is this the intent?
-c:\users\jack\source\repos\zskv2-0\zskv2-0\towerobject.h(144): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(59): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
-          with
-          [
-              T=unsigned int
-          ]
-c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(60): warning C4244: '=': conversion from 'T' to 'float', possible loss of data
-          with
-          [
-              T=unsigned int
-          ]
-c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(63): warning C4305: '=': truncation from 'double' to 'float'
-c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(124): warning C4244: 'initializing': conversion from 'time_t' to 'int', possible loss of data
-c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(126): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(128): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-c:\users\jack\source\repos\zskv2-0\zskv2-0\followerobject.h(343): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
 c:\users\jack\source\repos\zskv2-0\zskv2-0\game.cpp(30): warning C4018: '<': signed/unsigned mismatch
 c:\users\jack\source\repos\zskv2-0\zskv2-0\game.cpp(50): warning C4244: '=': conversion from 'float' to 'unsigned int', possible loss of data
 c:\users\jack\source\repos\zskv2-0\zskv2-0\game.cpp(51): warning C4244: '=': conversion from 'float' to 'unsigned int', possible loss of data
-c:\users\jack\source\repos\zskv2-0\zskv2-0\game.cpp(151): warning C4018: '<': signed/unsigned mismatch
-c:\users\jack\source\repos\zskv2-0\zskv2-0\game.cpp(206): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\jack\source\repos\zskv2-0\zskv2-0\game.cpp(150): warning C4018: '<': signed/unsigned mismatch
+c:\users\jack\source\repos\zskv2-0\zskv2-0\game.cpp(205): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  main.cpp
+c:\users\jack\source\repos\zskv2-0\zskv2-0\bulletobject.h(39): warning C4244: 'argument': conversion from 'float' to 'T', possible loss of data
+          with
+          [
+              T=int
+          ]
+c:\users\jack\source\repos\zskv2-0\zskv2-0\couttests.h(75): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...
   ZSKv2-0.vcxproj -> C:\Users\jack\source\repos\ZSKv2-0\Debug\ZSKv2-0.exe

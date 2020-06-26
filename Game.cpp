@@ -56,7 +56,6 @@ void Game::initWindow()
 
 
 
-
 //Game Update functions
 
 	/* LEVEL 1  -  Start Menu*/

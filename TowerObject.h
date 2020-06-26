@@ -29,120 +29,51 @@ private:
 	sf::Vector2f towerPosition;
 
 	sf::CircleShape towerShape;
-	sf::Sprite laser1;						//Laser will be comprised of a series of drawn sprites
+	sf::Sprite laser1;						
+	//Laser will be comprised of a series of drawn sprites
+
 	sf::RectangleShape laser;
 
 public:
+	
+		/*  Constructors */
+	Tower(sf::RenderWindow &window, int tNumber = 0, float tRadius = 200.f);
 
-	Tower(sf::RenderWindow &window, int tNumber = 0, float tRadius = 200.f)			//Constructs minimal tower objcet
-	{
-		towerNumber = tNumber;
+	Tower(int tNumber = 0, float tRadius = 200.f);
 
-		initTowerShape(tRadius);
-		setPosition(window, tNumber);
-		towerOwnedBy = NOTOWNED;
-	}
 
-	Tower(int tNumber = 0, float tRadius = 200.f)
-	{
-		towerNumber = tNumber;
-		initTowerShape(tRadius);
-		towerOwnedBy = NOTOWNED;
-	}
-
-	//Tower init methods
-	void initTowerShape(float tRadius)
-	{
-		towerRadius = tRadius;
-		towerShape.setRadius(towerRadius);
-
-		towerShape.setFillColor(sf::Color::Black);
-		towerShape.setOrigin(towerRadius, towerRadius);
-	}
+		/*  Init Methods  */
+	void initTowerShape(float tRadius);
 
 
 
-	//TOWER SET METHODS
-	void setPosition(sf::RenderWindow &window, int tNumber)		//sets tower position to one of the four corners
-	{
-		towerNumber = tNumber;									//tower's number denotation determines its position
-
-		switch (towerNumber) {
-		case 1:
-			towerShape.setPosition(0, 0);
-			break;
-		case 2:
-			towerShape.setPosition(window.getSize().x, 0);
-			break;
-		case 3:
-			towerShape.setPosition(0, window.getSize().y);
-			break;
-		case 4:
-			towerShape.setPosition(window.getSize().x, window.getSize().y);
-			break;
-		case 0:														//case zero tower not intented to be shown or utilized, 
-			towerShape.setPosition(-100.f, -100.f);					//its instantiation helps with mechanics such as checking tower collisions
-			break;
-		}
-
-		towerPosition = towerShape.getPosition();						//sets towerPosition var equal to placement of circle shape for easy access
-	}
+		/*  Setter methods  */
+	void setPosition(sf::RenderWindow &window, int tNumber);
 
 
-	//TOWER GET METHODS
-	sf::Vector2f getTowerGlobalBounds()
-	{
-		towerShape.getGlobalBounds();
-	}
+		/*  Accessor Methods  */
+	sf::FloatRect getTowerGlobalBounds();
 
-	sf::Vector2f getPosition()
-	{
-		return towerPosition;
-	}
+	sf::Vector2f getPosition();
 
-	float getTowerRadius()
-	{
-		return towerRadius;
-	}
+	float getTowerRadius();
 
-	sf::CircleShape getTowerShape() {
-		return towerShape;
-	}
+	sf::CircleShape getTowerShape();
 
 	//TOWER OWNERSHIP METHODS
-	bool checkTowerOwnership(sf::Vector2i mousePos, towerOwned i)
-	{
-		if (towerShape.getGlobalBounds().contains(mousePos.x, mousePos.y));
-		towerOwnedBy = i;
+	bool isTowerOwned(sf::Vector2i mousePos, towerOwned i);
 
-		return towerOwnedBy;				//will return either 0 for unowned or >0 integer that equates to true boolean
-	}
-
-	int getTowerOwnership()
-	{
-		return towerOwnedBy;
-	}
-
-
+	int getTowerOwnership();
+	
+	/*  Functions  */
 
 	//TOWER COLLISIONS
-	bool checkTowerCollision(Player &player)
-	{
-		bool collision = player.getPlayerBounds().intersects(towerShape.getGlobalBounds());
-
-		return collision;
-	}
+	bool checkTowerCollision(Player &player);
 
 	//if (distanceFrom(playerPos) <= towerRadius)
 		//return true;
 
-	float distanceFrom(sf::Vector2f objectPos)											//calculates vector distance from player or tower object
-	{
-		float xDist = abs(objectPos.x - towerPosition.x);			//calculates x and y distances away follower is from player
-		float yDist = abs(objectPos.y - towerPosition.y);
-
-		return pow(xDist * xDist + yDist * yDist, 0.5);							//calculates vector for distance from follower to player
-	}
+	float distanceFrom(sf::Vector2f objectPos);
 
 
 
@@ -157,9 +88,6 @@ public:
 
 
 	//TOWER DRAW METHODS
-	void drawTowers(sf::RenderWindow &window)
-	{
-		window.draw(towerShape);
-	}
+	void drawTowers(sf::RenderWindow &window);
 
 };

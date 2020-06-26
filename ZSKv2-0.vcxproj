@@ -141,8 +141,12 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BulletObject.cpp" />
+    <ClCompile Include="Follower.cpp" />
+    <ClCompile Include="FollowerShape.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PlayerObject.cpp" />
+    <ClCompile Include="Tower.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BulletObject.h" />
