@@ -18,7 +18,7 @@
 #include <cstdlib>
 
 //project includes
-#include "BulletObject.h"
+#include "Bullet.h"
 #include "FollowerShape.h"
 
 
