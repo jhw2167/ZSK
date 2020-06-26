@@ -1,6 +1,6 @@
 //Implementation of Follower.h class
 
-#include "FollowerObject.h"
+#include "Follower.h"
 
 
 	/*  Constructor  */
