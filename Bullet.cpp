@@ -1,4 +1,4 @@
-#include "BulletObject.h"
+#include "Bullet.h"
 //BulletObject.cpp for implementation of Bulet Class
 
 
