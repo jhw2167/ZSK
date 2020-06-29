@@ -5,30 +5,23 @@
 	
 
 	/*  Constructors  */
-Tower::Tower(sf::RenderWindow &window, int tNumber, float tRadius)
+Tower::Tower(sf::RenderWindow const &window, int tNumber)
 //Constructs minimal tower objcet
 {
 	towerNumber = tNumber;
 
-	initTowerShape(tRadius);
+	initTowerShape(window);
 	setPosition(window, tNumber);
-	towerOwnedBy = NOTOWNED;
-}
-
-Tower::Tower(int tNumber, float tRadius)
-{
-	towerNumber = tNumber;
-	initTowerShape(tRadius);
 	towerOwnedBy = NOTOWNED;
 }
 //End Constructors
 
 
 	/*  Init Methods  */
-void Tower::initTowerShape(float tRadius)
+void Tower::initTowerShape(sf::RenderWindow const &window)
 {
-	towerRadius = tRadius;
-	towerShape.setRadius(towerRadius);
+	float tRadius = std::min(window.getSize().x, window.getSize().y) / 8.f;
+	setRadius(tRadius);
 
 	towerShape.setFillColor(sf::Color::Black);
 	towerShape.setOrigin(towerRadius, towerRadius);
@@ -37,7 +30,12 @@ void Tower::initTowerShape(float tRadius)
 
 
 	/*  Setter methods  */
-void Tower::setPosition(sf::RenderWindow &window, int tNumber)
+void Tower::setRadius(float tRadius) {
+	towerRadius = tRadius;
+	towerShape.setRadius(towerRadius);
+}
+
+void Tower::setPosition(sf::RenderWindow const &window, int tNumber)
 {
 	//sets tower position to one of the four corners
 	towerNumber = tNumber;
@@ -62,7 +60,8 @@ void Tower::setPosition(sf::RenderWindow &window, int tNumber)
 		break;
 	}
 
-	towerPosition = towerShape.getPosition();						//sets towerPosition var equal to placement of circle shape for easy access
+	towerPosition = towerShape.getPosition();						
+	//sets towerPosition var equal to placement of circle shape for easy access
 }
 //End setters
 

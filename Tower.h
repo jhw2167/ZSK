@@ -1,27 +1,15 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
-#include <iostream>
-#include <cmath>
-#include <math.h>
-#include <SFML/Window.hpp>
-#include <SFML/OpenGL.hpp>
-#include <fstream>
-#include <iomanip>
-#include <string>
-#include <array>
-#include <algorithm>
-#include <ctime>
-#include <vector>
-#include <cstdlib>
 
 #include "Player.h"
 
 class Tower {
 
 private:
-	float towerRadius;						//towers will be circleShapes in each of the four coners of the map
-	int towerNumber;						//labels towers, 0, 1, 2, 3 
+	float towerRadius;		
+	int towerNumber; 
+	//towers will be circleShapes in each of the four coners of the map
+	//labels towers, 0, 1, 2, 3
 
 	enum towerOwned {NOTOWNED, PLAYER1, PLAYER2, PLAYER3, PLAYER4};
 	towerOwned towerOwnedBy;
@@ -37,32 +25,28 @@ private:
 public:
 	
 		/*  Constructors */
-	Tower(sf::RenderWindow &window, int tNumber = 0, float tRadius = 200.f);
-
-	Tower(int tNumber = 0, float tRadius = 200.f);
+	Tower(sf::RenderWindow const &window, int tNumber = 0);
 
 
 		/*  Init Methods  */
-	void initTowerShape(float tRadius);
-
+	void initTowerShape(sf::RenderWindow const &window);
 
 
 		/*  Setter methods  */
-	void setPosition(sf::RenderWindow &window, int tNumber);
+	void setRadius(float tRadius);
+	void setPosition(sf::RenderWindow const &window, int tNumber);
+
 
 
 		/*  Accessor Methods  */
 	sf::FloatRect getTowerGlobalBounds();
-
 	sf::Vector2f getPosition();
-
 	float getTowerRadius();
-
 	sf::CircleShape getTowerShape();
+
 
 	//TOWER OWNERSHIP METHODS
 	bool isTowerOwned(sf::Vector2i mousePos, towerOwned i);
-
 	int getTowerOwnership();
 	
 	/*  Functions  */

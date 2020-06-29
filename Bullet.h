@@ -1,25 +1,8 @@
 //manages bullet object that is created when player shoots
 #pragma once
 
-//SFML includes
-#include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/OpenGL.hpp>
-
-//Std lib includes
-#include <iostream>
-#include <cmath>
-#include <math.h>
-#include <fstream>
-#include <iomanip>
-#include <string>
-#include <array>
-#include <algorithm>
-#include <ctime>
-#include <vector>
-#include <cstdlib>
-
-//Project includes
+//Precompiled header
+#include "stdafx.h"
 
 class Bullet {
 

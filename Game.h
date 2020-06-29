@@ -17,29 +17,17 @@
 
 //Game engine/wrapper stored collectively in game class
 
-//SFML includes
-#include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/OpenGL.hpp>
-#include <SFML/Audio.hpp>
-#include <SFML/Network.hpp>
-#include <SFML/System.hpp>
-
-//Std lib includes
-#include <iostream>
-#include <cmath>
-#include <math.h>
-#include <fstream>
-#include <iomanip>
-#include <string>
-#include <array>
-#include <algorithm>
-#include <ctime>
-#include <vector>
-#include <cstdlib>
+//Precompiled header
+#include "stdafx.h"
 
 //Project includes
+#include "Bullet.h"
+#include "FollowerShape.h"
+#include "Player.h"
 #include "Follower.h"
+#include "FollowerShape.h"
+#include "Tower.h"
+#include "startMenu.h"
 
 class Game
 {
@@ -51,19 +39,23 @@ private:
 	sf::VideoMode vidMode;
 	sf::Event event;
 
+	//Menus
+	StartMenu *startMenu_ptr;
+
 	//Game Based Vectors
 	std::vector<Player> players;
 	std::vector<Follower> activeFollowers;
 	std::vector<Tower> towers;
+	sf::Vector2i mousePos;
 
 	//Simple Game Values
 	int numPlayers;
 	int maxPlayers;
 	int numberOfTowers;
+	//number of towers is 
 
-	int gameState;
+	short gameState;
 	//0 - Startmenu, 1 - in game, 2 - pauseMenu	
-
 
 	/******************/
 	//Private functions
@@ -73,6 +65,7 @@ private:
 	void initTowers();
 	void initVars();
 	void initWindow();
+	void initStartMenu();
 
 	//Game Update functions
 
@@ -121,6 +114,7 @@ public:
 	void addPlayer();
 
 	void pollEvents();
+	void updateMousePosition();
 
 	void update();
 	void render();

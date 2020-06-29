@@ -1,22 +1,6 @@
 #pragma once
 //header file to construct and design the player object for the game
 
-#include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/OpenGL.hpp>
-
-#include <iostream>
-#include <cmath>
-#include <math.h>
-#include <fstream>
-#include <iomanip>
-#include <string>
-#include <array>
-#include <algorithm>
-#include <ctime>
-#include <vector>
-#include <cstdlib>
-
 //project includes
 #include "Bullet.h"
 #include "FollowerShape.h"

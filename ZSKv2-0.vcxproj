@@ -102,6 +102,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>C:\Development\SFML-2.5.1\include</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>C:\Development\SFML-2.5.1\lib</AdditionalLibraryDirectories>
@@ -140,23 +141,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BulletObject.cpp" />
+    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Follower.cpp" />
     <ClCompile Include="FollowerShape.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="PlayerObject.cpp" />
+    <ClCompile Include="Player.cpp" />
+    <ClCompile Include="startMenu.cpp" />
+    <ClCompile Include="stdafx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="Tower.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BulletObject.h" />
+    <ClInclude Include="Bullet.h" />
     <ClInclude Include="coutTests.h" />
-    <ClInclude Include="FollowerObject.h" />
+    <ClInclude Include="Follower.h" />
     <ClInclude Include="FollowerShape.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="main.h" />
-    <ClInclude Include="PlayerObject.h" />
-    <ClInclude Include="TowerObject.h" />
+    <ClInclude Include="Player.h" />
+    <ClInclude Include="startMenu.h" />
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Tower.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

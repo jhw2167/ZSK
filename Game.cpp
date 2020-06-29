@@ -14,8 +14,10 @@ Game::Game()
 {
 	initVars();
 	initWindow();
+	initStartMenu();
 
 	addPlayer();
+	initTowers();
 }
 
 //END CONSTRUCTORS
@@ -36,13 +38,13 @@ void Game::initVars()
 {
 	//init window_ptr to nullptr
 	window_ptr = nullptr;
+	startMenu_ptr = nullptr;
 
 	numPlayers = 0;
 	maxPlayers = 4;
+	numberOfTowers = 4;
 
 	int gameState = 0;
-
-	initTowers();
 }
 
 void Game::initWindow()
@@ -54,6 +56,10 @@ void Game::initWindow()
 	window_ptr->setFramerateLimit(60);
 }
 
+void Game::initStartMenu() {
+	startMenu_ptr = new StartMenu(*window_ptr);
+}
+
 
 
 //Game Update functions
@@ -62,7 +68,16 @@ void Game::initWindow()
 
 void Game::runStartMenu() 
 {
-	gameState = 1;
+	//Update and animate title screen
+	startMenu_ptr->update(mousePos);
+
+
+	if (startMenu_ptr->getOptionSelected() != 0)
+	{
+		gameState = startMenu_ptr->getOptionSelected();
+		delete startMenu_ptr;
+		startMenu_ptr = nullptr;
+	}
 }
 
 void Game::pauseMenu() 
@@ -124,7 +139,7 @@ void Game::shootingMechanics()
 {
 	for (size_t i = 0; i < players.size(); i++)
 	{
-		players.at(i).shoot(sf::Mouse::getPosition(*window_ptr));
+		players.at(i).shoot(mousePos);
 		players.at(i).moveBullets();
 		players.at(i).checkBulletInBounds(*window_ptr);
 	}
@@ -144,7 +159,7 @@ void Game::followerMechanics()
 void Game::spawnFollowers()
 {
 	static int temperSpawnRate = 0; temperSpawnRate++;				//moderates spawn rate
-	static int maxFollowers = 2;
+	static int maxFollowers = 20;
 	static int tmperRate = 50;
 
 	if ((temperSpawnRate % tmperRate == 0) && (activeFollowers.size() < maxFollowers))
@@ -253,8 +268,8 @@ void Game::drawTowers()
 	}
 }
 
-void Game::drawStartMenu()
-{
+void Game::drawStartMenu() {
+	startMenu_ptr->drawMenu(*window_ptr);
 }
 
 void Game::drawPauseMenu()
@@ -302,6 +317,10 @@ void Game::pollEvents()
 
 }
 
+void Game::updateMousePosition() {
+	mousePos = sf::Mouse::getPosition(*window_ptr);
+}
+
 void Game::addPlayer()
 {
 	if (numPlayers < maxPlayers)
@@ -318,6 +337,7 @@ void Game::addPlayer()
 
 void Game::update()
 {
+	updateMousePosition();
 	pollEvents();
 
 	switch (gameState)
@@ -334,6 +354,10 @@ void Game::update()
 
 	case 2:
 		pauseMenu();
+		break;
+
+	case 3:
+		window_ptr->close();
 		break;
 	}
 }
@@ -373,6 +397,11 @@ void Game::render()
 Game::~Game() {
 	delete window_ptr;
 	window_ptr = nullptr;
+
+	if (!(startMenu_ptr == nullptr)) {
+		delete startMenu_ptr;
+		startMenu_ptr = nullptr;
+	}
 }
 
 //END DESTRUCTOR

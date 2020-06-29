@@ -197,6 +197,21 @@ void PlayerShape::drawPlayer(sf::RenderWindow &window)
 /*  DEFINE PLAYER CLASS  */
 /*****************************/
 
+
+	/*  Static Members of Player Class  */
+
+float Player::healthBarHeight = 30.f;
+float Player::areaOutline = 4.f;
+sf::Color Player::pColors[] = { sf::Color::Red, sf::Color::Blue,
+	sf::Color::Green, sf::Color::Yellow };
+
+FollowerShape Player::scoreFigure = FollowerShape(sf::Color::Black, 3.f);
+PlayerShape Player::lifeFigure = PlayerShape(2.5f);
+
+sf::Font Player::arial;
+
+
+
 /*  Forward Declarations  */
 class Follower;
 class Tower;				//forward declaration of class tower so player has access

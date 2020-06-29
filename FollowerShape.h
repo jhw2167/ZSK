@@ -2,24 +2,8 @@
 //inclluded by Player.h and Follower.h
 #pragma once
 
-//SFML Includes
-#include <SFML/Graphics.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/OpenGL.hpp>
-
-//Std Lib includes
-#include <iostream>
-#include <cmath>
-#include <math.h>
-#include <fstream>
-#include <iomanip>
-#include <string>
-#include <array>
-#include <algorithm>
-#include <ctime>
-#include <vector>
-#include <random>
-#include <cstdlib>
+//Precompiled header
+#include "stdafx.h"
 
 //Start with FollowerShape class
 class FollowerShape

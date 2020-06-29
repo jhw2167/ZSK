@@ -2,10 +2,16 @@
 
 #include "Follower.h"
 
+	/*  Static Initializations  */
+
+int Follower::f_id = 0;
+sf::Font Follower::arial;
+
+
 
 	/*  Constructor  */
 Follower::Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor, int startHealth 
-	, int retrgtRate, float scale, bool showBoxes)
+	, short retrgtRate, short redirRate, float scale, bool showBoxes)
 {
 	id = f_id++;
 
@@ -27,8 +33,12 @@ Follower::Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor, in
 	retargetRate = retrgtRate;
 	retargetCount = 0;
 
-	playersOldX = 0;			//initializations critical to move function
+	redirectRate = redirRate;
+	redirectCount = 0;
+
+	playersOldX = 0;
 	playersOldY = 0;
+	//initializations critical to move function
 
 	towerRadius = tRadius;
 	randomSpawn();
@@ -36,7 +46,7 @@ Follower::Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor, in
 }
 //End Constructor
 
-	/*  Initialize Functions  */
+
 void Follower::initFollowerBox(FollowerShape &shape, bool showBoxes)
 {
 	float length = shape.getRightBounds() - shape.getLeftBounds();
@@ -152,13 +162,11 @@ void Follower::setHealth(int newHealth) {
 
 
 	/*  Accessor Methods  */
-sf::Vector2f Follower::getFollowerPosition()
-{
+sf::Vector2f Follower::getFollowerPosition() {
 	return fPosition;
 }
 
-sf::Vector2f Follower::getFollowerVelocity()
-{
+sf::Vector2f Follower::getFollowerVelocity() {
 	return fVelocity;
 }
 
@@ -210,15 +218,22 @@ void Follower::moveLogic(bool collision, Player &player, std::vector<Tower> &tow
 		//follower accerlates if following a player or decelerate if they contact him
 
 		if (retargetCount % retargetRate == 0)
+		{
 			setNewVelocity(player.getPosition());
+			retargetCount = 1;
+		}
 		else
 			retargetCount++;
 	}
 
 
 
-	for (size_t i = 0; i < towers.size(); i++) {	//checks each tower for potential collision
-		towerCollision(towers[i]);
+	for (size_t i = 0; i < towers.size(); i++) {	
+		//checks each tower for potential collision
+		if (redirectCount > redirectRate)
+			towerCollision(towers[i]);
+		else
+			redirectCount++;
 	}
 
 	sf::Vector2f newPos = fShape.getPosition() + fVelocity;
@@ -363,9 +378,14 @@ bool Follower::towerCollision(Tower &tower)
 	//if there is a tower collision, redirect follower's velocity
 	bool towerCollision = distanceFrom(tower.getPosition()) <= tower.getTowerRadius();
 
+	static int count = 0;
+
 	if (towerCollision) {
 		fVelocity = -fVelocity;
 	}
+
+	redirectCount = 0;
+
 	return towerCollision;
 }
 

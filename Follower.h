@@ -27,8 +27,11 @@ private:
 	int aUp, aLeft, aDown, aRight = 0;						//static ints will track how many times a follower has been accelerating in a given direction
 	enum direction {STILL = 0, UP, LEFT, DOWN, RIGHT};		//declares enum direction to handle player movement
 
-	int retargetRate;
-	int retargetCount;
+	short retargetRate;
+	short retargetCount;
+
+	short redirectRate;
+	short redirectCount;
 
 	float playersOldX;
 	float playersOldY;
@@ -45,7 +48,7 @@ private:
 public:
 
 Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor = sf::Color::Black,
-	int startHealth = 1, int retrgtRate = 10,
+	int startHealth = 1, short retrgtRate = 10, short redirRate = 2, 
 	float scale = 2.5f, bool showBoxes = true);
 
 
