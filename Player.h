@@ -123,11 +123,16 @@ private:
 	float health;
 	float maxHealth;
 	int lives;
+	bool gameOver;
 
 	float shield;
 	float maxShield;
+	float shieldRegen;
+	//units: float_val / sec (60 frames)
 
-	static float healthBarHeight;
+	sf::Vector2f healthBarSize;
+	//standard value, does NOT change with damage taken
+	//changes with window size
 	sf::Vector2f healthBarPosition;
 	sf::Vector2f healthBarOrigin;
 	sf::RectangleShape healthBarRed;							//representaion of player's lost health
@@ -193,6 +198,7 @@ public:
 	void initSmallFollowerRadius(float newRadius);
 
 	void initLargeFollowerRadius(float newRadius);
+	//End init methods
 
 
 	//ALL SET METHODS OF CLASS PLAYER
@@ -203,6 +209,8 @@ public:
 	void centerHealthText();
 
 	void setShield(float newShield);
+
+	void setShieldRegen(float newRegen);
 
 	void setScore(int newScore);
 
@@ -258,12 +266,13 @@ public:
 
 	float getLargeFollowAreaRadius();
 
-
 	float getMinLFR(); 
 
 	int getLaserLength();
 
 	int getLaserWidth();
+
+	bool isGameOver();
 
 	//METHODS OF CLASS PLAYER MANAGING SCORE
 	void adjScore(int adj); 
@@ -283,6 +292,9 @@ public:
 	//METHODS RELATED TO MANAGING A PLAYER'S HEALTH
 	void takeDamage(float dmg);
 
+	void regenShield();
+
+	void loseLife();
 
 	//METHODS RELATING TO PLAYERS INERACTION WITH TOWERS
 	sf::Vector2f towerCollisions(int dir, int towerNum, sf::Vector2f const &towerPos,

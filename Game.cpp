@@ -44,7 +44,7 @@ void Game::initVars()
 	maxPlayers = 4;
 	numberOfTowers = 4;
 
-	int gameState = 0;
+	gameState = 0;
 }
 
 void Game::initWindow()
@@ -131,7 +131,12 @@ void Game::movePlayerLogic()
 			players.at(i).growLargeFollowArea();
 		else
 			players.at(i).setLargeFollowerRadius(players.at(i).getMinLFR());
+
+		//regenShield
+		if (players.at(i).getShield() > 0)
+			players.at(i).regenShield();
 	}
+
 
 }
 
@@ -154,12 +159,27 @@ void Game::followerMechanics()
 	attackPlayer();
 }
 
+void Game::isGameOver()
+{
+	for (size_t i = 0; i < players.size(); i++)
+	{
+		if (players.at(i).isGameOver() == true)
+		{
+			gameState = 0;
+			initStartMenu();
+			//Erase players!, err restart game ;/
+		}
+			
+	}
+
+}
+
 
 	/* LEVEL 2  -  Followers*/
 void Game::spawnFollowers()
 {
 	static int temperSpawnRate = 0; temperSpawnRate++;				//moderates spawn rate
-	static int maxFollowers = 20;
+	static int maxFollowers = 10;
 	static int tmperRate = 50;
 
 	if ((temperSpawnRate % tmperRate == 0) && (activeFollowers.size() < maxFollowers))
@@ -350,6 +370,7 @@ void Game::update()
 		movePlayerLogic();
 		shootingMechanics();
 		followerMechanics();
+		isGameOver();
 		break;
 
 	case 2:

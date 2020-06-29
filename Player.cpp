@@ -200,7 +200,6 @@ void PlayerShape::drawPlayer(sf::RenderWindow &window)
 
 	/*  Static Members of Player Class  */
 
-float Player::healthBarHeight = 30.f;
 float Player::areaOutline = 4.f;
 sf::Color Player::pColors[] = { sf::Color::Red, sf::Color::Blue,
 	sf::Color::Green, sf::Color::Yellow };
@@ -236,6 +235,7 @@ Player::Player(sf::RenderWindow &window, int pNumber, int startLives, float scal
 		score = startScore;
 		playerSpeed = mSpeed;
 		initLives(startLives);
+		gameOver = false;
 
 		playerDirection = STILL;
 		moveVect = sf::Vector2f(STILL, STILL);
@@ -273,16 +273,18 @@ Player::Player(sf::RenderWindow &window, int pNumber, int startLives, float scal
 void Player::initHealthBar(sf::RenderWindow &window, float sHealth, float sMaxHealth)
 	{
 		maxHealth = sMaxHealth;
-		//float stdLength = 300.f;
-
+		
 		float healthBarX = window.getSize().x / 2.f;
 		float healthBarY = window.getSize().y / 40.f;
 
-		healthBarPosition = sf::Vector2f(healthBarX, healthBarY);
-		healthBarOrigin = sf::Vector2f(sMaxHealth / 2.f, healthBarHeight / 2.f);
-		sf::Vector2f startHealthBarSize = sf::Vector2f(sMaxHealth, healthBarHeight);
+		float hLength = window.getSize().x / 5.f;
+		float hHeight = window.getSize().y / 30.f;
 
-		healthBarRed.setSize(startHealthBarSize);			//initiates red (background) health bar
+		healthBarPosition = sf::Vector2f(healthBarX, healthBarY);
+		healthBarSize = sf::Vector2f(hLength, hHeight);
+		healthBarOrigin = healthBarSize / 2.f;
+
+		healthBarRed.setSize(healthBarSize);			//initiates red (background) health bar
 		healthBarRed.setOrigin(healthBarOrigin);
 		healthBarRed.setPosition(healthBarPosition);
 		healthBarRed.setFillColor(sf::Color::Red);
@@ -299,6 +301,7 @@ void Player::initHealthBar(sf::RenderWindow &window, float sHealth, float sMaxHe
 void Player::initShieldBar(sf::RenderWindow &window, float sShield, float sMaxShield)
 	{
 		maxShield = sMaxShield;
+		shieldRegen = 1.f;
 
 		setShield(sShield);									//Player initiated with size 100 shield
 		shieldBar.setOrigin(healthBarOrigin);
@@ -401,9 +404,10 @@ void Player::setLives(int newLives) {
 void Player::setHealth(float newHealth)
 	{
 		health = newHealth;
+		float newLength = (health / maxHealth) * healthBarSize.x;
 
-		sf::Vector2f  healthBarSize = sf::Vector2f(health, healthBarHeight);
-		healthBarGreen.setSize(healthBarSize);
+		sf::Vector2f  newSize = sf::Vector2f(newLength, healthBarSize.y);
+		healthBarGreen.setSize(newSize);
 
 		healthText.setString(std::to_string(static_cast<int>(health)) + "/"
 			+ std::to_string(static_cast<int>(maxHealth)));				//updates graphics and text
@@ -429,14 +433,19 @@ void Player::centerHealthText()
 void Player::setShield(float newShield)
 	{
 		shield = newShield;
+		float newLength = (shield / maxShield) * healthBarSize.x;
 
-		sf::Vector2f  shieldBarSize = sf::Vector2f(shield * 3.f, healthBarHeight);
+		sf::Vector2f  shieldBarSize = sf::Vector2f(newLength, healthBarSize.y);
 
-		healthText.setString(std::to_string(static_cast<int>(health + shield)) + "/"
-			+ std::to_string(static_cast<int>(maxHealth)));				//updates graphics and text
+		healthText.setString(std::to_string(static_cast<int>(shield)) + "/"
+			+ std::to_string(static_cast<int>(maxShield)));				//updates graphics and text
 		shieldBar.setSize(shieldBarSize);
 
 	}
+
+void Player::setShieldRegen(float newRegen) {
+	shieldRegen = newRegen;
+}
 
 void Player::setScore(int newScore)
 	{
@@ -587,6 +596,10 @@ int Player::getLaserWidth() {
 	return laserWidth;
 }
 
+bool Player::isGameOver() {
+	return gameOver;
+}
+
 
 	//METHODS OF CLASS PLAYER MANAGING SCORE
 void Player::adjScore(int adj) {
@@ -660,11 +673,50 @@ void Player::takeDamage(float dmg)
 	float combinedHealth = health + shield - dmg;
 
 	float newShield = std::min(std::max(combinedHealth - maxHealth, 0.f), maxShield);
-	float newHealth = std::max(std::min(combinedHealth - newShield, maxHealth), 0.f);
+	float newHealth = std::max(std::min(combinedHealth - newShield, maxHealth), -1.f);
 	//Sets new health and shield values with max and min functions
 
-	setHealth(newHealth);
-	setShield(newShield);
+	if (combinedHealth >= maxHealth) {
+		setShield(newShield);
+	}	
+	else if (combinedHealth >= 0) {
+		setHealth(newHealth);
+	}
+	else if (combinedHealth <= 0) {
+		loseLife();
+	}
+
+}
+
+void Player::regenShield()
+{
+	static short counter = 0;
+
+	if (shield > 0 && shield < maxShield) {
+		counter++;
+
+		if (counter >= 60) {
+			setShield(shield + shieldRegen);
+			counter = 0;
+		}
+	}
+
+}
+
+void Player::loseLife()
+{
+	if (lives > 0)
+	{
+		setLives(--lives);
+		setHealth(maxHealth);
+		setShield(maxShield);
+	}
+	else
+	{
+		std::cout << "setting game Over" << std::endl;
+		gameOver = true;
+	}
+		
 }
 
 

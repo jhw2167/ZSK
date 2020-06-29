@@ -55,7 +55,8 @@ private:
 	//number of towers is 
 
 	short gameState;
-	//0 - Startmenu, 1 - in game, 2 - pauseMenu	
+	//0 - Startmenu, 1 - in game, 2 - pauseMenu
+	//3 - quit
 
 	/******************/
 	//Private functions
@@ -78,6 +79,7 @@ private:
 	void movePlayerLogic();
 	void shootingMechanics();
 	void followerMechanics();
+	void isGameOver();
 
 	/* LEVEL 2  -  Followers*/
 	void spawnFollowers();
