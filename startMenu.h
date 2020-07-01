@@ -64,7 +64,6 @@ public:
 	//One Line title, One option
 	StartMenu(sf::RenderWindow &window, std::string *options[] );
 
-
 		/*  Setter Methods  */
 	void setWindowSize(sf::RenderWindow &window);
 	void setTitlePos(sf::Vector2f const &newPos);
