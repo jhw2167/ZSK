@@ -99,6 +99,11 @@ private:
 	void drawStartMenu();
 	void drawPauseMenu();
 
+	/* Other Functions  */
+	void reset();
+	//resets player, follower and tower vectors,
+	// by clearing all vector elements and reinitializing
+
 	//END PRIVATE FUNCTIONS
 
 public:

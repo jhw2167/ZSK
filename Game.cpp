@@ -71,7 +71,6 @@ void Game::runStartMenu()
 	//Update and animate title screen
 	startMenu_ptr->update(mousePos);
 
-
 	if (startMenu_ptr->getOptionSelected() != 0)
 	{
 		gameState = startMenu_ptr->getOptionSelected();
@@ -163,13 +162,18 @@ void Game::isGameOver()
 {
 	for (size_t i = 0; i < players.size(); i++)
 	{
-		if (players.at(i).isGameOver() == true)
-		{
+		if (players.at(i).isGameOver() == true) {
 			gameState = 0;
-			initStartMenu();
-			//Erase players!, err restart game ;/
+			break;
 		}
 			
+	}
+
+	if (gameState == 0)
+	{
+		//Erase players!, err restart game ;/
+		reset();
+		initStartMenu();
 	}
 
 }
@@ -185,6 +189,8 @@ void Game::spawnFollowers()
 	if ((temperSpawnRate % tmperRate == 0) && (activeFollowers.size() < maxFollowers))
 	{
 		Follower follower(*window_ptr, towers.at(0).getTowerRadius());
+		//EXCEPTION THROWN HERE WHEN TOWERS NOT INNIT
+
 		activeFollowers.push_back(follower);				//adds new follower to vector of active follower
 		//std::cout << "Spawning fol, total num: " << activeFollowers.size() << std::endl;
 	}
@@ -296,9 +302,24 @@ void Game::drawPauseMenu()
 {
 }
 
+void Game::reset()
+{
+	/*
+		resets player, follower and tower vectors,
+		by clearing all vector elements and reinitializing
+	*/
+
+	players.clear();
+	activeFollowers.clear();
+	towers.clear();
+
+	initStartMenu();
+	initTowers();
+	addPlayer();
+}
+
 
 //END PRIVATE FUNCTIONS
-
 
 
 /*		PUBLIC FUNCTIONS		*/
@@ -351,6 +372,8 @@ void Game::addPlayer()
 		players.push_back(player);
 		//calling copy constructor here to store
 		//in vector, beware of ptrs in player class
+
+		players.at(0).setLives(0);
 	}
 
 }

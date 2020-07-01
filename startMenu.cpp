@@ -3,15 +3,9 @@
 #include "startMenu.h"
 #include "Bullet.h"
 
-/*
-static int count = 0;
-if (count % 200 == 0)
-std::cout << "size of quit " << quitRect.getScale() << std::endl;
-count++;
-*/
+	/*  StartMenu  */
 
-
-
+//Start Menu Constructor
 StartMenu::StartMenu(sf::RenderWindow &window)
 {
 	setWindowSize(window);
@@ -20,6 +14,9 @@ StartMenu::StartMenu(sf::RenderWindow &window)
 	initGameTitle();
 	initMenuOptions();
 }
+
+//One Line title, One option
+
 
 	/*  Init methods  */
 void StartMenu::initvars()

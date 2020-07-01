@@ -711,9 +711,7 @@ void Player::loseLife()
 		setHealth(maxHealth);
 		setShield(maxShield);
 	}
-	else
-	{
-		std::cout << "setting game Over" << std::endl;
+	else {
 		gameOver = true;
 	}
 		

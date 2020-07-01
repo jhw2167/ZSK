@@ -11,7 +11,6 @@
 //Precompiled header
 #include "stdafx.h"
 
-
 class StartMenu
 {
 private:
@@ -61,6 +60,9 @@ public:
 
 		/*  Constructors  */
 	StartMenu(sf::RenderWindow &window);
+
+	//One Line title, One option
+	StartMenu(sf::RenderWindow &window, std::string *options[] );
 
 
 		/*  Setter Methods  */
