@@ -23,7 +23,6 @@ Game::Game()
 //END CONSTRUCTORS
 
 
-
 /*		PRIVATE FUNCTIONS		*/
 
 void Game::initTowers()
@@ -49,11 +48,69 @@ void Game::initVars()
 
 void Game::initWindow()
 {
+	/*
+		Init sf::render window, from config file
+		Initializes default vars first
+	*/
+
+	std::string title = "ZSK";
 	vidMode.width = 1500.f;
 	vidMode.height = 1200.f;
+	int frameLimit = 60;
+	bool vertical_syn_enabled = false;
 
-	window_ptr = new sf::RenderWindow(vidMode, "Zombie Slayer Killer");
-	window_ptr->setFramerateLimit(60);
+	std::string skip;
+	//we want to skip certain elements in
+	//our config file and just get the data
+
+	try
+	{
+		//Declares and opens file simultaneously
+		std::string configFile = "window/config.ini";
+		std::ifstream w_config(configFile);
+
+		if (!w_config)
+		{
+			//Throw exception if file not open
+			std::string openFileErr = "Unable to open file with name: ";
+			openFileErr += configFile;
+			throw file_open_error(openFileErr);
+		}
+		//read vars in from file 
+
+		w_config >> skip;
+		std::getline(w_config, title);
+
+		w_config >> skip;
+		w_config >> vidMode.width >> vidMode.height;
+
+		w_config >> skip;
+		w_config >> frameLimit;
+
+		w_config >> skip;
+		w_config >> vertical_syn_enabled;
+
+
+		w_config.close();
+	}
+	//End Try Block
+
+	catch (file_open_error &foe1) {
+		std::cout << "File open error caugh in Game::initWindow : " 
+			<< std::endl;
+
+		std::cout << foe1.what() << std::endl;
+	}
+	catch (...) {
+		std::cout << "Unknown exception caught in Game::initWindow : "
+			<< std::endl;
+	}
+	//end Catch statements 
+
+	//create window with file or default values
+
+	window_ptr = new sf::RenderWindow(vidMode, title);
+	window_ptr->setFramerateLimit(frameLimit);
 }
 
 void Game::initStartMenu() {
@@ -71,7 +128,7 @@ void Game::runStartMenu()
 	//Update and animate title screen
 	startMenu_ptr->update(mousePos);
 
-	if (startMenu_ptr->getOptionSelected() != 0)
+	if (startMenu_ptr->getOptionSelected() == 1)
 	{
 		gameState = startMenu_ptr->getOptionSelected();
 		delete startMenu_ptr;
@@ -318,6 +375,16 @@ void Game::reset()
 	addPlayer();
 }
 
+void Game::updateDt()
+{
+	/*
+		Updates dt float with seconds required to
+		update single frame of data in game
+	*/
+
+	dt = dtClock.restart().asSeconds();
+}
+
 
 //END PRIVATE FUNCTIONS
 
@@ -382,6 +449,7 @@ void Game::update()
 {
 	updateMousePosition();
 	pollEvents();
+	updateDt();
 
 	switch (gameState)
 	{

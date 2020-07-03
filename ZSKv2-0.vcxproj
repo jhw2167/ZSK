@@ -78,6 +78,9 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
     <LibraryPath>$(VCInstallDir)\bin\x86_amd64;$(VCInstallDir)\bin;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);$(NETFXKitsDir)Lib\um\x64</LibraryPath>
+    <ExecutablePath>$(VC_ExecutablePath_x64);$(WindowsSDK_ExecutablePath);$(VS_ExecutablePath);$(MSBuild_ExecutablePath);$(FxCopDir);$(PATH);C:\Users\jack\source\repos\ZSKv2-0\ZSKv2-0\dlls</ExecutablePath>
+    <SourcePath>$(VC_SourcePath);</SourcePath>
+    <ReferencePath>$(VC_ReferencesPath_x64);</ReferencePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
@@ -141,29 +144,31 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Bullet.cpp" />
-    <ClCompile Include="Follower.cpp" />
-    <ClCompile Include="FollowerShape.cpp" />
+    <ClCompile Include="Exceptions\Exceptions.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Game_Files\Bullet.cpp" />
+    <ClCompile Include="Game_Files\Follower.cpp" />
+    <ClCompile Include="Game_Files\FollowerShape.cpp" />
+    <ClCompile Include="Game_Files\Player.cpp" />
+    <ClCompile Include="Game_Files\Tower.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Player.cpp" />
-    <ClCompile Include="startMenu.cpp" />
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="Tower.cpp" />
+    <ClCompile Include="Menus\startMenu.cpp" />
+    <ClCompile Include="pch\stdafx.cpp" />
+    <ClCompile Include="States\State.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Bullet.h" />
     <ClInclude Include="coutTests.h" />
-    <ClInclude Include="Follower.h" />
-    <ClInclude Include="FollowerShape.h" />
+    <ClInclude Include="Exceptions\Exceptions.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Game_Files\Bullet.h" />
+    <ClInclude Include="Game_Files\Follower.h" />
+    <ClInclude Include="Game_Files\FollowerShape.h" />
+    <ClInclude Include="Game_Files\Player.h" />
+    <ClInclude Include="Game_Files\Tower.h" />
     <ClInclude Include="main.h" />
-    <ClInclude Include="Player.h" />
-    <ClInclude Include="startMenu.h" />
-    <ClInclude Include="stdafx.h" />
-    <ClInclude Include="Tower.h" />
+    <ClInclude Include="Menus\startMenu.h" />
+    <ClInclude Include="pch\stdafx.h" />
+    <ClInclude Include="States\State.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

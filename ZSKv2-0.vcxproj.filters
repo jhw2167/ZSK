@@ -13,37 +13,61 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Source Files\States">
+      <UniqueIdentifier>{ac101898-f99d-4298-ba4a-dff30243af39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\stdafx">
+      <UniqueIdentifier>{2384c6a5-7638-46c2-bb79-39ff4c54b837}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Exceptions">
+      <UniqueIdentifier>{2dc4023b-7120-47e4-b49f-ae78b64b05fb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Other">
+      <UniqueIdentifier>{f955f2c9-31a6-42af-aafe-41bf27b3cc48}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\GameFiles">
+      <UniqueIdentifier>{781c12b3-59de-42d9-a800-0b4ebeee1096}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Menus">
+      <UniqueIdentifier>{32662c8e-f0c3-42a9-97e4-35e82f01adbb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="coutTests.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="main.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="FollowerShape.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Other</Filter>
     </ClInclude>
     <ClInclude Include="Game.h">
-      <Filter>Header Files</Filter>
+      <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Bullet.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="main.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="Follower.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="States\State.h">
+      <Filter>Source Files\States</Filter>
     </ClInclude>
-    <ClInclude Include="Player.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Exceptions\Exceptions.h">
+      <Filter>Header Files\Exceptions</Filter>
     </ClInclude>
-    <ClInclude Include="Tower.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="pch\stdafx.h">
+      <Filter>Header Files\stdafx</Filter>
     </ClInclude>
-    <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Game_Files\Follower.h">
+      <Filter>Source Files\GameFiles</Filter>
     </ClInclude>
-    <ClInclude Include="startMenu.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Game_Files\FollowerShape.h">
+      <Filter>Source Files\GameFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="Game_Files\Player.h">
+      <Filter>Source Files\GameFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="Game_Files\Tower.h">
+      <Filter>Source Files\GameFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="Game_Files\Bullet.h">
+      <Filter>Source Files\GameFiles</Filter>
+    </ClInclude>
+    <ClInclude Include="Menus\startMenu.h">
+      <Filter>Source Files\Menus</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -53,26 +77,32 @@
     <ClCompile Include="Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="FollowerShape.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="States\State.cpp">
+      <Filter>Source Files\States</Filter>
     </ClCompile>
-    <ClCompile Include="Follower.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Exceptions\Exceptions.cpp">
+      <Filter>Header Files\Exceptions</Filter>
     </ClCompile>
-    <ClCompile Include="Tower.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="pch\stdafx.cpp">
+      <Filter>Header Files\stdafx</Filter>
     </ClCompile>
-    <ClCompile Include="Bullet.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Game_Files\Follower.cpp">
+      <Filter>Source Files\GameFiles</Filter>
     </ClCompile>
-    <ClCompile Include="Player.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Game_Files\FollowerShape.cpp">
+      <Filter>Source Files\GameFiles</Filter>
     </ClCompile>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Game_Files\Player.cpp">
+      <Filter>Source Files\GameFiles</Filter>
     </ClCompile>
-    <ClCompile Include="startMenu.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="Game_Files\Tower.cpp">
+      <Filter>Source Files\GameFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="Game_Files\Bullet.cpp">
+      <Filter>Source Files\GameFiles</Filter>
+    </ClCompile>
+    <ClCompile Include="Menus\startMenu.cpp">
+      <Filter>Source Files\Menus</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

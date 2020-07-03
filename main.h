@@ -3,7 +3,7 @@
 
 //Main file brings all objects together to create the game
 #include "Game.h"
-#include "coutTests.h"
+#include "Other/coutTests.h"
 
 
 //TESTS

@@ -18,16 +18,17 @@
 //Game engine/wrapper stored collectively in game class
 
 //Precompiled header
-#include "stdafx.h"
+#include "States/State.h"
+#include "Menus/startMenu.h"
 
 //Project includes
-#include "Bullet.h"
-#include "FollowerShape.h"
-#include "Player.h"
-#include "Follower.h"
-#include "FollowerShape.h"
-#include "Tower.h"
-#include "startMenu.h"
+#include "Game_Files/Bullet.h"
+#include "Game_Files/FollowerShape.h"
+#include "Game_Files/Player.h"
+#include "Game_Files/Follower.h"
+#include "Game_Files/FollowerShape.h"
+#include "Game_Files/Tower.h"
+
 
 class Game
 {
@@ -38,6 +39,10 @@ private:
 	sf::RenderWindow *window_ptr;
 	sf::VideoMode vidMode;
 	sf::Event event;
+
+	//Clock variables, move irrespective to framerate
+	float dt;
+	sf::Clock dtClock;
 
 	//Menus
 	StartMenu *startMenu_ptr;
@@ -101,6 +106,7 @@ private:
 
 	/* Other Functions  */
 	void reset();
+	void updateDt();
 	//resets player, follower and tower vectors,
 	// by clearing all vector elements and reinitializing
 
