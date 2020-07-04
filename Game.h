@@ -21,13 +21,6 @@
 #include "States/State.h"
 #include "Menus/startMenu.h"
 
-//Project includes
-#include "Game_Files/Bullet.h"
-#include "Game_Files/FollowerShape.h"
-#include "Game_Files/Player.h"
-#include "Game_Files/Follower.h"
-#include "Game_Files/FollowerShape.h"
-#include "Game_Files/Tower.h"
 
 
 class Game
@@ -47,18 +40,6 @@ private:
 	//Menus
 	StartMenu *startMenu_ptr;
 
-	//Game Based Vectors
-	std::vector<Player> players;
-	std::vector<Follower> activeFollowers;
-	std::vector<Tower> towers;
-	sf::Vector2i mousePos;
-
-	//Simple Game Values
-	int numPlayers;
-	int maxPlayers;
-	int numberOfTowers;
-	//number of towers is 
-
 	short gameState;
 	//0 - Startmenu, 1 - in game, 2 - pauseMenu
 	//3 - quit
@@ -68,7 +49,6 @@ private:
 	/*****************/
 
 	/* Init Functions*/
-	void initTowers();
 	void initVars();
 	void initWindow();
 	void initStartMenu();
@@ -79,30 +59,12 @@ private:
 	void runStartMenu();
 	void pauseMenu();
 
-
-	/* LEVEL 1  -  Call From Update*/
-	void movePlayerLogic();
-	void shootingMechanics();
-	void followerMechanics();
 	void isGameOver();
 
-	/* LEVEL 2  -  Followers*/
-	void spawnFollowers();
-	void moveFollowers();
-	void shootFollowers();
-	void attackPlayer();
-
-	/* LEVEL 2  -  Towers*/
-	int checkTowerCollision();
-
-
-	/* LEVEL 3  -  Draw Functions*/
-	void drawPlayers();
-	void drawFollowers();
-	void drawTowers();
-
+	/*  Draw Functions  */
 	void drawStartMenu();
 	void drawPauseMenu();
+
 
 	/* Other Functions  */
 	void reset();
@@ -118,9 +80,9 @@ public:
 	Game();
 	virtual ~Game();
 
-	//SETTERS
+	//Modifiers
 
-	//GETTERS
+	//Accessors
 	const bool windowIsOpen() const;
 
 	//Functions

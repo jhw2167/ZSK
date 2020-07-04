@@ -17,21 +17,12 @@ Game::Game()
 	initStartMenu();
 
 	addPlayer();
-	initTowers();
 }
 
 //END CONSTRUCTORS
 
 
 /*		PRIVATE FUNCTIONS		*/
-
-void Game::initTowers()
-{
-	//adds an additional tower out of play that assists with mechanics
-	for (size_t i = 0; i < numberOfTowers + 1; i++) {
-		towers.push_back(Tower(*window_ptr, i));
-	}
-}
 
 void Game::initVars()
 {
@@ -72,7 +63,7 @@ void Game::initWindow()
 		if (!w_config)
 		{
 			//Throw exception if file not open
-			std::string openFileErr = "Unable to open file with name: ";
+			std::string openFileErr = "Unable to open config file with name: ";
 			openFileErr += configFile;
 			throw file_open_error(openFileErr);
 		}
@@ -101,16 +92,27 @@ void Game::initWindow()
 
 		std::cout << foe1.what() << std::endl;
 	}
+	//End catch: establish window with default values
+
+	try
+	{
+		//create window with file or default values
+		window_ptr = new sf::RenderWindow(vidMode, title);
+		window_ptr->setFramerateLimit(frameLimit);
+	}
+
+	catch (std::bad_alloc &ba1) {
+		std::cout << "bad_alloc error caught in Game::initWindow : "
+			<< std::endl;
+
+		std::cout << ba1.what() << std::endl;
+	}
 	catch (...) {
 		std::cout << "Unknown exception caught in Game::initWindow : "
 			<< std::endl;
 	}
 	//end Catch statements 
 
-	//create window with file or default values
-
-	window_ptr = new sf::RenderWindow(vidMode, title);
-	window_ptr->setFramerateLimit(frameLimit);
 }
 
 void Game::initStartMenu() {
@@ -118,10 +120,9 @@ void Game::initStartMenu() {
 }
 
 
-
 //Game Update functions
 
-	/* LEVEL 1  -  Start Menu*/
+	/*  Start Menu  */
 
 void Game::runStartMenu() 
 {
@@ -142,214 +143,7 @@ void Game::pauseMenu()
 }
 
 
-/* LEVEL 1  -  Call From Update*/
-void Game::movePlayerLogic()
-{
-	int towerNum = checkTowerCollision();		//towerNum is initialized to element number  of tower player is colliding with
-	enum dir { UP = 1, LEFT, DOWN, RIGHT };
-
-	for (size_t i = 0; i < players.size(); i++)
-	{
-		//moves player up if not at upwardbounds
-	//Yes there needs to be a function call after each if to support directional travel
-	//no, you cannot pass the key pressed event.
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-			if (players.at(i).getPlayerShape().getUpperBounds() > 0)
-				players.at(i).moveLogic(UP, towerNum, towers.at(towerNum).getPosition(),
-					towers.at(towerNum).getTowerRadius());
-		}
-		//move player left if not at left bounds
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-			if (players.at(i).getPlayerShape().getLeftBounds() > 0)
-				players.at(i).moveLogic(LEFT, towerNum, towers.at(towerNum).getPosition(),
-					towers.at(towerNum).getTowerRadius());
-		}
-		//down
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-			if (players.at(i).getPlayerShape().getLowerBounds() < window_ptr->getSize().y)
-				players.at(i).moveLogic(DOWN, towerNum, towers.at(towerNum).getPosition(),
-					towers.at(towerNum).getTowerRadius());
-		}
-		//and right
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-			if (players.at(i).getPlayerShape().getRightBounds() < window_ptr->getSize().x)
-				players.at(i).moveLogic(RIGHT, towerNum, towers.at(towerNum).getPosition(),
-					towers.at(towerNum).getTowerRadius());
-		}
-
-		/*Second parameter in function call accepts bool type, integer type is passed because any int > 0, (i.e. tower num 1,2,3 or 4)
-		is interpreted as bool TRUE, if checkTowerColliion() fails to
-		find colliding tower, it passes tower at elem 0 which is out of bounds*/
-
-
-		//Grow follow area -- unrelated to movement but a good place to call
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
-			players.at(i).growLargeFollowArea();
-		else
-			players.at(i).setLargeFollowerRadius(players.at(i).getMinLFR());
-
-		//regenShield
-		if (players.at(i).getShield() > 0)
-			players.at(i).regenShield();
-	}
-
-
-}
-
-void Game::shootingMechanics()
-{
-	for (size_t i = 0; i < players.size(); i++)
-	{
-		players.at(i).shoot(mousePos);
-		players.at(i).moveBullets();
-		players.at(i).checkBulletInBounds(*window_ptr);
-	}
-}
-
-void Game::followerMechanics()
-{
-	spawnFollowers();
-	moveFollowers();
-
-	shootFollowers();
-	attackPlayer();
-}
-
-void Game::isGameOver()
-{
-	for (size_t i = 0; i < players.size(); i++)
-	{
-		if (players.at(i).isGameOver() == true) {
-			gameState = 0;
-			break;
-		}
-			
-	}
-
-	if (gameState == 0)
-	{
-		//Erase players!, err restart game ;/
-		reset();
-		initStartMenu();
-	}
-
-}
-
-
-	/* LEVEL 2  -  Followers*/
-void Game::spawnFollowers()
-{
-	static int temperSpawnRate = 0; temperSpawnRate++;				//moderates spawn rate
-	static int maxFollowers = 10;
-	static int tmperRate = 50;
-
-	if ((temperSpawnRate % tmperRate == 0) && (activeFollowers.size() < maxFollowers))
-	{
-		Follower follower(*window_ptr, towers.at(0).getTowerRadius());
-		//EXCEPTION THROWN HERE WHEN TOWERS NOT INNIT
-
-		activeFollowers.push_back(follower);				//adds new follower to vector of active follower
-		//std::cout << "Spawning fol, total num: " << activeFollowers.size() << std::endl;
-	}
-}
-
-void Game::moveFollowers()
-{
-	for (size_t i = 0; i < players.size(); i++) {
-		for (size_t j = 0; j < activeFollowers.size(); j++)
-		{
-			activeFollowers[j].moveLogic(activeFollowers[j].followerCollision(activeFollowers, j),
-				players.at(i), towers);
-			//checks follower for follower collision then moves and adjust velocity as necesary
-			//if follower is in collision with another follower, function "bounces" them off each other
-			//otherwise just moves follwer at current velocity
-		}
-	}
-}
-
-void Game::shootFollowers()
-{
-	std::vector<bool> erasefollower;
-	for (size_t i = 0; i < players.size(); i++) {
-		for (size_t j = 0; j < activeFollowers.size(); j++)
-		{
-			int dmg = players.at(i).shootFollower(
-				activeFollowers.at(j).getFollowerGlobalBounds());
-
-			//activeFollowers.takeDamage(dmg);
-
-			if (dmg > 0) {
-				activeFollowers.erase(activeFollowers.begin() + j);
-				j--;
-			}
-		}
-
-		//return array of followers shot by this player
-		//aggregate all dead followers into 1 array by arr1 || arr2
-
-	}
-}
-
-void Game::attackPlayer()
-{
-	for (size_t i = 0; i < players.size(); i++)
-	{
-		for (size_t j = 0; j < activeFollowers.size(); j++)
-		{
-			if (activeFollowers[j].getFollowerGlobalBounds().intersects(
-				players.at(i).getHeartBounds())) {	//if a follwer insects the player's global bounds
-
-				int dmg = 1;					//later dmg = given followers damage
-				players.at(i).takeDamage(dmg);	//reduce player's health
-			}
-		}
-	}
-}
-
-
-	/*LEVEL 2  -  Towers*/
-int Game::checkTowerCollision()
-{
-	int collidingTower = 0;		//tower num (1-4) of colliding tower, or 0 for none
-	//We can make this better, only check for collision if close to tower
-
-	for (size_t i = 0; i < players.size(); i++)
-	{
-		for (size_t j = 0; j < towers.size(); j++)
-		{
-			if (towers[j].checkTowerCollision(players.at(i))) {
-				collidingTower = j;
-			}
-
-		}
-	}
-
-	return collidingTower;
-}
-
-
-	/* LEVEL 3  -  Draw Functions*/
-void Game::drawPlayers()
-{
-	for (size_t i = 0; i < players.size(); i++)
-	{
-		players.at(i).drawPlayer(*window_ptr);
-	}
-}
-
-void Game::drawFollowers()
-{
-	for (size_t i = 0; i < activeFollowers.size(); i++) {
-		activeFollowers.at(i).drawFollower(*window_ptr);
-	}
-}
-
-void Game::drawTowers()
-{
-	for (size_t i = 0; i < towers.size(); i++) {
-		towers.at(i).drawTowers(*window_ptr);
-	}
-}
+/*  Draw Functions  */
 
 void Game::drawStartMenu() {
 	startMenu_ptr->drawMenu(*window_ptr);
