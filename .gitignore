@@ -1,6 +1,7 @@
 ZSKv2-0.vcxproj
 ZSKv2-0.vcxproj.filters
-ZSKv2-0.vcxproj.users
+ZSKv2-0.vcxproj.user
+Excess.gitignore
 x64/
 dlls/
 Debug/
