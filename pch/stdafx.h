@@ -13,6 +13,8 @@
 #include <string>
 #include <array>
 #include <vector>
+#include <stack>
+#include <map>
 #include <ctime>
 #include <random>
 

@@ -11,13 +11,19 @@
 
 class State
 {
-private:
+protected:
+	/*  Protected Members are availible to
+				Base Classes			*/
+	sf::RenderWindow* window_ptr;
 
+
+private:
+	
 
 public:
 
 	//Constructors
-	State();
+	State(sf::RenderWindow* w_ptr);
 
 
 	/*

@@ -4,11 +4,12 @@
 
 	/*  Constructors  */
 
-GameState::GameState()
+GameState::GameState(sf::RenderWindow* w_ptr) : State(w_ptr)
 {
 	initVars();
 	initTowers();
 }
+
 
 /*  Private Functions  */
 
@@ -16,10 +17,21 @@ void GameState::initTowers()
 {
 	//adds an additional tower out of play that assists with mechanics
 	for (size_t i = 0; i < numberOfTowers + 1; i++) {
-		towers.push_back(Tower(*window_p
-tr, i));
+		towers.push_back(Tower(*window_ptr, i));
 	}
 }
+
+void GameState::initVars()
+{
+	window_ptr = nullptr;
+
+	numPlayers = 0;
+	maxPlayers = 4;
+	numberOfTowers = 4;
+
+}
+//End Private Functions
+
 
 //Game Update Functions
 
@@ -98,22 +110,7 @@ void GameState::followerMechanics()
 
 void GameState::isGameOver()
 {
-	for (size_t i = 0; i < players.size(); i++)
-	{
-		if (players.at(i).isGameOver() == true) {
-			gameState = 0;
-			break;
-		}
-
-	}
-
-	if (gameState == 0)
-	{
-		//Erase players!, err restart game ;/
-		reset();
-		initStartMenu();
-	}
-
+	
 }
 
 
@@ -230,6 +227,60 @@ void GameState::drawTowers()
 	for (size_t i = 0; i < towers.size(); i++) {
 		towers.at(i).drawTowers(*window_ptr);
 	}
+}
+
+
+	/*  Other Private Functions  */
+void GameState::reset()
+{
+
+}
+
+void GameState::updateDt()
+{
+	/*  
+		Update our "delta t" value that keeps
+		relative number of frames straight.
+	*/
+
+
+}
+
+	/*  Other Public Functions  */	
+
+void GameState::quitState()
+{
+
+}
+
+void GameState::update()
+{
+	/*
+		Update Function calls all game update 
+		functions for game components
+		- Players
+		- Followers
+		- Towers
+	*/
+
+	movePlayerLogic();
+	shootingMechanics();
+	followerMechanics();
+}
+
+void GameState::render()
+{
+	/*
+		Render Function calls draw functions for all
+		game components
+		- Players
+		- Followers
+		- Towers
+	*/
+
+	drawPlayers();
+	drawFollowers();
+	drawTowers();
 }
 
 

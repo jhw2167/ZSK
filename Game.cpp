@@ -28,12 +28,6 @@ void Game::initVars()
 {
 	//init window_ptr to nullptr
 	window_ptr = nullptr;
-	startMenu_ptr = nullptr;
-
-	numPlayers = 0;
-	maxPlayers = 4;
-	numberOfTowers = 4;
-
 	gameState = 0;
 }
 
@@ -119,6 +113,13 @@ void Game::initStartMenu() {
 	startMenu_ptr = new StartMenu(*window_ptr);
 }
 
+void Game::initStates()
+{
+	/*
+	mainMenu = new StartMenu();
+	states.push(mainMenu);
+	*/
+}
 
 //Game Update functions
 
@@ -140,6 +141,17 @@ void Game::runStartMenu()
 void Game::pauseMenu() 
 {
 	gameState = 1;
+}
+
+void Game::isGameOver() {
+	/*
+		Will set gamestate = 0, reset all
+		game entities, and direct player
+		back to main menu, by pushing it 
+		onto the stack.
+	*/
+
+	gameState = 0;
 }
 
 

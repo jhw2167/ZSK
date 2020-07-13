@@ -68,13 +68,20 @@ private:
 
 public:
 
-	//Constructors / Destructors
-	GameState();
+	/*  g*/
+	GameState(sf::RenderWindow* w_ptr);
 
 	//Modifiers
 
 	//Accessors
 
-	virtual ~gameState();
+
+	/*  Other Public Functions  */
+	virtual void quitState();
+	virtual void update();
+	virtual void render();
+
+		/*  Destructor  */
+	virtual ~GameState();
 };
 

@@ -39,10 +39,12 @@ private:
 
 	//Menus
 	StartMenu *startMenu_ptr;
+	std::stack<State*> states;
 
 	short gameState;
 	//0 - Startmenu, 1 - in game, 2 - pauseMenu
 	//3 - quit
+
 
 	/******************/
 	//Private functions
@@ -52,6 +54,7 @@ private:
 	void initVars();
 	void initWindow();
 	void initStartMenu();
+	void initStates();
 
 	//Game Update functions
 
