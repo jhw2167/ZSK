@@ -19,7 +19,8 @@
 
 //Precompiled header
 #include "States/State.h"
-#include "Menus/startMenu.h"
+#include "States/gameState.h"
+#include "States/MenuState.h"
 
 
 
@@ -32,13 +33,13 @@ private:
 	sf::RenderWindow *window_ptr;
 	sf::VideoMode vidMode;
 	sf::Event event;
+	sf::Vector2i mousePos;
 
 	//Clock variables, move irrespective to framerate
 	float dt;
 	sf::Clock dtClock;
 
 	//Menus
-	StartMenu *startMenu_ptr;
 	std::stack<State*> states;
 
 	short gameState;
@@ -54,7 +55,6 @@ private:
 	void initVars();
 	void initWindow();
 	void initStartMenu();
-	void initStates();
 
 	//Game Update functions
 
@@ -65,8 +65,6 @@ private:
 	void isGameOver();
 
 	/*  Draw Functions  */
-	void drawStartMenu();
-	void drawPauseMenu();
 
 
 	/* Other Functions  */

@@ -22,7 +22,7 @@ Game::Game()
 //END CONSTRUCTORS
 
 
-/*		PRIVATE FUNCTIONS		*/
+	/*  Init Functions  */
 
 void Game::initVars()
 {
@@ -110,38 +110,12 @@ void Game::initWindow()
 }
 
 void Game::initStartMenu() {
-	startMenu_ptr = new StartMenu(*window_ptr);
+	MenuState* mm = new MenuState(window_ptr);
+	states.push(mm);
 }
 
-void Game::initStates()
-{
-	/*
-	mainMenu = new StartMenu();
-	states.push(mainMenu);
-	*/
-}
 
-//Game Update functions
-
-	/*  Start Menu  */
-
-void Game::runStartMenu() 
-{
-	//Update and animate title screen
-	startMenu_ptr->update(mousePos);
-
-	if (startMenu_ptr->getOptionSelected() == 1)
-	{
-		gameState = startMenu_ptr->getOptionSelected();
-		delete startMenu_ptr;
-		startMenu_ptr = nullptr;
-	}
-}
-
-void Game::pauseMenu() 
-{
-	gameState = 1;
-}
+	/*  Game Update Functions  */
 
 void Game::isGameOver() {
 	/*
@@ -152,33 +126,6 @@ void Game::isGameOver() {
 	*/
 
 	gameState = 0;
-}
-
-
-/*  Draw Functions  */
-
-void Game::drawStartMenu() {
-	startMenu_ptr->drawMenu(*window_ptr);
-}
-
-void Game::drawPauseMenu()
-{
-}
-
-void Game::reset()
-{
-	/*
-		resets player, follower and tower vectors,
-		by clearing all vector elements and reinitializing
-	*/
-
-	players.clear();
-	activeFollowers.clear();
-	towers.clear();
-
-	initStartMenu();
-	initTowers();
-	addPlayer();
 }
 
 void Game::updateDt()
@@ -237,6 +184,7 @@ void Game::updateMousePosition() {
 
 void Game::addPlayer()
 {
+	/*
 	if (numPlayers < maxPlayers)
 	{
 		numPlayers += 1;
@@ -248,6 +196,8 @@ void Game::addPlayer()
 
 		players.at(0).setLives(0);
 	}
+	*/
+	
 
 }
 
@@ -257,27 +207,7 @@ void Game::update()
 	pollEvents();
 	updateDt();
 
-	switch (gameState)
-	{
-	case 0:
-		runStartMenu();
-		break;
-
-	case 1:
-		movePlayerLogic();
-		shootingMechanics();
-		followerMechanics();
-		isGameOver();
-		break;
-
-	case 2:
-		pauseMenu();
-		break;
-
-	case 3:
-		window_ptr->close();
-		break;
-	}
+	states.top()->update(mousePos);
 }
 
 
@@ -285,26 +215,8 @@ void Game::update()
 void Game::render()
 {
 	window_ptr->clear(sf::Color::White);
-
-	switch (gameState)
-	{
-	case 0:
-		drawStartMenu();
-		break;
-
-	case 1:
-		drawPlayers();
-		drawFollowers();
-		drawTowers();
-		break;
-
-	case 2:
-		drawPauseMenu();
-		break;
-	}
-
+	states.top()->render();
 	window_ptr->display();
-
 }
 
 
@@ -316,9 +228,10 @@ Game::~Game() {
 	delete window_ptr;
 	window_ptr = nullptr;
 
-	if (!(startMenu_ptr == nullptr)) {
-		delete startMenu_ptr;
-		startMenu_ptr = nullptr;
+	while (!states.empty())
+	{
+		delete states.top();
+		states.pop();
 	}
 }
 

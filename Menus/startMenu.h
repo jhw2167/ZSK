@@ -60,6 +60,9 @@ private:
 public:
 
 		/*  Constructors  */
+	StartMenu();
+	//default constructor, does nothing
+
 	StartMenu(sf::RenderWindow &window);
 
 	//One Line title, One option

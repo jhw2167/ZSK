@@ -3,6 +3,10 @@
 #include "startMenu.h"
 
 	/*  StartMenu  */
+//Default constructor, does nothing
+StartMenu::StartMenu()
+{
+}
 
 //Start Menu Constructor
 StartMenu::StartMenu(sf::RenderWindow &window)

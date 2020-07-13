@@ -246,6 +246,13 @@ void GameState::updateDt()
 
 }
 
+
+	/*  Modifiers  */
+void GameState::setMousePos(sf::Vector2i &mPos) {
+	mousePos = mPos;
+}
+
+
 	/*  Other Public Functions  */	
 
 void GameState::quitState()
@@ -253,7 +260,7 @@ void GameState::quitState()
 
 }
 
-void GameState::update()
+void GameState::update(sf::Vector2i &mPos)
 {
 	/*
 		Update Function calls all game update 
@@ -262,7 +269,7 @@ void GameState::update()
 		- Followers
 		- Towers
 	*/
-
+	setMousePos(mPos);
 	movePlayerLogic();
 	shootingMechanics();
 	followerMechanics();

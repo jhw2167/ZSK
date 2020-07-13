@@ -72,13 +72,14 @@ public:
 	GameState(sf::RenderWindow* w_ptr);
 
 	//Modifiers
+	void setMousePos(sf::Vector2i &mPos);
 
 	//Accessors
 
 
 	/*  Other Public Functions  */
 	virtual void quitState();
-	virtual void update();
+	virtual void update(sf::Vector2i &mousePos);
 	virtual void render();
 
 		/*  Destructor  */

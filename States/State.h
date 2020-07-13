@@ -31,9 +31,9 @@ public:
 		MUST define, else compile error
 	*/
 
-	virtual void quitState() = 0;
-	virtual void update() = 0;
+	virtual void update(sf::Vector2i &mousePos) = 0;
 	virtual void render() = 0;
+	virtual void quitState() = 0;
 
 	//Destructors
 	virtual ~State();
