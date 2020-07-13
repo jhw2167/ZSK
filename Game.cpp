@@ -6,10 +6,9 @@
 
 //Game.cpp file describes game object
 
-
+const short Game::maxPlayers = 4;
 
 /*		CLASS CONSTRUCTOR		*/
-
 Game::Game()
 {
 	initVars();
@@ -19,7 +18,6 @@ Game::Game()
 	addPlayer();
 }
 
-//END CONSTRUCTORS
 
 
 	/*  Init Functions  */
@@ -29,6 +27,7 @@ void Game::initVars()
 	//init window_ptr to nullptr
 	window_ptr = nullptr;
 	gameState = 0;
+	numPlayers = 0;
 }
 
 void Game::initWindow()
@@ -115,7 +114,39 @@ void Game::initStartMenu() {
 }
 
 
+
 	/*  Game Update Functions  */
+void Game::updateGameState(short gs)
+{
+	if (gs != gameState)
+	{
+		switch (gs)
+		{
+		case MAIN_MENU:
+			//Create new MenuState and add
+			//it to the stack
+			updateState<MenuState>(true);
+			break;
+
+		case GAME:
+			//Create new gameState and add
+			//it to the stack
+			updateState<GameState>(true);
+			break;
+
+		case PAUSE:
+			//Create new pauseState, overlay it
+			//onto the stack
+			break;
+
+		case QUIT:
+			window_ptr->close();
+			break;
+		}
+		gameState = gs;
+	}
+
+}
 
 void Game::isGameOver() {
 	/*
@@ -139,20 +170,16 @@ void Game::updateDt()
 }
 
 
-//END PRIVATE FUNCTIONS
-
-
 /*		PUBLIC FUNCTIONS		*/
 
-//ACCESSORS
+
+	/*  Accessors  */
 const bool Game::windowIsOpen() const {
 	return window_ptr->isOpen();
 }
 
 
-
-
-//GAME UPDATES
+	/*  Game Update Functions  */
 void Game::pollEvents()
 {
 
@@ -165,10 +192,10 @@ void Game::pollEvents()
 			window_ptr->close();
 			break;
 
-		case sf::Event::KeyPressed:
+		case sf::Event::KeyReleased:
 
 			if (event.key.code == sf::Keyboard::Escape) {
-				window_ptr->close();
+				updateGameState(PAUSE);
 			}
 			break;
 		}
@@ -184,43 +211,58 @@ void Game::updateMousePosition() {
 
 void Game::addPlayer()
 {
-	/*
 	if (numPlayers < maxPlayers)
 	{
 		numPlayers += 1;
-
-		Player player(*window_ptr, numPlayers);
-		players.push_back(player);
-		//calling copy constructor here to store
-		//in vector, beware of ptrs in player class
-
-		players.at(0).setLives(0);
 	}
-	*/
-	
-
 }
 
 void Game::update()
 {
+	/* 
+		Primary game update thread, if the states
+		stack is NOT empty, update the top
+	*/
+
 	updateMousePosition();
 	pollEvents();
 	updateDt();
 
-	states.top()->update(mousePos);
+	short gs = 0;
+	if (!states.empty())
+		gs = states.top()->update(mousePos, dt);
+	else
+		gs = 3;
+		//gameState 3 is quit;
+
+	static int c = 0;
+	if (c > 200)
+	{
+		std::cout << "gs in game::update: " << gs << std::endl;
+		c = 0;
+	}
+	c++;
+
+	updateGameState(gs);
 }
 
 
-//RENDER COMPONENTS
+	/*  Game Render  */
 void Game::render()
 {
+	/*
+		Clears, renders and displays the game, if there is a
+		state in the stack
+	*/
+
 	window_ptr->clear(sf::Color::White);
-	states.top()->render();
+
+	if (!states.empty())
+		states.top()->render();
+
 	window_ptr->display();
 }
 
-
-//END PUBLIC FUNCTIONS
 
 
 /*	CLASS DESTRUCTOR	*/

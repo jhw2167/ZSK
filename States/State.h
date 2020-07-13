@@ -18,7 +18,7 @@ protected:
 
 
 private:
-	
+	//Private Variables
 
 public:
 
@@ -31,8 +31,8 @@ public:
 		MUST define, else compile error
 	*/
 
-	virtual void update(sf::Vector2i &mousePos) = 0;
-	virtual void render() = 0;
+	virtual short update(sf::Vector2i &mousePos, const float& dt) = 0;
+	virtual void render(sf::RenderTarget* rt = nullptr) = 0;
 	virtual void quitState() = 0;
 
 	//Destructors

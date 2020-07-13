@@ -27,7 +27,6 @@ void StartMenu::initvars()
 	optionSelected = 0;
 	numOptions = 2;
 	//default, user remains at startmenu
-
 }
 
 void StartMenu::initGameTitle()
@@ -91,7 +90,6 @@ void StartMenu::initMenuOptions()
 
 	//Set size and Position
 	setOptionsPos(sf::Vector2f(posX, posY));
-
 }
 
 //End Init Methods
@@ -108,7 +106,6 @@ void StartMenu::setTitlePos(sf::Vector2f const &newPos)
 	t1Pos = newPos;
 	t2Pos = newPos + sf::Vector2f(0, wLength/ 12.f);
 
-
 	sf::FloatRect title1Size = title1.getLocalBounds();
 	sf::FloatRect title2Size = title2.getLocalBounds();
 
@@ -117,7 +114,6 @@ void StartMenu::setTitlePos(sf::Vector2f const &newPos)
 
 	title2.setOrigin(title2Size.width / 2.f, title2Size.height / 2.f);
 	title2.setPosition(t2Pos);
-
 }
 
 void StartMenu::setTitleSize(int newSize) {
@@ -202,7 +198,6 @@ void StartMenu::update(sf::Vector2i const & mousePos)
 
 	animateTitle();
 	hoverOptions(mousePos);
-
 }
 
 void StartMenu::animateTitle()
@@ -295,11 +290,9 @@ void StartMenu::selectRect(sf::RectangleShape & rect, sf::Text & text )
 	text.scale(scaling);
 }
 
-
 void StartMenu::updateOption(short selection) {
 	optionSelected = selection;
 }
-
 
 void StartMenu::drawMenu(sf::RenderWindow & window) {
 	
@@ -331,8 +324,6 @@ void StartMenu::drawMenu(sf::RenderWindow & window) {
 
 	
 }
-
-
 
 
 	/*  Destructors  */

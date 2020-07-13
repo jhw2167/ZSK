@@ -23,12 +23,9 @@ void GameState::initTowers()
 
 void GameState::initVars()
 {
-	window_ptr = nullptr;
-
 	numPlayers = 0;
 	maxPlayers = 4;
 	numberOfTowers = 4;
-
 }
 //End Private Functions
 
@@ -108,9 +105,15 @@ void GameState::followerMechanics()
 	attackPlayer();
 }
 
-void GameState::isGameOver()
+short GameState::isGameOver()
 {
-	
+	for (size_t i = 0; i < players.size(); i++)
+	{
+		if (players.at(i).isGameOver() == true) {
+			return 0;
+		}
+	}
+	return 1;
 }
 
 
@@ -260,7 +263,7 @@ void GameState::quitState()
 
 }
 
-void GameState::update(sf::Vector2i &mPos)
+short GameState::update(sf::Vector2i &mPos, const float& dt)
 {
 	/*
 		Update Function calls all game update 
@@ -273,9 +276,11 @@ void GameState::update(sf::Vector2i &mPos)
 	movePlayerLogic();
 	shootingMechanics();
 	followerMechanics();
+
+	return isGameOver();
 }
 
-void GameState::render()
+void GameState::render(sf::RenderTarget* rt)
 {
 	/*
 		Render Function calls draw functions for all

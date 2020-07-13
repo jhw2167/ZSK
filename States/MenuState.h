@@ -41,9 +41,9 @@ public:
 		/*  Accessors  */
 
 		/*  Other Public Funtions  */
-	virtual void update(sf::Vector2i &mousePos);
+	virtual short update(sf::Vector2i &mousePos, const float& dt);
 
-	virtual void render();
+	virtual void render(sf::RenderTarget* rt = nullptr);
 
 	virtual void quitState();
 	

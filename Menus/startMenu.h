@@ -11,7 +11,6 @@
 //Precompiled header
 #include "../pch/stdafx.h"
 
-
 class StartMenu
 {
 private:
@@ -65,8 +64,9 @@ public:
 
 	StartMenu(sf::RenderWindow &window);
 
-	//One Line title, One option
-	StartMenu(sf::RenderWindow &window, std::string *options[] );
+	//One Line title, One option -- overload for general menu option,
+	//	maybe later
+	//StartMenu(sf::RenderWindow &window, std::string *options[] );
 
 		/*  Setter Methods  */
 	void setWindowSize(sf::RenderWindow &window);

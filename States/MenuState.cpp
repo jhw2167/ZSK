@@ -21,15 +21,14 @@ MenuState::MenuState(sf::RenderWindow* w_ptr)
 
 /*  Other Public Funtions  */
 
-void MenuState::update(sf::Vector2i &mousePos)
+short MenuState::update(sf::Vector2i &mousePos, const float& dt)
 {
 	//Update and animate title screen
 	mainMenu.update(mousePos);
-
-	//return mainMenu.getOptionSelected();
+	return mainMenu.getOptionSelected();
 }
 
-void MenuState::render() {
+void MenuState::render(sf::RenderTarget* rt) {
 	mainMenu.drawMenu(*window_ptr);
 }
 

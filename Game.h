@@ -23,6 +23,7 @@
 #include "States/MenuState.h"
 
 
+//Template definition
 
 class Game
 {
@@ -30,7 +31,7 @@ private:
 	//Variables
 
 	//Window
-	sf::RenderWindow *window_ptr;
+	sf::RenderWindow* window_ptr;
 	sf::VideoMode vidMode;
 	sf::Event event;
 	sf::Vector2i mousePos;
@@ -42,6 +43,13 @@ private:
 	//Menus
 	std::stack<State*> states;
 
+	//Game Based
+	short numPlayers;
+	const static short maxPlayers;
+
+	//Gamestate handling
+	enum STATE {MAIN_MENU = 0, GAME, PAUSE, QUIT};
+
 	short gameState;
 	//0 - Startmenu, 1 - in game, 2 - pauseMenu
 	//3 - quit
@@ -51,42 +59,39 @@ private:
 	//Private functions
 	/*****************/
 
-	/* Init Functions*/
+		/* Init Functions*/
 	void initVars();
 	void initWindow();
 	void initStartMenu();
 
-	//Game Update functions
+		/*  Game Update Function  */
+	void updateGameState(short gs);
 
-	/* LEVEL 1 - Start Menu*/
-	void runStartMenu();
-	void pauseMenu();
+	template<class stateType>
+	void updateState(bool pop);
+	//inline definition for function class
 
 	void isGameOver();
 
-	/*  Draw Functions  */
-
-
 	/* Other Functions  */
-	void reset();
 	void updateDt();
-	//resets player, follower and tower vectors,
-	// by clearing all vector elements and reinitializing
-
+	
 	//END PRIVATE FUNCTIONS
 
 public:
 
-	//Constructors / Destructors
+		/*  Constructors  */
 	Game();
 	virtual ~Game();
 
-	//Modifiers
+		/*  Modifiers  */
 
-	//Accessors
+
+		/*  Accessors  */
 	const bool windowIsOpen() const;
 
-	//Functions
+
+		/*  Other Public Functions  */
 	void addPlayer();
 
 	void pollEvents();
@@ -96,3 +101,15 @@ public:
 	void render();
 };
 
+
+template<class stateType>
+inline void Game::updateState(bool pop)
+{
+	if (pop && !states.empty()) {
+		delete states.top();
+		states.pop();
+	}
+	
+	stateType* s = new stateType(window_ptr);
+	states.push(s);
+}

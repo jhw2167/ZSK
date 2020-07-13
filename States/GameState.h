@@ -44,7 +44,7 @@ private:
 	void movePlayerLogic();
 	void shootingMechanics();
 	void followerMechanics();
-	void isGameOver();
+	short isGameOver();
 
 	/* LEVEL 2  -  Followers*/
 	void spawnFollowers();
@@ -79,8 +79,8 @@ public:
 
 	/*  Other Public Functions  */
 	virtual void quitState();
-	virtual void update(sf::Vector2i &mousePos);
-	virtual void render();
+	virtual short update(sf::Vector2i &mousePos, const float& dt);
+	virtual void render(sf::RenderTarget* rt = nullptr);
 
 		/*  Destructor  */
 	virtual ~GameState();
