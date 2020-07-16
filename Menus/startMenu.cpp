@@ -206,9 +206,9 @@ void StartMenu::animateTitle()
 	static sf::Vector2f truePos = t1Pos;
 
 	static int counter = 1;
-	static float dist = 0.4f;
+	static float dist = 0.3f;
 	static int adj = 1;
-	static int interval = 20;
+	static int interval = 25;
 
 	if (counter <= -interval)
 		adj = 1;

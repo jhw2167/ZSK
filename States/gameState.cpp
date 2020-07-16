@@ -6,6 +6,7 @@
 
 GameState::GameState(sf::RenderWindow* w_ptr) : State(w_ptr)
 {
+	players.push_back(Player(*w_ptr));
 	initVars();
 	initTowers();
 }
