@@ -676,10 +676,18 @@ void Player::takeDamage(float dmg)
 	float newHealth = std::max(std::min(combinedHealth - newShield, maxHealth), -1.f);
 	//Sets new health and shield values with max and min functions
 
-	if (combinedHealth >= maxHealth) {
+	if (combinedHealth > maxHealth) {
 		setShield(newShield);
 	}	
-	else if (combinedHealth >= 0) {
+	else if (combinedHealth >= 0) 
+	{
+
+		static int setOnce = true;
+		if (setOnce) {
+			setShield(0);
+			setOnce = false;
+		}
+		
 		setHealth(newHealth);
 	}
 	else if (combinedHealth <= 0) {

@@ -18,7 +18,7 @@ private:
 
 	//Game Based Vectors
 	std::vector<Player> players;
-	std::vector<Follower> activeFollowers;
+	std::list<Follower> followers;
 	std::vector<Tower> towers;
 	sf::Vector2i mousePos;
 
@@ -44,7 +44,7 @@ private:
 	void movePlayerLogic();
 	void shootingMechanics();
 	void followerMechanics();
-	short isGameOver();
+	bool isGameOver();
 
 	/* LEVEL 2  -  Followers*/
 	void spawnFollowers();

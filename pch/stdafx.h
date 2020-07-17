@@ -13,6 +13,7 @@
 #include <string>
 #include <array>
 #include <vector>
+#include <list>
 #include <stack>
 #include <map>
 #include <ctime>
@@ -35,3 +36,8 @@
 #include <stdexcept>
 
 //Project includes
+
+
+//Usings
+using std::cout;
+using std::endl;

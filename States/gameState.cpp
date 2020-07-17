@@ -74,16 +74,17 @@ void GameState::movePlayerLogic()
 
 
 		//Grow follow area -- unrelated to movement but a good place to call
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
 			players.at(i).growLargeFollowArea();
-		else
+		}
+		else {
 			players.at(i).setLargeFollowerRadius(players.at(i).getMinLFR());
+		}
+			
 
 		//regenShield
-		if (players.at(i).getShield() > 0)
-			players.at(i).regenShield();
+		players.at(i).regenShield();
 	}
-
 
 }
 
@@ -106,15 +107,8 @@ void GameState::followerMechanics()
 	attackPlayer();
 }
 
-short GameState::isGameOver()
-{
-	for (size_t i = 0; i < players.size(); i++)
-	{
-		if (players.at(i).isGameOver() == true) {
-			return 0;
-		}
-	}
-	return 1;
+bool GameState::isGameOver() {
+	return players.at(0).isGameOver();
 }
 
 
@@ -125,45 +119,50 @@ void GameState::spawnFollowers()
 	static int maxFollowers = 10;
 	static int tmperRate = 50;
 
-	if ((temperSpawnRate % tmperRate == 0) && (activeFollowers.size() < maxFollowers))
+	if ((temperSpawnRate % tmperRate == 0) && (followers.size() < maxFollowers))
 	{
 		Follower follower(*window_ptr, towers.at(0).getTowerRadius());
 		//EXCEPTION THROWN HERE WHEN TOWERS NOT INNIT
 
-		activeFollowers.push_back(follower);				//adds new follower to vector of active follower
-		//std::cout << "Spawning fol, total num: " << activeFollowers.size() << std::endl;
+		followers.push_back(follower);				
+		//adds new follower to vector of active follower
+		//std::cout << "Spawning fol, total num: " << followers.size() << std::endl;
 	}
 }
 
 void GameState::moveFollowers()
 {
 	for (size_t i = 0; i < players.size(); i++) {
-		for (size_t j = 0; j < activeFollowers.size(); j++)
+
+		for (auto fol_it = followers.begin(); fol_it != followers.end();)
 		{
-			activeFollowers[j].moveLogic(activeFollowers[j].followerCollision(activeFollowers, j),
+			fol_it->moveLogic(fol_it->followerCollision(followers, fol_it),
 				players.at(i), towers);
-			//checks follower for follower collision then moves and adjust velocity as necesary
+			fol_it++;
+			//checks follower for follower collision then moves awnd adjust velocity as necesary
 			//if follower is in collision with another follower, function "bounces" them off each other
 			//otherwise just moves follwer at current velocity
 		}
+		
 	}
 }
 
 void GameState::shootFollowers()
 {
-	std::vector<bool> erasefollower;
+
 	for (size_t i = 0; i < players.size(); i++) {
-		for (size_t j = 0; j < activeFollowers.size(); j++)
+		for (auto fol_it = followers.begin(); fol_it != followers.end();)
 		{
+
 			int dmg = players.at(i).shootFollower(
-				activeFollowers.at(j).getFollowerGlobalBounds());
+				fol_it->getFollowerGlobalBounds());
 
-			//activeFollowers.takeDamage(dmg);
-
-			if (dmg > 0) {
-				activeFollowers.erase(activeFollowers.begin() + j);
-				j--;
+			if (fol_it->takeDamage(dmg) <= 0) {
+				fol_it = followers.erase(fol_it);
+				//returns next iterator
 			}
+			else
+				++fol_it;
 		}
 
 		//return array of followers shot by this player
@@ -176,13 +175,15 @@ void GameState::attackPlayer()
 {
 	for (size_t i = 0; i < players.size(); i++)
 	{
-		for (size_t j = 0; j < activeFollowers.size(); j++)
+		for (auto& fol : followers)
 		{
-			if (activeFollowers[j].getFollowerGlobalBounds().intersects(
-				players.at(i).getHeartBounds())) {	//if a follwer insects the player's global bounds
+			if (fol.getFollowerGlobalBounds().intersects(
+				players.at(i).getHeartBounds())) {	
+				//if a follwer insects the player's global bounds
 
-				int dmg = 1;					//later dmg = given followers damage
-				players.at(i).takeDamage(dmg);	//reduce player's health
+				int dmg = fol.getDamage();
+				players.at(i).takeDamage(dmg);	
+				//reduce player's health
 			}
 		}
 	}
@@ -221,8 +222,8 @@ void GameState::drawPlayers()
 
 void GameState::drawFollowers()
 {
-	for (size_t i = 0; i < activeFollowers.size(); i++) {
-		activeFollowers.at(i).drawFollower(*window_ptr);
+	for (auto& fol : followers) {
+		fol.drawFollower(*window_ptr);
 	}
 }
 
@@ -278,7 +279,11 @@ short GameState::update(sf::Vector2i &mPos, const float& dt)
 	shootingMechanics();
 	followerMechanics();
 
-	return isGameOver();
+	if (isGameOver()) {
+		return 0;
+	}
+
+	return 1;
 }
 
 void GameState::render(sf::RenderTarget* rt)

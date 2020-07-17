@@ -156,7 +156,9 @@ void Game::isGameOver() {
 		onto the stack.
 	*/
 
-	gameState = 0;
+	cout << "here" << endl;
+
+	//gameState = 0;
 }
 
 void Game::updateDt()
@@ -242,6 +244,8 @@ void Game::update()
 		c = 0;
 	}
 	c++;
+
+	//cout << "Calling Game::update with gs = "<< gs << endl;
 
 	updateGameState(gs);
 }

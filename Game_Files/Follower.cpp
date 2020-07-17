@@ -5,13 +5,14 @@
 	/*  Static Initializations  */
 
 int Follower::f_id = 0;
+int Follower::maxMerge = 3;
 sf::Font Follower::arial;
 
 
 
 	/*  Constructor  */
-Follower::Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor, int startHealth 
-	, short retrgtRate, short redirRate, float scale, bool showBoxes)
+Follower::Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor, int startHealth, 
+	int startDmg, short retrgtRate, short redirRate, float scale, bool showBoxes)
 {
 	id = f_id++;
 
@@ -21,6 +22,7 @@ Follower::Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor, in
 
 	initHealthText();
 	setHealth(startHealth);
+	setDamage(startDmg);
 
 	windowLength = window.getSize().x;
 	windowHeight = window.getSize().y;
@@ -84,6 +86,7 @@ void Follower::initHealthText() {
 
 void Follower::randomSpawn()
 {
+	mergeCount = 1;
 	static int spawnerClock = 0;		//clock will rotate zombie's spawnlocale around the map
 
 	float xLine1 = 0.f;				//zombies will spawn at random locations on these lines and feed into the map
@@ -158,6 +161,10 @@ void Follower::setHealth(int newHealth) {
 
 	healthText.setOrigin(l, h / 1.2f);
 }
+
+void Follower::setDamage(int newDmg) {
+	dmgDone = newDmg;
+}
 //End Setters
 
 
@@ -177,6 +184,19 @@ sf::FloatRect Follower::getFollowerGlobalBounds() {			//taken as global bounds o
 int Follower::get_id() {
 	return id;
 }
+
+int Follower::getHealth() {
+	return health;
+}
+
+int Follower::getDamage() {
+	return dmgDone;
+}
+
+int Follower::getMergeCount() {
+	return mergeCount;
+}
+
 //End Accessor Methods
 
 
@@ -389,23 +409,34 @@ bool Follower::towerCollision(Tower &tower)
 	return towerCollision;
 }
 
-bool Follower::followerCollision(std::vector<Follower> &activeFollowers, int i)
+bool Follower::followerCollision(std::list<Follower> &fols,
+	std::list<Follower>::iterator fol_it)
 {
 	//checks for a collision with passed object follower and returns bool
 
 	bool collision = false;
 
-	for (size_t j = i + 1; j < activeFollowers.size(); j++)
+	for (auto fol_it2 = ++fol_it; fol_it2 != fols.end();)
 	{
-		if (activeFollowers.at(i).getFollowerGlobalBounds().intersects(			
-			activeFollowers.at(j).getFollowerGlobalBounds()))
+		if (this->getFollowerGlobalBounds().intersects(			
+			fol_it2->getFollowerGlobalBounds()))
 			//compare the followers at different indexes
 		{
-			activeFollowers.at(j).setMinusBounce();
+			if (mergeCount + fol_it2->getMergeCount() < maxMerge) {
+				merge(fols, fol_it2);
+			}
+			else {
+				fol_it2->setMinusBounce();
+				fol_it2++;
+			}
+			
 			collision = true;
 		}
-
+		else {
+			fol_it2++;
+		}
 	}
+
 	return collision;
 }
 
@@ -440,11 +471,47 @@ void Follower::setMinusBounce()
 	//increments to cycle through bounce types
 
 }
+		//private
 
 void Follower::fixCenterVelocity()
 {
 	sf::Vector2f center = sf::Vector2f(windowLength / 2.f, windowHeight / 2.f);
 	setNewVelocity(center);
+}
+		//private
+
+void Follower::merge(std::list<Follower>& fols,
+	std::list<Follower>::iterator& fol_it) {
+
+	/*
+		If the followers are capable of merging, then we 
+		"merge" them by combining their health, dmgDone
+		and potentially speed
+	*/
+
+	int newHealth = health + fol_it->getHealth();
+	setHealth(newHealth);
+
+	int newDmg = dmgDone + fol_it->getDamage();
+	setDamage(newDmg);
+
+	mergeCount++;
+	fol_it = fols.erase(fol_it);
+}
+		//private
+
+//DAMAGE DEALING AND GIVING
+const int Follower::takeDamage(int dmg)
+{
+	int newHealth = health - dmg;
+
+	if (newHealth <= 0)	{
+		return 0;
+	}
+	else{
+		setHealth(newHealth);
+		return newHealth;
+	}
 }
 
 //DRAW FOLLWER ASPECTS

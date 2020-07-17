@@ -13,13 +13,22 @@ private:
 	static int f_id;			//all followers have same f_id value that increments
 	int id;						//each follower has unique id
 
+	/*  Shape related  */
 	FollowerShape fShape;
+	sf::RectangleShape fBox;		
+	//sets transparent box around follower for mechanics
 
+	/*  Basic Stats */
 	int health;
 	int dmgDone;
 	sf::Text healthText;
 	static sf::Font arial;
 
+	/*  Merging  */
+	int mergeCount;
+	static int maxMerge;
+
+	/*  Position and Velocity  */
 	sf::Vector2f fPosition;
 	bool followingPlayer;
 
@@ -38,18 +47,29 @@ private:
 	float playersOldY;
 
 
-	sf::Vector2f bounce;			//vector with random x y coordinates for collisions
-	sf::RectangleShape fBox;		//sets transparent box around follower for mechanics
+	sf::Vector2f bounce;			
+	//vector with random x y coordinates for collisions
 
+	/*  Window Variables */
 	float windowLength;
 	float windowHeight;
 
+	/*  Miscellaneous  */
 	float towerRadius;
+
+		/*  Private Functions  */
+
+	void merge(std::list<Follower>& fols,
+		std::list<Follower>::iterator& fol_it);
+
+	void setMinusBounce();
+
+	void fixCenterVelocity();
 
 public:
 
 Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor = sf::Color::Black,
-	int startHealth = 1, short retrgtRate = 10, short redirRate = 2, 
+	int startHealth = 1, int startDmg = 1, short retrgtRate = 10, short redirRate = 2, 
 	float scale = 2.5f, bool showBoxes = true);
 
 
@@ -70,6 +90,8 @@ Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor = sf::Color::
 	void setVelocity(sf::Vector2f &vel);
 
 	void setHealth(int newHealth);
+
+	void setDamage(int newDmg);
 	//End Setters
 
 	/*  Accessor Methods  */
@@ -80,7 +102,14 @@ Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor = sf::Color::
 	sf::FloatRect getFollowerGlobalBounds();
 
 	int get_id();
+
+	int getHealth();
+
+	int getDamage();
+
+	int getMergeCount();
 	//End Accessor Methods
+
 
 		/*  Functions  */
 
@@ -106,14 +135,16 @@ Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor = sf::Color::
 
 	bool towerCollision(Tower &tower);
 
-	bool followerCollision(std::vector<Follower> &activeFollowers, int i);
+	bool followerCollision(std::list<Follower>& fols,
+		std::list<Follower>::iterator fol_it);
 
-	void setMinusBounce();
-
-	void fixCenterVelocity();
+	//DAMAGE DEALING AND GIVING
+	const int takeDamage(int dmg);
 
 	//DRAW FOLLWER ASPECTS
 	void drawFollower(sf::RenderWindow &window);
+
+
 
 
 	/*
