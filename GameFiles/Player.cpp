@@ -668,32 +668,17 @@ float Player::circle(float x, float radius) {				//formula for a circle!
 	//METHODS RELATED TO MANAGING A PLAYER'S HEALTH
 void Player::takeDamage(float dmg)
 {
-	//dmg is a POSITIVE value inherently, i.e to reduce health pass
-	//positive damage values
-	float combinedHealth = health + shield - dmg;
-
-	float newShield = std::min(std::max(combinedHealth - maxHealth, 0.f), maxShield);
-	float newHealth = std::max(std::min(combinedHealth - newShield, maxHealth), -1.f);
-	//Sets new health and shield values with max and min functions
-
-	if (combinedHealth > maxHealth) {
+	if (shield > 0) {
+		float newShield = std::max(shield - dmg, 0.f);
 		setShield(newShield);
-	}	
-	else if (combinedHealth >= 0) 
-	{
-
-		static int setOnce = true;
-		if (setOnce) {
-			setShield(0);
-			setOnce = false;
-		}
-		
+	}
+	else if (health > 0) {
+		float newHealth = std::max(health - dmg, 0.f);
 		setHealth(newHealth);
 	}
-	else if (combinedHealth <= 0) {
+	else {
 		loseLife();
 	}
-
 }
 
 void Player::regenShield()
