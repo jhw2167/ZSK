@@ -284,9 +284,7 @@ public:
 	void moveLogic(int dir, int towerCollision, sf::Vector2f const &towerPos,
 		float towerRadius);
 
-	//calculates vector distance from player or tower object
-	float distanceFrom(sf::Vector2f &object1Pos, sf::Vector2f const &object2Pos);
-	
+	//calculates vector distance from player or tower object	
 	float circle(float x, float radius); 
 
 
@@ -305,6 +303,7 @@ public:
 	float invSpeedSq(float x, float y, float radius);
 
 	sf::Vector2f avoidTower(sf::Vector2f dir, sf::Vector2f relPos, int towerNum);
+
 
 	//METHODS RELATING TO MANAGINE PLAYERS BULLETS
 	void shoot(sf::Vector2i const &cursorPos);

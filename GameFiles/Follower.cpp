@@ -45,6 +45,7 @@ Follower::Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor, in
 	towerRadius = tRadius;
 	randomSpawn();
 
+	mergeCount = 1;
 }
 //End Constructor
 
@@ -86,49 +87,60 @@ void Follower::initHealthText() {
 
 void Follower::randomSpawn()
 {
-	mergeCount = 1;
-	static int spawnerClock = 0;		//clock will rotate zombie's spawnlocale around the map
 
-	float xLine1 = 0.f;				//zombies will spawn at random locations on these lines and feed into the map
-	float xLine2 = windowLength;
-	float yLine1 = 0.f;
-	float yLine2 = windowHeight;
+	zsk::vect xRange = { towerRadius, windowLength - towerRadius };
+	zsk::vect yRange = { towerRadius, windowHeight - towerRadius };
+	//x and y ranges where follower can spawn
 
-	static int srand(time(0));
+	zsk::vect spawnPt = zsk::randomSpawn(xRange, yRange);
+	//a random spawn point generated between towers on the screen
+	//and stored in a vector
+	zsk::vect sideNums = { 1, 4 };
+	int spawnSide = zsk::randomSpawn(sideNums).a;
+	//clock will rotate zombie's spawnlocale around the map
 
-	float randTopBotSpawn = (rand() % ((int)windowHeight - (2 * (int)towerRadius)) + (int)towerRadius);
-	//random spawnpoint between two towers on top and bottom of map
-	float randLeftRightSpawn = (rand() % ((int)windowLength - (2 * (int)towerRadius)) + (int)towerRadius);
+	/*
+		if (initialSpawns > 0) {
+			spawnSide = 0;
+			initialSpawns--;
+		}
+	*/
 
-	sf::Vector2f newPos = sf::Vector2f();
-	if (!followingPlayer)			//if not following player (all cases when follower is newly spawned), spawn point is randomized
-	{
-		switch (spawnerClock % 4)
+	sf::Vector2f newPos = sf::Vector2f(spawnPt.a, spawnPt.b);
+
+
+		switch (spawnSide)
 		{
 		case 0:
-			newPos = sf::Vector2f(xLine1, randTopBotSpawn);
+			//no action, spawnpoint remains the same
 			break;
 
 		case 1:
-			newPos = sf::Vector2f(randLeftRightSpawn, yLine1);
+			//spawn left
+			newPos.x = 0.f;
 			break;
 
 		case 2:
-			newPos = sf::Vector2f(xLine2, randTopBotSpawn);
+			//spawn top
+			newPos.y = 0.f;
 			break;
 
 		case 3:
-			newPos = sf::Vector2f(randLeftRightSpawn, yLine2);
+			//spawn right
+			newPos.x = windowLength;
 			break;
+
+		case 4:
+			//spawn bot
+			newPos.y = windowHeight;
 		}
-	}
+	
 
 	setPosition(newPos);
 
 	setNewVelocity(sf::Vector2f(windowLength / 2.f, windowHeight / 2.f));
 	//initializes follower velocity starting from its random spawn to the center of the map
 
-	spawnerClock++;			//increments spawnerClock to adjust Spawns
 }
 //End init functions
 
@@ -334,26 +346,16 @@ bool Follower::isFollowingPlayer(Player &player)
 	bool wasFollowing = followingPlayer;
 
 	if (!followingPlayer)
-		followingPlayer = distanceFrom(player.getPosition()) <= player.getSmallFollowAreaRadius();
+		followingPlayer = zsk::distanceFrom(this->fPosition, player.getPosition()) 
+		<= player.getSmallFollowAreaRadius();
 	else
-		followingPlayer = distanceFrom(player.getPosition()) <= player.getLargeFollowAreaRadius();
+		followingPlayer = zsk::distanceFrom(this->fPosition, player.getPosition()) 
+		<= player.getLargeFollowAreaRadius();
 
 	if (wasFollowing && !followingPlayer)
 		setNewVelocity(player.getPosition());
 
 	return followingPlayer;
-}
-
-float Follower::distanceFrom(sf::Vector2f const &objectPos)
-{
-	//calculates vector distance from player or tower object
-
-	float xDist = abs(objectPos.x - fShape.getPosition().x);			
-	float yDist = abs(objectPos.y - fShape.getPosition().y);
-	//calculates x and y distances away follower is from player
-
-	return pow(xDist * xDist + yDist * yDist, 0.5);		
-	//calculates vector for distance from follower to player
 }
 
 
@@ -396,9 +398,8 @@ void Follower::outOfBounds(sf::Vector2f &pos, bool col)
 bool Follower::towerCollision(Tower &tower)
 {
 	//if there is a tower collision, redirect follower's velocity
-	bool towerCollision = distanceFrom(tower.getPosition()) <= tower.getTowerRadius();
-
-	static int count = 0;
+	bool towerCollision = zsk::distanceFrom(this->fPosition,
+		tower.getPosition()) <= tower.getTowerRadius();
 
 	if (towerCollision) {
 		fVelocity = -fVelocity;

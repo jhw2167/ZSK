@@ -3,6 +3,7 @@
 
 //Precompiled header
 #include "../pch/stdafx.h"
+#include "functions.h"
 
 class Bullet {
 

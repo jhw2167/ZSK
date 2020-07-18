@@ -652,13 +652,6 @@ void Player::moveLogic(int dir, int towerCollision, sf::Vector2f const &towerPos
 }
 
 
-float Player::distanceFrom(sf::Vector2f &object1Pos, sf::Vector2f const &object2Pos)											//calculates vector distance from player or tower object
-{
-	float xDist = abs(object1Pos.x - object2Pos.x);			//calculates x and y distances away follower is from player
-	float yDist = abs(object1Pos.y - object2Pos.y);
-
-	return pow(xDist * xDist + yDist * yDist, 0.5);							//calculates vector for distance from follower to player
-}
 
 float Player::circle(float x, float radius) {				//formula for a circle!
 	return sqrt(pow(radius, 2) - pow(x, 2));
@@ -748,7 +741,7 @@ sf::Vector2f Player::towerCollisions(int dir, int towerNum, sf::Vector2f const &
 
 	sf::Vector2f pBoxAdj = sf::Vector2f(pushX, pushY);
 	sf::Vector2f destination = sf::Vector2f(playerPosition + moveVect + pBoxAdj);
-	bool movingIntoTower = distanceFrom(destination, towerPos) <= towerRadius;
+	bool movingIntoTower = zsk::distanceFrom(destination, towerPos) <= towerRadius;
 
 	sf::Vector2f safeSpeed = moveVect;
 	if (movingIntoTower) {

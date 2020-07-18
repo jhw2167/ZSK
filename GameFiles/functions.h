@@ -12,17 +12,17 @@
 
 namespace zsk
 {
-	sf::Vector2f randomLoc(const sf::Vector2f& range_x,
-		const sf::Vector2f& range_y)
-	{
-		float rand_x;
-		float rand_y;
+	struct vect {
+		float a, b;
 
-		return sf::Vector2f(rand_x, rand_y);
-	}
+		vect(float a1 = 0.f, float b1 = 0.f) :
+			a(a1), b(b1) {};
+	};
 
-	float distanceFrom(sf::Vector2f& loc1, sf::Vector2f& loc2)
-	{
+	zsk::vect randomSpawn(const vect& range_x,
+		const vect& range_y = vect(0.f, 1.f) );
 
-	}
+	float distanceFrom(const sf::Vector2f& loc1,
+		const sf::Vector2f& loc2);
+
 }

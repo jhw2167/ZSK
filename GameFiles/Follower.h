@@ -127,8 +127,6 @@ Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor = sf::Color::
 
 	bool isFollowingPlayer(Player &player);
 
-	float distanceFrom(sf::Vector2f const &objectPos);
-
 
 	//OUT OF BOUNDS AND FOLLOWER COLLISION BEHAVIOR
 	void outOfBounds(sf::Vector2f &pos, bool col = false);

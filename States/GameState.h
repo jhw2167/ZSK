@@ -4,12 +4,13 @@
 #include "State.h"
 
 //Project includes
-#include "../Game_Files/Bullet.h"
-#include "../Game_Files/FollowerShape.h"
-#include "../Game_Files/Player.h"
-#include "../Game_Files/Follower.h"
-#include "../Game_Files/FollowerShape.h"
-#include "../Game_Files/Tower.h"
+#include "../GameFiles/Bullet.h"
+#include "../GameFiles/FollowerShape.h"
+#include "../GameFiles/Player.h"
+#include "../GameFiles/Follower.h"
+#include "../GameFiles/FollowerShape.h"
+#include "../GameFiles/Tower.h"
+
 
 class GameState :
 	public State
