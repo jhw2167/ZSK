@@ -130,6 +130,8 @@ private:
 	float maxShield;
 	float shieldRegen;
 	//units: float_val / sec (60 frames)
+	int invulnerability;		
+	//units: #frames of invln
 
 	sf::Vector2f healthBarSize;
 	//standard value, does NOT change with damage taken
@@ -167,6 +169,7 @@ private:
 	float smallFolRad;
 	float minLargeFolRad;
 	float maxLargeFolRad;
+	bool snap;
 
 	int laserLength;			//Max distance tower projectiles travel for player
 	int laserWidth;				//Max width of player projectiles, levels 1->2->3
@@ -179,12 +182,10 @@ private:
 
 public: 
 
-		/*  Write snap function  */
-
 		//CONSTRUCTOR 
 	Player(sf::RenderWindow &window, int pNumber = 1, int startLives = 3, float scale = 2.5f, float startHealth = 300.f,
 		float startMaxHealth = 300.f, float startShield = 100.f, float startMaxShield = 100.f, 
-		float mSpeed = 6.f, int startScore = 0, float smallRadius = 60.f,
+		float mSpeed = 6.f, int startScore = 0, float smallRadius = 70.f,
 		float maxLargeRadius = 240.f, int laserL = 100.f, int laserW = 1, bool showBox = false);
 
 
@@ -209,6 +210,8 @@ public:
 	void setLives(int newLives);
 
 	void setHealth(float newHealth);
+
+	void setInvulnFrames(int newFrames);
 
 	void centerHealthText();
 

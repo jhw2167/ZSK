@@ -135,11 +135,11 @@ float PlayerShape::getLeftBounds()
 	}
 
 float PlayerShape::getUpperBounds()						
-	{
+{
 		return head.getPosition().y - head.getRadius();			
 		//the head is the highest point on the character, 
 		//and its position is retrieved at its center
-	}
+}
 
 float PlayerShape::getRightBounds()
 	{
@@ -253,6 +253,7 @@ Player::Player(sf::RenderWindow &window, int pNumber, int startLives, float scal
 		initHealthBar(window, startHealth, startMaxHealth);
 		initShieldBar(window, startShield, startMaxShield);
 		initHealthText();
+		invulnerability = 30;
 
 		//Initialize large and small follower areas
 		smallFolRad = smallRadius;
@@ -260,6 +261,7 @@ Player::Player(sf::RenderWindow &window, int pNumber, int startLives, float scal
 		minLargeFolRad = smallRadius + 20.f;
 		initSmallFollowerRadius(smallRadius);
 		initLargeFollowerRadius(minLargeFolRad);
+		snap = false;
 
 		//Initialize Laser attributes
 		setLaserLength(laserL);
@@ -417,6 +419,10 @@ void Player::setHealth(float newHealth)
 
 	}
 
+void Player::setInvulnFrames(int newFrames){
+	invulnerability = newFrames;
+}
+
 void Player::centerHealthText()
 	{
 		sf::Vector2f textDims = sf::Vector2f(healthText.getLocalBounds().width,
@@ -490,10 +496,10 @@ void Player::setPlayerBox(PlayerShape &shape, bool showBoxes)
 		pBox.setOrigin(length / 2.f, shape.getPosition().y - shape.getUpperBounds());
 	}
 
-void Player::setSmallFollowerRadius(float newRadius)
-	{
+void Player::setSmallFollowerRadius(float newRadius) {
 		smallFollowArea.setRadius(newRadius);
-	}
+		smallFollowArea.setOrigin(newRadius, newRadius);
+}
 
 void Player::setLargeFollowerRadius(float newRadius) {
 		largeFollowArea.setRadius(newRadius);
@@ -663,17 +669,26 @@ float Player::circle(float x, float radius) {				//formula for a circle!
 	//METHODS RELATED TO MANAGING A PLAYER'S HEALTH
 void Player::takeDamage(float dmg)
 {
-	if (shield > 0) {
-		float newShield = std::max(shield - dmg, 0.f);
-		setShield(newShield);
-	}
-	else if (health > 0) {
-		float newHealth = std::max(health - dmg, 0.f);
-		setHealth(newHealth);
+	if (invulnerability > 0) {
+		invulnerability--;
+		//lose a frame of invulnerability every tick,
+		//until it goes away, then apply damage
 	}
 	else {
-		loseLife();
+
+		if (shield > 0) {
+			float newShield = std::max(shield - dmg, 0.f);
+			setShield(newShield);
+		}
+		else if (health > 0) {
+			float newHealth = std::max(health - dmg, 0.f);
+			setHealth(newHealth);
+		}
+		else {
+			loseLife();
+		}
 	}
+	
 }
 
 void Player::regenShield()
@@ -859,10 +874,46 @@ int Player::dmgFollower(int i)
 
 void Player::growLargeFollowArea(float growRate)
 {
-	float newRad = largeFollowArea.getRadius() + growRate;
+	/*
+		Large follower area grows upon holding right
+		click, then snaps back when the player releases
+		the button; the small followerRadius also needs to 
+		snap in for s a short bit handled by bool snap
+	*/
 
-	if (maxLargeFolRad >= newRad)
-		setLargeFollowerRadius(newRad);
+	//potential issues with snap being false with mutiple players
+
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) 
+	{
+
+		float newRad = largeFollowArea.getRadius() + growRate;
+
+		if (maxLargeFolRad >= newRad) {
+			setLargeFollowerRadius(newRad);
+		}
+
+		if (newRad >= 0.75 * maxLargeFolRad) {
+			snap = true;
+		}
+			
+	}
+	else {
+		setLargeFollowerRadius(minLargeFolRad);
+
+		if (snap) {
+			float newSmallRad = smallFollowArea.getRadius() * 0.25;
+			setSmallFollowerRadius(newSmallRad);
+			snap = false;
+		}
+	}
+	
+
+	float newSmallRad = smallFollowArea.getRadius() + 0.5* growRate;
+
+	if (smallFolRad >= newSmallRad) {
+		setSmallFollowerRadius(newSmallRad);
+	}
+	
 }
 
 

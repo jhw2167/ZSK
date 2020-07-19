@@ -48,6 +48,7 @@ private:
 
 	/* LEVEL 1  -  Call From Update*/
 	void movePlayerLogic();
+	void otherPlayerMechs();
 	void shootingMechanics();
 	void followerMechanics();
 	bool isGameOver();

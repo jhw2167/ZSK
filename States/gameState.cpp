@@ -5,7 +5,7 @@
 /*  CNTRL + M + O to collapse all */
 
 /*  Initializing static variables  */
-int GameState::maxFollowers = 2;
+int GameState::maxFollowers = 3;
 
 
 	/*  Constructors  */
@@ -77,20 +77,22 @@ void GameState::movePlayerLogic()
 		/*Second parameter in function call accepts bool type, integer type is passed because any int > 0, (i.e. tower num 1,2,3 or 4)
 		is interpreted as bool TRUE, if checkTowerColliion() fails to
 		find colliding tower, it passes tower at elem 0 which is out of bounds*/
-
-
-		//Grow follow area -- unrelated to movement but a good place to call
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
-			players.at(i).growLargeFollowArea();
-		}
-		else {
-			players.at(i).setLargeFollowerRadius(players.at(i).getMinLFR());
-		}
-			
-
-		//regenShield
-		players.at(i).regenShield();
 	}
+
+}
+
+void GameState::otherPlayerMechs()
+{
+	/*
+		Other player mechanics to call include shield and 
+		managing follower area behavior 
+	*/
+
+	//Grow follow area
+	players.at(0).growLargeFollowArea();
+
+	//regenShield
+	players.at(0).regenShield();
 
 }
 
@@ -286,6 +288,7 @@ short GameState::update(sf::Vector2i &mPos, const float& dt)
 	*/
 	setMousePos(mPos);
 	movePlayerLogic();
+	otherPlayerMechs();
 	shootingMechanics();
 	followerMechanics();
 

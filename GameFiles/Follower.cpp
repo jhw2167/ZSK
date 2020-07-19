@@ -342,11 +342,6 @@ void Follower::setNewVelocity(sf::Vector2f const &destinationVector, float speed
 
 	sf::Vector2f toPass = sf::Vector2f(xVelocity, yVelocity);
 
-	if (id < 3 && breakNeck) {
-		cout << "new speed is: " << zsk::magnitude(toPass.x, toPass.y) << endl;
-	}
-	
-
 	setVelocity(toPass);
 
 	//creates follower velocity vector as function of direction vector and speed
@@ -408,10 +403,10 @@ bool Follower::isFollowingPlayer(Player &player)
 
 	if (!followingPlayer)
 		followingPlayer = zsk::distanceFrom(this->fPosition, player.getPosition()) 
-		<= player.getSmallFollowAreaRadius() + fShape.getHeadRadius();
+		<= player.getSmallFollowAreaRadius() + 2 * fShape.getHeadRadius();
 	else
 		followingPlayer = zsk::distanceFrom(this->fPosition, player.getPosition()) 
-		<= player.getLargeFollowAreaRadius() + fShape.getHeadRadius();
+		<= player.getLargeFollowAreaRadius() + 2 * fShape.getHeadRadius();
 
 	if (wasFollowing && !followingPlayer) {
 		float speed = zsk::magnitude(fVelocity.x, fVelocity.y);
@@ -565,7 +560,6 @@ void Follower::fixCenterVelocity()
 	sf::Vector2f center = sf::Vector2f(windowLength / 2.f, windowHeight / 2.f);
 	setNewVelocity(center);
 }
-
 		//private
 
 void Follower::merge(std::list<Follower>& fols,
