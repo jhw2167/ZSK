@@ -31,6 +31,11 @@ private:
 	/*  Position and Velocity  */
 	sf::Vector2f fPosition;
 	bool followingPlayer;
+	const static float speedBN;
+	bool breakNeck;
+	/*  breakNeck speed gives followers heightened dmg,
+	and locks their */
+
 
 	sf::Vector2f fVelocity;									//speed and direction vector for moving followers
 	float momentum;											//followers will gain speed as they follower a player
@@ -42,12 +47,14 @@ private:
 
 	short redirectRate;
 	short redirectCount;
+	short towerColNum;;
 
 	float playersOldX;
 	float playersOldY;
 
 
-	sf::Vector2f bounce;			
+	sf::Vector2f bounce;
+	static const sf::Vector2f globBounce;
 	//vector with random x y coordinates for collisions
 
 	/*  Window Variables */
@@ -56,9 +63,11 @@ private:
 
 	/*  Miscellaneous  */
 	float towerRadius;
+	sf::CircleShape dot = sf::CircleShape(1.f);
 
 		/*  Private Functions  */
 
+	//Collisions
 	void merge(std::list<Follower>& fols,
 		std::list<Follower>::iterator& fol_it);
 
@@ -66,11 +75,14 @@ private:
 
 	void fixCenterVelocity();
 
+	//Misc.
+	void centerHeathText();
+
 public:
 
 Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor = sf::Color::Black,
-	int startHealth = 1, int startDmg = 1, short retrgtRate = 10, short redirRate = 2, 
-	float scale = 2.5f, bool showBoxes = true);
+	int startHealth = 1, int startDmg = 1, short retrgtRate = 1, short redirRate = 2, 
+	float scale = 3.5f, bool showBoxes = true);
 
 
 	//INITIALIZE FOLLOWER
@@ -83,15 +95,17 @@ Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor = sf::Color::
 
 
 	/*  Setter Methods  */
-	void setFollowerColor(sf::Color &color);
+	void setFollowerColor(const sf::Color &color);
 
-	void setPosition(sf::Vector2f &newPos);
+	void setPosition(const sf::Vector2f& newPos);
 
-	void setVelocity(sf::Vector2f &vel);
+	void setVelocity(const sf::Vector2f& vel);
 
 	void setHealth(int newHealth);
 
 	void setDamage(int newDmg);
+
+	void setBounce(const sf::Vector2f& bnc);
 	//End Setters
 
 	/*  Accessor Methods  */
@@ -108,6 +122,8 @@ Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor = sf::Color::
 	int getDamage();
 
 	int getMergeCount();
+
+	sf::Vector2f getBounce();
 	//End Accessor Methods
 
 

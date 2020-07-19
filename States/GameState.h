@@ -26,6 +26,11 @@ private:
 	//Simple Game Values
 	int numPlayers;
 	int maxPlayers;
+
+	//Fols
+	static int maxFollowers;
+
+	//Towers
 	int numberOfTowers;
 	//number of towers is... 4
 

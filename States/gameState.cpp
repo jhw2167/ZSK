@@ -2,6 +2,12 @@
 
 #include "gameState.h"
 
+/*  CNTRL + M + O to collapse all */
+
+/*  Initializing static variables  */
+int GameState::maxFollowers = 2;
+
+
 	/*  Constructors  */
 
 GameState::GameState(sf::RenderWindow* w_ptr) : State(w_ptr)
@@ -116,7 +122,6 @@ bool GameState::isGameOver() {
 void GameState::spawnFollowers()
 {
 	static int temperSpawnRate = 0; temperSpawnRate++;				//moderates spawn rate
-	static int maxFollowers = 10;
 	static int tmperRate = 50;
 
 	if ((temperSpawnRate % tmperRate == 0) && (followers.size() < maxFollowers))
@@ -157,9 +162,14 @@ void GameState::shootFollowers()
 			int dmg = players.at(i).shootFollower(
 				fol_it->getFollowerGlobalBounds());
 
-			if (fol_it->takeDamage(dmg) <= 0) {
-				fol_it = followers.erase(fol_it);
-				//returns next iterator
+			if (dmg > 0)
+			{
+				if (fol_it->takeDamage(dmg) <= 0) {
+					fol_it = followers.erase(fol_it);
+					//returns next iterator
+				}
+				else
+					++fol_it;
 			}
 			else
 				++fol_it;

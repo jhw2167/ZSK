@@ -61,8 +61,9 @@ public:
 
 };
 
+sf::Vector2f operator*(sf::Vector2f v1,  int const& a);
 
-sf::Vector2f operator /(const sf::Vector2f v1, const sf::Vector2f v2);
+sf::Vector2f operator/(const sf::Vector2f v1, const sf::Vector2f v2);
 
 sf::Vector2f abs(sf::Vector2f v1);
 

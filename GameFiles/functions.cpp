@@ -50,4 +50,12 @@ namespace zsk
 		//calculates vector for distance from follower to player
 	}
 
+	float magnitude(float x, float y)
+	{
+		float xVal = x * x;
+		float yVal = y * y;
+
+		return sqrt(xVal + yVal);
+	}
+
 }

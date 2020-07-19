@@ -8,6 +8,8 @@
 /*  DEFINE PLAYERSHAPE CLASS  */
 /*****************************/
 
+/*  CNTRL + M + O collapses all*/
+
 	/*	Private Members	*/
 
 //End Private members

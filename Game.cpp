@@ -240,7 +240,7 @@ void Game::update()
 	static int c = 0;
 	if (c > 200)
 	{
-		std::cout << "gs in game::update: " << gs << std::endl;
+		//std::cout << "gs in game::update: " << gs << std::endl;
 		c = 0;
 	}
 	c++;

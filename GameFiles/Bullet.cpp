@@ -124,6 +124,20 @@ void Bullet::drawBullet(sf::RenderWindow &window)
 
 /*	OVERLOADED OPERATORS	*/
 
+
+
+sf::Vector2f operator*(sf::Vector2f v1, int const& a)
+{
+	sf::Vector2f ret;
+	ret.x = v1.x * a;
+	ret.y = v1.y * a;
+
+	return ret;
+}
+
+
+
+
 sf::Vector2f operator /(const sf::Vector2f v1, const sf::Vector2f v2)
 {
 	float x = v1.x / v2.x;

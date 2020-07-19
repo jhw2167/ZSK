@@ -6,6 +6,10 @@
 
 int Follower::f_id = 0;
 int Follower::maxMerge = 3;
+const sf::Vector2f Follower::globBounce
+	= sf::Vector2f(5.f, 5.f);
+const float Follower::speedBN = 8.f;
+
 sf::Font Follower::arial;
 
 
@@ -22,6 +26,7 @@ Follower::Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor, in
 
 	initHealthText();
 	setHealth(startHealth);
+
 	setDamage(startDmg);
 
 	windowLength = window.getSize().x;
@@ -30,13 +35,14 @@ Follower::Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor, in
 	followingPlayer = false;
 	momentum = 1.01;
 	aUp = aLeft = aDown = aRight = 0;
-	bounce = sf::Vector2f(5.f, 5.f);
+	breakNeck = false;
 
 	retargetRate = retrgtRate;
 	retargetCount = 0;
 
 	redirectRate = redirRate;
 	redirectCount = 0;
+	towerColNum = -1;
 
 	playersOldX = 0;
 	playersOldY = 0;
@@ -46,6 +52,11 @@ Follower::Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor, in
 	randomSpawn();
 
 	mergeCount = 1;
+
+	/* circleShape
+	*/
+
+	dot.setFillColor(sf::Color::Red);
 }
 //End Constructor
 
@@ -77,7 +88,7 @@ void Follower::initHealthText() {
 	if (!arial.loadFromFile("Fonts/arial.ttf")) { 	//loads font to use for text drawing
 		std::cout << "Error loading text" << std::endl;
 	}
-	int textSize = 28;
+	int textSize = 26;
 
 	healthText.setFont(arial);
 	healthText.setCharacterSize(textSize);
@@ -146,11 +157,11 @@ void Follower::randomSpawn()
 
 
 	/*  Setter Methods  */
-void Follower::setFollowerColor(sf::Color &color) {
+void Follower::setFollowerColor(const sf::Color &color) {
 	fShape.setColor(color);
 }
 
-void Follower::setPosition(sf::Vector2f &newPos)
+void Follower::setPosition(const sf::Vector2f& newPos)
 {
 	fPosition = newPos;
 
@@ -160,7 +171,7 @@ void Follower::setPosition(sf::Vector2f &newPos)
 
 }
 
-void Follower::setVelocity(sf::Vector2f &vel) {
+void Follower::setVelocity(const sf::Vector2f& vel) {
 	fVelocity = vel;
 }
 
@@ -168,14 +179,30 @@ void Follower::setHealth(int newHealth) {
 	health = newHealth;
 	healthText.setString(std::to_string(newHealth));
 
-	float h = healthText.getLocalBounds().height;
-	float l = healthText.getLocalBounds().width;
+	float l = healthText.getLocalBounds().width / 2.f;
+	float h = healthText.getLocalBounds().height / 1.3f;
 
-	healthText.setOrigin(l, h / 1.2f);
+	if (health == 1)
+		l = 7.f;
+
+	if (health < 10) {
+		healthText.setCharacterSize(26);
+	}
+	else if (health >= 10) {
+		healthText.setCharacterSize(22);
+		l += 2.f;
+	}
+
+	healthText.setOrigin(l , h);
+	healthText.setPosition(fPosition);
 }
 
 void Follower::setDamage(int newDmg) {
 	dmgDone = newDmg;
+}
+
+void Follower::setBounce(const sf::Vector2f& bnc) {
+	bounce = bnc;
 }
 //End Setters
 
@@ -209,31 +236,23 @@ int Follower::getMergeCount() {
 	return mergeCount;
 }
 
+sf::Vector2f Follower::getBounce() {
+	return bounce;
+}
+
 //End Accessor Methods
 
 
 /*  Functions  */
-void Follower::setNewVelocity(sf::Vector2f const &destinationVector, float speed)
+void Follower::centerHeathText()
 {
-	//moves follower by adding unit vector to move function
+	sf::Vector2f textDims = sf::Vector2f(healthText.getLocalBounds().width,
+		healthText.getLocalBounds().height);
+	sf::Vector2f centerText = sf::Vector2f(0, -6.f);	//requires bit of adj to center text 
 
-	float yCoord = destinationVector.y - fShape.getPosition().y;				
-	//destination vector is either player position or random movement
-	//when follower is not following player
 
-	float xCoord = destinationVector.x - fShape.getPosition().x;
-
-	float mag = sqrt(pow(xCoord, 2) + pow(yCoord, 2));			
-	//finds magnitude of vector to create unit vector
-
-	float xVelocity = ((xCoord / mag) * speed * pow(momentum, aRight + aLeft));
-	float yVelocity = ((yCoord / mag) * speed * pow(momentum, aUp + aDown));
-
-	sf::Vector2f toPass = sf::Vector2f(xVelocity, yVelocity);
-
-	setVelocity(toPass);
-
-	//creates follower velocity vector as function of direction vector and speed
+	healthText.setOrigin(textDims / 2.f);
+	healthText.setPosition(healthText.getPosition() + centerText);
 }
 
 
@@ -254,19 +273,30 @@ void Follower::moveLogic(bool collision, Player &player, std::vector<Tower> &tow
 			setNewVelocity(player.getPosition());
 			retargetCount = 1;
 		}
-		else
-			retargetCount++;
+		retargetCount++;
 	}
 
 
+	if (towerColNum == -1)
+	{
+		for (size_t i = 0; i < towers.size(); i++) {
+			//checks each tower for potential collision
 
-	for (size_t i = 0; i < towers.size(); i++) {	
-		//checks each tower for potential collision
-		if (redirectCount > redirectRate)
-			towerCollision(towers[i]);
-		else
-			redirectCount++;
+			if (towerCollision(towers[i])) {
+				towerColNum = i;
+				break;
+			}
+			else
+				towerColNum = -1;
+		}
 	}
+	else if (towerCollision(towers[towerColNum])) {
+		//no change, we are still colliding with tower
+	} 
+	else {
+		towerColNum = -1;
+	}
+
 
 	sf::Vector2f newPos = fShape.getPosition() + fVelocity;
 	if (collision) {
@@ -287,7 +317,41 @@ void Follower::moveFollower(sf::Vector2f const &vel) {
 	healthText.move(vel);
 
 	fPosition = fShape.getPosition();
+	dot.setPosition(fBox.getPosition());
 }
+
+void Follower::setNewVelocity(sf::Vector2f const &destinationVector, float speed)
+{
+	//moves follower by adding unit vector to move function
+
+	float yCoord = destinationVector.y - fShape.getPosition().y;
+	//destination vector is either player position or random movement
+	//when follower is not following player
+
+	float xCoord = destinationVector.x - fShape.getPosition().x;
+
+	float mag = zsk::magnitude(xCoord, yCoord);
+	//finds magnitude of vector to create unit vector
+
+	if (breakNeck) {
+		speed = speedBN;
+	}
+
+	float xVelocity = ((xCoord / mag) * speed * pow(momentum, aRight + aLeft));
+	float yVelocity = ((yCoord / mag) * speed * pow(momentum, aUp + aDown));
+
+	sf::Vector2f toPass = sf::Vector2f(xVelocity, yVelocity);
+
+	if (id < 3 && breakNeck) {
+		cout << "new speed is: " << zsk::magnitude(toPass.x, toPass.y) << endl;
+	}
+	
+
+	setVelocity(toPass);
+
+	//creates follower velocity vector as function of direction vector and speed
+}
+
 
 //ACCELERATES FOLLOWER
 void Follower::accelerate(Player &player, bool decelerate)
@@ -306,25 +370,21 @@ void Follower::accelerate(Player &player, bool decelerate)
 	bool movingDown = playersCurrY > playersOldY;
 
 
-	if (movingLeft)
-	{
+	if (movingLeft) {
 		aRight = 0;
 		aLeft++;											
 		//counts number of times follwer is accelerated
 	}
-	else if (movingRight)
-	{
+	else if (movingRight) {
 		aLeft = 0;
 		aRight++;
 	}
 
-	if (movingUp)
-	{
+	if (movingUp) {
 		aDown = 0;
 		aUp++;
 	}
-	else if (movingDown)
-	{
+	else if (movingDown) {
 		aUp = 0;
 		aDown++;
 	}
@@ -336,6 +396,7 @@ void Follower::accelerate(Player &player, bool decelerate)
 
 	if (decelerate) {					
 		aUp = aLeft = aDown = aRight = 0;
+		breakNeck = false;
 		// all exponents set to 0 to decelerate follower
 	}
 
@@ -347,14 +408,20 @@ bool Follower::isFollowingPlayer(Player &player)
 
 	if (!followingPlayer)
 		followingPlayer = zsk::distanceFrom(this->fPosition, player.getPosition()) 
-		<= player.getSmallFollowAreaRadius();
+		<= player.getSmallFollowAreaRadius() + fShape.getHeadRadius();
 	else
 		followingPlayer = zsk::distanceFrom(this->fPosition, player.getPosition()) 
-		<= player.getLargeFollowAreaRadius();
+		<= player.getLargeFollowAreaRadius() + fShape.getHeadRadius();
 
-	if (wasFollowing && !followingPlayer)
-		setNewVelocity(player.getPosition());
+	if (wasFollowing && !followingPlayer) {
+		float speed = zsk::magnitude(fVelocity.x, fVelocity.y);
 
+		if (speed >= speedBN) {
+			breakNeck = true;
+			setVelocity(fVelocity*2);
+		}
+		//Double our speed and set breakNeck to true;
+	}
 	return followingPlayer;
 }
 
@@ -399,13 +466,28 @@ bool Follower::towerCollision(Tower &tower)
 {
 	//if there is a tower collision, redirect follower's velocity
 	bool towerCollision = zsk::distanceFrom(this->fPosition,
-		tower.getPosition()) <= tower.getTowerRadius();
+		tower.getPosition()) <= tower.getTowerRadius() +
+		fShape.getHeadRadius();
 
 	if (towerCollision) {
 		fVelocity = -fVelocity;
+		++redirectCount;
+		//cout << "redir count: " << redirectCount << endl;
+	}
+	else {
+		redirectCount = 0;
+	}
+		
+
+	if (redirectCount > 5 ){
+		fixCenterVelocity();
+		redirectCount++;
+		//cout << "Fixing " << endl;
 	}
 
-	redirectCount = 0;
+	if (redirectCount > 25){
+		redirectCount = 0;
+	}
 
 	return towerCollision;
 }
@@ -428,6 +510,11 @@ bool Follower::followerCollision(std::list<Follower> &fols,
 			}
 			else {
 				fol_it2->setMinusBounce();
+
+				if (this->getFollowerGlobalBounds().contains(
+					fol_it2->getFollowerPosition() + fol_it2->getBounce() )){
+					this->setMinusBounce();
+				}
 				fol_it2++;
 			}
 			
@@ -443,12 +530,14 @@ bool Follower::followerCollision(std::list<Follower> &fols,
 
 void Follower::setMinusBounce()
 {
-	static int bounceType = 0;
+	zsk::vect range = { 0, 4 };
+	int bounceType = zsk::randomSpawn(range).a;
 
-	switch (bounceType % 4)
+	bounce = globBounce;
+
+	switch (bounceType)
 	{
-	case 0:
-		bounce = bounce;			
+	case 0:		
 		//no change to bounce vector
 		break;
 
@@ -468,9 +557,6 @@ void Follower::setMinusBounce()
 		break;
 	}
 
-	bounceType++;					
-	//increments to cycle through bounce types
-
 }
 		//private
 
@@ -479,6 +565,7 @@ void Follower::fixCenterVelocity()
 	sf::Vector2f center = sf::Vector2f(windowLength / 2.f, windowHeight / 2.f);
 	setNewVelocity(center);
 }
+
 		//private
 
 void Follower::merge(std::list<Follower>& fols,
@@ -492,9 +579,11 @@ void Follower::merge(std::list<Follower>& fols,
 
 	int newHealth = health + fol_it->getHealth();
 	setHealth(newHealth);
-
+	
 	int newDmg = dmgDone + fol_it->getDamage();
 	setDamage(newDmg);
+
+	breakNeck = std::max(breakNeck, fol_it->breakNeck);
 
 	mergeCount++;
 	fol_it = fols.erase(fol_it);
@@ -506,6 +595,9 @@ const int Follower::takeDamage(int dmg)
 {
 	int newHealth = health - dmg;
 
+	if (mergeCount > 1)
+		mergeCount--;
+	
 	if (newHealth <= 0)	{
 		return 0;
 	}
@@ -521,4 +613,5 @@ void Follower::drawFollower(sf::RenderWindow &window)
 	fShape.draw(window);
 	window.draw(fBox);
 	window.draw(healthText);
+	window.draw(dot);
 }

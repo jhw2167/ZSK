@@ -25,4 +25,6 @@ namespace zsk
 	float distanceFrom(const sf::Vector2f& loc1,
 		const sf::Vector2f& loc2);
 
+	float magnitude(float x, float y); 
+		
 }
