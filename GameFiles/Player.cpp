@@ -885,35 +885,44 @@ void Player::growLargeFollowArea(float growRate)
 
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) 
 	{
-
 		float newRad = largeFollowArea.getRadius() + growRate;
 
 		if (maxLargeFolRad >= newRad) {
 			setLargeFollowerRadius(newRad);
 		}
 
-		if (newRad >= 0.75 * maxLargeFolRad) {
+		if (newRad >= 0.8 * maxLargeFolRad) {
 			snap = true;
 		}
 			
 	}
-	else {
-		setLargeFollowerRadius(minLargeFolRad);
-
+	else if (snap)
+	{
 		if (snap) {
-			float newSmallRad = smallFollowArea.getRadius() * 0.25;
-			setSmallFollowerRadius(newSmallRad);
+			float newRad = 0; // smallFollowArea.getRadius() * 0.25;
+			setSmallFollowerRadius(newRad);
+			setLargeFollowerRadius(newRad);
 			snap = false;
 		}
+	} 
+	else {
+
+		float newRad = largeFollowArea.getRadius() + growRate;
+
+		if (minLargeFolRad >= newRad) {
+			setLargeFollowerRadius(newRad);
+		}
+		else {
+			setLargeFollowerRadius(minLargeFolRad);
+		}
 	}
-	
-
+		
 	float newSmallRad = smallFollowArea.getRadius() + 0.5* growRate;
-
+	
 	if (smallFolRad >= newSmallRad) {
 		setSmallFollowerRadius(newSmallRad);
 	}
-	
+
 }
 
 

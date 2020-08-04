@@ -12,6 +12,8 @@
 
 namespace zsk
 {
+	const static double pi = 3.141592628;
+
 	struct vect {
 		float a, b;
 
@@ -26,5 +28,7 @@ namespace zsk
 		const sf::Vector2f& loc2);
 
 	float magnitude(float x, float y); 
+
+	double radsToDegs(double rads);
 		
 }

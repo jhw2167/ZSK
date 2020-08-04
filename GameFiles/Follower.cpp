@@ -8,7 +8,9 @@ int Follower::f_id = 0;
 int Follower::maxMerge = 3;
 const sf::Vector2f Follower::globBounce
 	= sf::Vector2f(5.f, 5.f);
-const float Follower::speedBN = 8.f;
+const float Follower::speedBN = 10.f;
+const int Follower::dmgBN = 5;
+
 
 sf::Font Follower::arial;
 
@@ -320,6 +322,22 @@ void Follower::moveFollower(sf::Vector2f const &vel) {
 	dot.setPosition(fBox.getPosition());
 }
 
+bool Follower::isBreakNeck(bool wasFollowing)
+{
+	if (wasFollowing && !followingPlayer) {
+		float speed = zsk::magnitude(fVelocity.x, fVelocity.y);
+
+		if (speed >= speedBN) {
+			breakNeck = true;
+			fVelocity = fVelocity * 2;
+			dmgDone *= dmgBN;
+		}
+		//Double our speed and set breakNeck to true;
+	}
+
+	return breakNeck;
+}
+
 void Follower::setNewVelocity(sf::Vector2f const &destinationVector, float speed)
 {
 	//moves follower by adding unit vector to move function
@@ -391,8 +409,16 @@ void Follower::accelerate(Player &player, bool decelerate)
 
 	if (decelerate) {					
 		aUp = aLeft = aDown = aRight = 0;
-		breakNeck = false;
 		// all exponents set to 0 to decelerate follower
+
+		if (breakNeck)
+		{
+			breakNeck = false;
+			fVelocity = fVelocity * 0.5;
+			dmgDone /= dmgBN;
+
+		}
+		
 	}
 
 }
@@ -408,15 +434,15 @@ bool Follower::isFollowingPlayer(Player &player)
 		followingPlayer = zsk::distanceFrom(this->fPosition, player.getPosition()) 
 		<= player.getLargeFollowAreaRadius() + 2 * fShape.getHeadRadius();
 
-	if (wasFollowing && !followingPlayer) {
-		float speed = zsk::magnitude(fVelocity.x, fVelocity.y);
-
-		if (speed >= speedBN) {
-			breakNeck = true;
-			setVelocity(fVelocity*2);
-		}
-		//Double our speed and set breakNeck to true;
+	if (!wasFollowing && followingPlayer && !breakNeck){
+		player.setInvulnFrames(10);
+		//if you just start following a player, give them short term
+		//invulnerabillity so players dont needlessly take dmg when
+		//getting fols to follow them
 	}
+
+	isBreakNeck(wasFollowing);
+
 	return followingPlayer;
 }
 

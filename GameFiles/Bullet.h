@@ -13,8 +13,12 @@ private:
 	sf::CircleShape bTop;
 
 	sf::Vector2f velocity;		//bullets speed and direction
+	sf::Vector2f pos;
 	int strip;					//how many zoms layers bullet strips
 	int pen;			//How many zoms bullet punches through
+
+	/*  Private Functions  */
+	void orient(const sf::Vector2i& cursorPos);
 
 
 public:
@@ -22,7 +26,7 @@ public:
 	/*	BULLET CONSTRUCTOR	*/
 	Bullet(sf::Vector2f startPos = sf::Vector2f(0.f, 0.f),
 		sf::Vector2i cursorPos = sf::Vector2i(50.f, 50.f), int bStrip = 1,
-		int bPen = 1, float scale = 2.f);
+		int bPen = 1, float scale = 10.f);
 	//Bullet constructor initializes size, shape and position 
 	//of bullet object
 	

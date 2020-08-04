@@ -24,6 +24,7 @@ Bullet::Bullet(sf::Vector2f startPos,
 	bTop.setPosition(startPos);
 
 	setBulletVelocity(startPos, cursorPos);
+	orient(cursorPos);
 
 	strip = bStrip;			//by default bullets strip 1 layer (strips=1) and deletes
 	pen = bPen;				// after colliding with 1 zombie (pen = 1)
@@ -38,17 +39,15 @@ void Bullet::setBulletPosition(sf::Vector2f newPos)				//setPosition function
 {
 	bBody.setPosition(newPos);
 	bTop.setPosition(newPos);
+	pos = newPos;
 }
 
 void Bullet::setBulletVelocity(sf::Vector2f playerPos, sf::Vector2i cursorPos, float speed)		//moves bullet by adding unit vector to bullet shapes move function
 {
 	float yCoord = cursorPos.y - playerPos.y;
-
 	float xCoord = cursorPos.x - playerPos.x;
 
 	float mag = sqrt(pow(xCoord, 2) + pow(yCoord, 2));
-
-	bBody.rotate(std::tan(static_cast<double>(yCoord / xCoord)));
 
 	velocity = sf::Vector2f((xCoord / mag) * speed, (yCoord / mag) * speed);
 	//creates bullet velocity vector as function of direction vector and speed												
@@ -84,6 +83,20 @@ int Bullet::getPen() {
 	return pen;
 }
 //End Accessor Methods
+
+
+/*  Private Functions  */
+void Bullet::orient(const sf::Vector2i& cursorPos)
+{
+	float xCoord = cursorPos.x - pos.x;
+	float yCoord = cursorPos.y - pos.y;
+
+	double angle = std::atan(static_cast<double>(yCoord / xCoord));
+
+	angle = zsk::radsToDegs(angle);
+
+	cout << "Angle: " << angle << endl;
+}
 
 
 /*	OTHER PUBLIC FUNCTIONS	*/
@@ -134,8 +147,6 @@ sf::Vector2f operator*(sf::Vector2f v1, int const& a)
 
 	return ret;
 }
-
-
 
 
 sf::Vector2f operator /(const sf::Vector2f v1, const sf::Vector2f v2)

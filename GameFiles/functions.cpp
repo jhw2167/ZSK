@@ -9,7 +9,6 @@
 
 namespace zsk 
 {
-
 	zsk::vect randomSpawn(const vect& range_x, const vect& range_y)
 	{
 		//vect.a = min, vect.b = max range
@@ -56,6 +55,10 @@ namespace zsk
 		float yVal = y * y;
 
 		return sqrt(xVal + yVal);
+	}
+
+	double radsToDegs(double rads) {
+		return rads * (180 / pi);
 	}
 
 }

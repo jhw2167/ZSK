@@ -33,6 +33,7 @@ private:
 	bool followingPlayer;
 	const static float speedBN;
 	bool breakNeck;
+	const static int dmgBN;
 	/*  breakNeck speed gives followers heightened dmg,
 	and locks their */
 
@@ -137,6 +138,8 @@ Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor = sf::Color::
 	void moveLogic(bool collision, Player &player, std::vector<Tower> &towers);
 
 	void moveFollower(sf::Vector2f const &vel);
+
+	bool isBreakNeck(bool wasFollowing);
 
 	//ACCELERATES FOLLOWER
 	void accelerate(Player &player, bool decelerate = false);
