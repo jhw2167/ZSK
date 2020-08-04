@@ -58,7 +58,7 @@ namespace zsk
 	}
 
 	double radsToDegs(double rads) {
-		return rads * (180 / pi);
+		return rads * (180.f / pi);
 	}
 
 }

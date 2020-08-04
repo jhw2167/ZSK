@@ -4,26 +4,16 @@
 
 /*	BULLET CONSTRUCTOR	*/
 
-Bullet::Bullet(sf::Vector2f startPos,
-	sf::Vector2i cursorPos, int bStrip,
+Bullet::Bullet(const sf::Vector2f& startPos,
+	const sf::Vector2i& cursorPos, int bStrip,
 	int bPen, float scale)
 	//Bullet constructor initializes size, shape and position 
 	//of bullet object
 {
-	float bulletLength = scale * 2.f;
-	float bulletHeight = scale;
-
-	bBody.setSize(sf::Vector2f(bulletLength, bulletHeight));
-	bBody.setFillColor(sf::Color::Black);
-	bBody.setOrigin(bulletLength, bulletHeight / 2.f);				//origin of bullet set at bullet top so circleShape "bTop" can be set to same position
-	bBody.setPosition(startPos);									//and they will be overlapping
-
-	bTop.setRadius(scale / 2.f);
-	bTop.setFillColor(sf::Color::Black);
-	bTop.setOrigin(bTop.getRadius(), bTop.getRadius());
-	bTop.setPosition(startPos);
-
+	setBulletPosition(startPos);
 	setBulletVelocity(startPos, cursorPos);
+
+	initBullet(scale, bStrip, bPen);
 	orient(cursorPos);
 
 	strip = bStrip;			//by default bullets strip 1 layer (strips=1) and deletes
@@ -32,17 +22,44 @@ Bullet::Bullet(sf::Vector2f startPos,
 
 //END CONSTRUCTOR
 
+/*  Bullet Initialize Functions  */
+void Bullet::initBullet(const float scale,
+	const int bStrip, const int bPen)
+{
+	float bulletLength = scale * 2.f;
+	float bulletHeight = scale;
+
+	bBody.setSize(sf::Vector2f(bulletLength, bulletHeight));
+	bBody.setFillColor(sf::Color::Black);
+	bBody.setOrigin(bulletLength, bulletHeight / 2.f);				
+	//origin of bullet set at bullet top so circleShape
+	//"bTop" can be set to same position
+
+	bTop.setRadius(scale / 2.f);
+	bTop.setFillColor(sf::Color::Black);
+	bTop.setOrigin(bTop.getRadius(), bTop.getRadius());
+
+	strip = bStrip;			//by default bullets strip 1 layer (strips=1) and deletes
+	pen = bPen;				// after colliding with 1 zombie (pen = 1)
+
+
+}
+
+
 
 /*	BULLET SET FUNCTIONS	*/
 
-void Bullet::setBulletPosition(sf::Vector2f newPos)				//setPosition function
+void Bullet::setBulletPosition(const sf::Vector2f& newPos)				
 {
+	//setPosition function
+
 	bBody.setPosition(newPos);
 	bTop.setPosition(newPos);
 	pos = newPos;
 }
 
-void Bullet::setBulletVelocity(sf::Vector2f playerPos, sf::Vector2i cursorPos, float speed)		//moves bullet by adding unit vector to bullet shapes move function
+void Bullet::setBulletVelocity(const sf::Vector2f& playerPos,
+	const sf::Vector2i& cursorPos, const float speed)		//moves bullet by adding unit vector to bullet shapes move function
 {
 	float yCoord = cursorPos.y - playerPos.y;
 	float xCoord = cursorPos.x - playerPos.x;
@@ -53,11 +70,11 @@ void Bullet::setBulletVelocity(sf::Vector2f playerPos, sf::Vector2i cursorPos, f
 	//creates bullet velocity vector as function of direction vector and speed												
 }
 
-void Bullet::setStrip(int bStrip) {
+void Bullet::setStrip(const int bStrip) {
 	strip = bStrip;
 }
 
-void Bullet::setPen(int bPen) {
+void Bullet::setPen(const int bPen) {
 	pen = bPen;
 }
 
@@ -65,21 +82,21 @@ void Bullet::setPen(int bPen) {
 
 
 /*	BULLET ACCESSOR FUNCTIONS	*/
-sf::Vector2f Bullet::getBulletPosition() {
-	return bTop.getPosition();
+sf::Vector2f Bullet::getBulletPosition() const  {
+	return pos;
 }
 //get bullets position function used for collisions 
 
-sf::FloatRect Bullet::getBulletGlobalBounds() {
+sf::FloatRect Bullet::getBulletGlobalBounds() const {
 	return bTop.getGlobalBounds();
 }
 //taken as global bounds of of bullets circlceShape top
 
-int Bullet::getStrip() {
+int Bullet::getStrip() const {
 	return strip;
 }
 
-int Bullet::getPen() {
+int Bullet::getPen() const {
 	return pen;
 }
 //End Accessor Methods
@@ -88,14 +105,28 @@ int Bullet::getPen() {
 /*  Private Functions  */
 void Bullet::orient(const sf::Vector2i& cursorPos)
 {
-	float xCoord = cursorPos.x - pos.x;
-	float yCoord = cursorPos.y - pos.y;
+	/*
+		Calculated the angle to rotate the bullet object
+		and applies it to the shape
+	*/
 
-	double angle = std::atan(static_cast<double>(yCoord / xCoord));
+	float xDif = cursorPos.x - pos.x;
+	float yDif = pos.y - cursorPos.y;
 
-	angle = zsk::radsToDegs(angle);
+	float radAngle = std::atan(yDif / xDif);
+	float angle = zsk::radsToDegs(radAngle);
 
-	cout << "Angle: " << angle << endl;
+	float circleX = pos.x;
+	float circleY = pos.y;
+
+	if (xDif < 0) {
+		radAngle += zsk::pi;
+		circleX += (std::cos(radAngle)) * bBody.getSize().x;
+		circleY -= std::sin(radAngle) * bBody.getSize().x;
+	}
+
+	bBody.setRotation(-angle);
+	bTop.setPosition(circleX, circleY);
 }
 
 
@@ -103,6 +134,8 @@ void Bullet::orient(const sf::Vector2i& cursorPos)
 void Bullet::moveBullet() {
 	bBody.move(velocity);
 	bTop.move(velocity);
+
+	pos += velocity;
 }
 
 bool Bullet::isOutOBounds(sf::RenderWindow &window)
