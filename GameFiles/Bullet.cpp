@@ -5,15 +5,16 @@
 /*	BULLET CONSTRUCTOR	*/
 
 Bullet::Bullet(const sf::Vector2f& startPos,
-	const sf::Vector2i& cursorPos, int bStrip,
-	int bPen, float scale)
+	const sf::Vector2i& cursorPos, const int bStrip,
+	const int bPen, const float scale, const float speed,
+	const sf::Color& color)
 	//Bullet constructor initializes size, shape and position 
 	//of bullet object
 {
 	setBulletPosition(startPos);
-	setBulletVelocity(startPos, cursorPos);
+	setBulletVelocity(startPos, cursorPos, speed);
 
-	initBullet(scale, bStrip, bPen);
+	initBullet(scale, bStrip, bPen, color);
 	orient(cursorPos);
 
 	strip = bStrip;			//by default bullets strip 1 layer (strips=1) and deletes
@@ -24,7 +25,7 @@ Bullet::Bullet(const sf::Vector2f& startPos,
 
 /*  Bullet Initialize Functions  */
 void Bullet::initBullet(const float scale,
-	const int bStrip, const int bPen)
+	const int bStrip, const int bPen, const sf::Color& bColor)
 {
 	float bulletLength = scale * 2.f;
 	float bulletHeight = scale;
@@ -36,7 +37,7 @@ void Bullet::initBullet(const float scale,
 	//"bTop" can be set to same position
 
 	bTop.setRadius(scale / 2.f);
-	bTop.setFillColor(sf::Color::Black);
+	bTop.setFillColor(bColor);
 	bTop.setOrigin(bTop.getRadius(), bTop.getRadius());
 
 	strip = bStrip;			//by default bullets strip 1 layer (strips=1) and deletes

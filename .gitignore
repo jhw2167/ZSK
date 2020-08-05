@@ -5,4 +5,5 @@ Excess.gitignore
 x64/
 dlls/
 Debug/
+Sprites/
 README.MD

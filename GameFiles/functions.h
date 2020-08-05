@@ -12,6 +12,9 @@
 
 namespace zsk
 {
+
+	/*  Mathy Functions and constants for ZSK  */
+
 	const static double pi = 3.141592628;
 
 	struct vect {
@@ -31,4 +34,15 @@ namespace zsk
 
 	double radsToDegs(double rads);
 		
+
+	/*  Artistic Functions and constants for ZSK  */
+
+	namespace art 
+	{
+		const static sf::Color primColor = sf::Color::Black;
+		const static sf::Color secColor = sf::Color::White;
+
+		const static sf::Color winClearColor = sf::Color::Black;
+	}
+
 }

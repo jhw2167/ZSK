@@ -25,15 +25,16 @@ public:
 
 	/*	BULLET CONSTRUCTOR	*/
 	Bullet(const sf::Vector2f& startPos = sf::Vector2f(0.f, 0.f),
-		const sf::Vector2i& cursorPos = sf::Vector2i(50.f, 50.f), int bStrip = 1,
-		int bPen = 1, float scale = 10.f);
+		const sf::Vector2i& cursorPos = sf::Vector2i(50.f, 50.f), const int bStrip = 1,
+		const int bPen = 1, const float scale = 4.f, const float speed = 10.f,
+		const sf::Color& color = sf::Color::Black);
 	//Bullet constructor initializes size, shape and position 
 	//of bullet object
 	
 
 	/*  Initialize Functions  */
 	void initBullet(const float scale,
-		const int bStrip, const int bPen);
+		const int bStrip, const int bPen, const sf::Color& bColor);
 
 
 	/*	BULLET SET FUNCTIONS	*/
@@ -41,7 +42,7 @@ public:
 	//setPosition function
 
 	void setBulletVelocity(const sf::Vector2f& playerPos,
-		const sf::Vector2i& cursorPos, const float speed = 1.f);
+		const sf::Vector2i& cursorPos, const float speed = 10.f);
 		//moves bullet by adding unit vector to bullet shapes move function
 
 	void setStrip(const int bStrip);
