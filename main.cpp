@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
 		game.render();
 	}
 
-	//getchar();
+	getchar();
 	return 0;
 }
 //END MAIN METHOD

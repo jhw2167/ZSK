@@ -39,10 +39,26 @@ namespace zsk
 
 	namespace art 
 	{
-		const static sf::Color primColor = sf::Color::Black;
-		const static sf::Color secColor = sf::Color::White;
+			/*  Art Variables  */
 
-		const static sf::Color winClearColor = sf::Color::Black;
+		//Const variables
+		static sf::Color primColor;
+		static sf::Color secColor;
+
+		static sf::Color winClearColor;
+
+		//non const variales
+		static std::vector<sf::Color> playerColors;
+
+
+			/*  Art Functions  */
+		sf::Image& changePixels(sf::Image& img, 
+			const sf::Color& cFrom, const sf::Color& cTo, const int slack);
+
+		sf::Image & changePixelRange(sf::Image & img,
+			const sf::Color & cFrom, const sf::Color & cTo);
+
+		int newCodeFromDiff(int minC, int maxC, int pixC, int diffC);
 	}
 
 }

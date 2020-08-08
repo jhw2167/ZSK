@@ -18,10 +18,24 @@ private:
 	sf::Vector2f towerPosition;
 
 	sf::CircleShape towerShape;
-	sf::Sprite laser1;						
+
+	/* Tower Artwork Vars  */
+	sf::Sprite laser;
 	//Laser will be comprised of a series of drawn sprites
 
-	sf::RectangleShape laser;
+	static sf::Image img;
+	//for loading/manipulating images
+
+	static sf::Texture laserTexture;
+	//Static sf textures
+
+	enum playerColors
+	{
+		P1_COLOR = 0,
+		P2_COLOR,
+		P3_COLOR,
+		P4_COLOR,
+	};
 
 public:
 	
@@ -31,6 +45,8 @@ public:
 
 		/*  Init Methods  */
 	void initTowerShape(sf::RenderWindow const &window);
+	static void addLaserTextures(const sf::Color& color);
+	void initLasers();
 
 
 		/*  Setter methods  */

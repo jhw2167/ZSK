@@ -1,6 +1,12 @@
 //Implementation of Tower.h class
 
 #include "Tower.h"
+
+	/*  Init Static variables  */
+sf::Image Tower::img;
+
+sf::Texture Tower::laserTexture;
+
 	/*  Public Methods  */
 	
 
@@ -13,6 +19,10 @@ Tower::Tower(sf::RenderWindow const &window, int tNumber)
 	initTowerShape(window);
 	setPosition(window, tNumber);
 	towerOwnedBy = NOTOWNED;
+
+	if (tNumber == 0){
+		initLasers();
+	}
 }
 //End Constructors
 
@@ -26,6 +36,37 @@ void Tower::initTowerShape(sf::RenderWindow const &window)
 	towerShape.setFillColor(sf::Color::Black);
 	towerShape.setOrigin(towerRadius, towerRadius);
 }
+
+void Tower::addLaserTextures(const sf::Color & color)
+{
+}
+
+void Tower::initLasers()
+{
+	/*
+		Static method "initLasers" builds a colored laser
+		texture from an lase laser and creates a generic laser sprite
+		thereafter that will adjust its color based on the player that
+		owns the given tower
+	*/
+
+	if (!img.loadFromFile("Sprites/base_laser.png")) {
+		cout << "Error loading laser images\n";
+	}
+	zsk::art::changePixelRange(img, sf::Color::Red, sf::Color::Black);
+	img.saveToFile("Sprites/base_laser1.png");
+
+	if (!laserTexture.loadFromImage(img)){
+		cout << "Error loading laser textures from images\n";
+	}
+	
+	laser.setTexture(laserTexture);
+	sf::Vector2f pos1 = sf::Vector2f(300.f, 300.f);
+	laser.setPosition(pos1);
+
+}
+
+
 //End Inits
 
 
@@ -131,4 +172,6 @@ float Tower::distanceFrom(sf::Vector2f objectPos)
 //TOWER DRAW METHODS
 void Tower::drawTowers(sf::RenderWindow &window) {
 	window.draw(towerShape);
+
+	window.draw(laser);
 }

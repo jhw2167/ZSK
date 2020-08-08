@@ -7,6 +7,9 @@
 /*  Initializing static variables  */
 int GameState::maxFollowers = 3;
 
+int GameState::numPlayers = 0;
+int GameState::maxPlayers_this = 0;
+
 
 	/*  Constructors  */
 
@@ -17,8 +20,47 @@ GameState::GameState(sf::RenderWindow* w_ptr) : State(w_ptr)
 	initTowers();
 }
 
+/*  Public Static Functions  */
+void GameState::setNumPlayerVars(const int maxPlayersThisGame) {
+	/*
+		Default max players is 4, o/t we set new max players
+	*/
+
+	numPlayers = 1;
+	//if we start a game we have one player
+
+	maxPlayers_this = maxPlayersThisGame;
+	//establish our max players for *this* gamestate instance
+}
+
+
+void GameState::addPlayer() {
+	/*
+		Adds player to the eventual gamestate, each game
+		may have a different number of max players
+	*/
+
+	if (numPlayers < maxPlayers_this) {
+		numPlayers++;
+	}
+}
 
 /*  Private Functions  */
+void GameState::initArt()
+{
+	//Const variables - should be, but not actually
+	zsk::art::primColor = sf::Color::White;
+	zsk::art::secColor = sf::Color::Black;
+
+	zsk::art::winClearColor = sf::Color::White;
+
+	//init playerColors
+	zsk::art::playerColors = { sf::Color::Red,
+								sf::Color::Blue, 
+								sf::Color::Magenta, 
+								sf::Color::Green };
+
+}
 
 void GameState::initTowers()
 {
@@ -30,9 +72,11 @@ void GameState::initTowers()
 
 void GameState::initVars()
 {
-	numPlayers = 0;
-	maxPlayers = 4;
-	numberOfTowers = 4;
+	/*
+		Initiate fundamental non-static vars
+	*/
+
+	numberOfTowers = maxPlayers_this;
 }
 //End Private Functions
 

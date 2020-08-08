@@ -15,7 +15,7 @@ Game::Game()
 	initWindow();
 	initStartMenu();
 
-	addPlayer();
+	GameState::setNumPlayerVars(maxPlayers);
 }
 
 
@@ -211,12 +211,8 @@ void Game::updateMousePosition() {
 	mousePos = sf::Mouse::getPosition(*window_ptr);
 }
 
-void Game::addPlayer()
-{
-	if (numPlayers < maxPlayers)
-	{
-		numPlayers += 1;
-	}
+void Game::addPlayer() {
+	GameState::addPlayer();
 }
 
 void Game::update()

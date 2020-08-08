@@ -24,8 +24,8 @@ private:
 	sf::Vector2i mousePos;
 
 	//Simple Game Values
-	int numPlayers;
-	int maxPlayers;
+	static int numPlayers;
+	static int maxPlayers_this;
 
 	//Fols
 	static int maxFollowers;
@@ -39,9 +39,11 @@ private:
 	//Private functions
 	/*****************/
 
-	/* Init Functions*/
+	/* Init Functions  */
+	void initArt();
 	void initTowers();
 	void initVars();
+	
 
 
 	//Game Update functions
@@ -85,6 +87,12 @@ public:
 
 
 	/*  Other Public Functions  */
+
+	//Generic Functions
+	static void setNumPlayerVars(const int maxPlayersForGame = 4);
+	static void addPlayer();
+
+	//Virtual Functions
 	virtual void quitState();
 	virtual short update(sf::Vector2i &mousePos, const float& dt);
 	virtual void render(sf::RenderTarget* rt = nullptr);
