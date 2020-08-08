@@ -2,8 +2,8 @@
 #pragma once
 
 //Precompiled header
-#include "../pch/stdafx.h"
-#include "functions.h"
+#include "../../../BaseCode/pch/stdafx.h"
+#include "../Other/functions.h"
 
 class Bullet {
 
@@ -71,14 +71,3 @@ public:
 	void drawBullet(sf::RenderWindow &window);
 
 };
-
-sf::Vector2f operator*(sf::Vector2f v1,  int const& a);
-
-sf::Vector2f operator/(const sf::Vector2f v1, const sf::Vector2f v2);
-
-sf::Vector2f abs(sf::Vector2f v1);
-
-//Stream overloaders
-std::ostream& operator<< (std::ostream &out, const sf::Vector2f v1);
-
-std::ostream& operator<< (std::ostream &out, const sf::Vector2i v1);

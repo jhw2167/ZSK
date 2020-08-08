@@ -9,7 +9,7 @@
 */
 
 //Precompiled header
-#include "../pch/stdafx.h"
+#include "../../BaseCode/pch/stdafx.h"
 
 class StartMenu
 {

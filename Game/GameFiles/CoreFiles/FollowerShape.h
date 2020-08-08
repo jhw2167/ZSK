@@ -3,7 +3,7 @@
 #pragma once
 
 //Precompiled header
-#include "../pch/stdafx.h"
+#include "../../../BaseCode/pch/stdafx.h"
 
 //Start with FollowerShape class
 class FollowerShape

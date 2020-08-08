@@ -11,7 +11,6 @@ namespace zsk
 {
 	zsk::vect randomSpawn(const vect& range_x, const vect& range_y)
 	{
-		//vect.a = min, vect.b = max range
 
 		try
 		{

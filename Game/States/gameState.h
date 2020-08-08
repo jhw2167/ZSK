@@ -4,12 +4,20 @@
 #include "State.h"
 
 //Project includes
-#include "../GameFiles/Bullet.h"
-#include "../GameFiles/FollowerShape.h"
-#include "../GameFiles/Player.h"
-#include "../GameFiles/Follower.h"
-#include "../GameFiles/FollowerShape.h"
-#include "../GameFiles/Tower.h"
+
+//necesary (most downstream) includes
+#include "../GameFiles/CoreFiles/Follower.h"
+
+//Other Includes
+/*
+	#include "../GameFiles/CoreFiles/Bullet.h"
+	#include "../GameFiles/CoreFiles/Bullet.h"
+	#include "../GameFiles/CoreFiles/FollowerShape.h"
+	#include "../GameFiles/CoreFiles/Player.h"
+	#include "../GameFiles/CoreFiles/FollowerShape.h"
+	#include "../GameFiles/CoreFiles/Tower.h"
+*/
+
 
 
 class GameState :

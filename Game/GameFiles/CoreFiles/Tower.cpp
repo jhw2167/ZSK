@@ -50,7 +50,7 @@ void Tower::initLasers()
 		owns the given tower
 	*/
 
-	if (!img.loadFromFile("Sprites/base_laser.png")) {
+	if (!img.loadFromFile("Art/Sprites/base_laser.png")) {
 		cout << "Error loading laser images\n";
 	}
 	zsk::art::changePixelRange(img, sf::Color::Red, sf::Color::Black);

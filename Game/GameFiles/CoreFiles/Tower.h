@@ -1,7 +1,7 @@
 #pragma once
 
 //project includes
-#include "../pch/stdafx.h"
+#include "../../../BaseCode/pch/stdafx.h"
 #include "Player.h"
 
 class Tower {

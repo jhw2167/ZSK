@@ -36,7 +36,7 @@ void StartMenu::initGameTitle()
 
 	int textSize = (wLength / 100.f) * (wHeight / 100.f) * (1.f / 2.f);
 
-	if (!arcade.loadFromFile("Fonts/ARCADE_N.ttf")) 	{
+	if (!arcade.loadFromFile("Art/Fonts/ARCADE_N.ttf")) 	{
 		//loads font to use for text drawing
 		std::cout << "Error loading arcade text in \n startMenu.cpp" << std::endl;
 	}

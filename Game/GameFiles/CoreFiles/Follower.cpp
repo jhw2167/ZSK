@@ -87,7 +87,7 @@ void Follower::initFollowerBox(FollowerShape &shape, bool showBoxes)
 
 void Follower::initHealthText() {
 
-	if (!arial.loadFromFile("Fonts/arial.ttf")) { 	//loads font to use for text drawing
+	if (!arial.loadFromFile("Art/Fonts/arial.ttf")) { 	//loads font to use for text drawing
 		std::cout << "Error loading text" << std::endl;
 	}
 	int textSize = 26;

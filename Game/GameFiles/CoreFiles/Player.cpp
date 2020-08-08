@@ -316,7 +316,7 @@ void Player::initShieldBar(sf::RenderWindow &window, float sShield, float sMaxSh
 void Player::initHealthText()
 	{
 		// loads text for putting health in string format
-		if (!arial.loadFromFile("Fonts/arial.ttf")) 	//loads font to use for text drawing
+		if (!arial.loadFromFile("Art/Fonts/arial.ttf")) 	//loads font to use for text drawing
 		{
 			std::cout << "Error loading text" << std::endl;
 		}

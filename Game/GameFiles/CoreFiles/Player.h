@@ -2,7 +2,7 @@
 //header file to construct and design the player object for the game
 
 //project includes
-#include "../pch/stdafx.h"
+#include "../../../BaseCode/pch/stdafx.h"
 #include "Bullet.h"
 #include "FollowerShape.h"
 

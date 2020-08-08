@@ -1,6 +1,7 @@
 #pragma once
 
-#include "../pch/stdafx.h"
+#include "../../../BaseCode/pch/stdafx.h"
+#include "../../../BaseCode/Overloads/OverloadedFuncs.h"
 
 /*
 	functions.h supplies namespace level functions for the program to use 

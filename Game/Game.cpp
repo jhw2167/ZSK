@@ -50,7 +50,7 @@ void Game::initWindow()
 	try
 	{
 		//Declares and opens file simultaneously
-		std::string configFile = "window/config.ini";
+		std::string configFile = "Game/window/config.ini";
 		std::ifstream w_config(configFile);
 
 		if (!w_config)
