@@ -3,77 +3,80 @@
 #include "Tower.h"
 
 	/*  Init Static variables  */
-sf::Image Tower::img;
-
-sf::Texture Tower::laserTexture;
 
 	/*  Public Methods  */
 	
 
 	/*  Constructors  */
-Tower::Tower(sf::RenderWindow const &window, int tNumber)
+Tower::Tower(sf::RenderWindow const &window, const int tNumber)
 //Constructs minimal tower objcet
 {
-	towerNumber = tNumber;
-
+	initVars(tNumber);
 	initTowerShape(window);
 	setPosition(window, tNumber);
-	towerOwnedBy = NOTOWNED;
-
-	if (tNumber == 0){
-		initLasers();
-	}
+	initLaser();
 }
 //End Constructors
 
 
 	/*  Init Methods  */
+void Tower::initVars(const int tNumber) {
+	towerNumber = tNumber;
+	towerOwnedBy = NOTOWNED;
+	isFiring = true;
+}
+
 void Tower::initTowerShape(sf::RenderWindow const &window)
 {
+	//setRadius and origin at center
 	float tRadius = std::min(window.getSize().x, window.getSize().y) / 8.f;
 	setRadius(tRadius);
+	
+	//fill color
+	towerShape.setFillColor(zsk::art::secColor);
 
-	towerShape.setFillColor(sf::Color::Black);
-	towerShape.setOrigin(towerRadius, towerRadius);
+	//similiarly set vars for towerOutline
+	towerOutline.setFillColor(sf::Color::Magenta);
+
+	float thickness = 4.f;
+	towerOutline.setOutlineThickness(thickness);
+	towerOutline.setOutlineColor(zsk::art::secColor);
 }
 
-void Tower::addLaserTextures(const sf::Color & color)
-{
-}
-
-void Tower::initLasers()
+void Tower::initLaser()
 {
 	/*
-		Static method "initLasers" builds a colored laser
-		texture from an lase laser and creates a generic laser sprite
-		thereafter that will adjust its color based on the player that
-		owns the given tower
+		Pulls a png laser image from library, pastes it to a texture,
+		the texture in turn applies to the sprite
 	*/
 
-	if (!img.loadFromFile("Art/Sprites/base_laser.png")) {
-		cout << "Error loading laser images\n";
-	}
-	zsk::art::changePixelRange(img, sf::Color::Red, sf::Color::Black);
-	img.saveToFile("Sprites/base_laser1.png");
-
-	if (!laserTexture.loadFromImage(img)){
+	if (!laserTexture.loadFromFile("Art/Sprites/laser.png")) {
 		cout << "Error loading laser textures from images\n";
 	}
-	
+
+	//set laser texture onto laser sprite
+	laserTexture.setSmooth(true);
 	laser.setTexture(laserTexture);
-	sf::Vector2f pos1 = sf::Vector2f(300.f, 300.f);
-	laser.setPosition(pos1);
 
+	//set laser aspects
+	laser.setOrigin(0, laser.getLocalBounds().height / 2.f);
+	//laser.setRotation()
+	//laser.setPosition()
 }
-
-
 //End Inits
 
 
 	/*  Setter methods  */
 void Tower::setRadius(float tRadius) {
+	
 	towerRadius = tRadius;
+
 	towerShape.setRadius(towerRadius);
+	towerShape.setOrigin(towerRadius, towerRadius);
+
+	const float newRad = 1.06 * tRadius;
+	towerOutline.setRadius(newRad);
+	towerOutline.setOrigin(newRad, newRad);
 }
 
 void Tower::setPosition(sf::RenderWindow const &window, int tNumber)
@@ -82,26 +85,29 @@ void Tower::setPosition(sf::RenderWindow const &window, int tNumber)
 	towerNumber = tNumber;
 
 	//tower's number denotation determines its position
+	sf::Vector2f newPos = sf::Vector2f(0, 0);
 
 	switch (towerNumber) {
 	case 1:
-		towerShape.setPosition(0, 0);
+		//do nothing
 		break;
 	case 2:
-		towerShape.setPosition(window.getSize().x, 0);
+		newPos = sf::Vector2f(window.getSize().x, 0);
 		break;
 	case 3:
-		towerShape.setPosition(0, window.getSize().y);
+		newPos = sf::Vector2f(0, window.getSize().y);
 		break;
 	case 4:
-		towerShape.setPosition(window.getSize().x, window.getSize().y);
+		newPos = sf::Vector2f(window.getSize().x, window.getSize().y);
 		break;
 	case 0:														//case zero tower not intented to be shown or utilized, 
-		towerShape.setPosition(-100.f, -100.f);					//its instantiation helps with mechanics such as checking tower collisions
+		newPos = sf::Vector2f(-100.f, -100.f);					//its instantiation helps with mechanics such as checking tower collisions
 		break;
 	}
+	towerShape.setPosition(newPos);
+	towerOutline.setPosition(newPos);
 
-	towerPosition = towerShape.getPosition();						
+	towerPosition = newPos;
 	//sets towerPosition var equal to placement of circle shape for easy access
 }
 //End setters
@@ -124,21 +130,27 @@ sf::CircleShape Tower::getTowerShape() {
 	return towerShape;
 }
 
-
-//TOWER OWNERSHIP METHODS
-bool Tower::isTowerOwned(sf::Vector2i mousePos, towerOwned i)
-{
-	if (towerShape.getGlobalBounds().contains(mousePos.x, mousePos.y));
-	towerOwnedBy = i;
-
-	return towerOwnedBy;				
-	//will return either 0 for unowned or >0 integer that equates to true boolean
-}
-
 int Tower::getTowerOwnership() {
 	return towerOwnedBy;
 }
+
+bool Tower::isLaserFiring() const {
+	return isFiring;
+}
 //End Accessor Methods
+
+
+//TOWER OWNERSHIP METHODS
+void Tower::changeOwner(int newOwner)
+{
+	/*
+		adjust tower ownership and makes changes
+		as necesary
+	*/
+	towerOwnedBy = newOwner;
+
+
+}
 
 
 	/*  Functions  */
@@ -163,15 +175,40 @@ float Tower::distanceFrom(sf::Vector2f objectPos)
 }
 
 
+
 //TOWER MECHANICS
 
 
-//ACTIVATING LASER
+//LASER BASED METHODS
+void Tower::changeLaserColor(const int newOwner)
+{
+	/*
+		Load base laser image and change the color to the color
+		corresponding to the player number of the new owner
+	*/
+
+	sf::Image img;
+	img.loadFromFile("Art/Sprites/laser.png");
+
+	sf::Vector2u s = img.getSize();
+	sf::Color oldColor = img.getPixel(s.x, s.y);
+	sf::Color newColor = zsk::art::playerColors.at(newOwner);
+
+	zsk::art::changePixelRange(img, oldColor, newColor);
+
+	laserTexture.loadFromImage(img);
+	laser.setTexture(laserTexture);
+	//laser color now changed
+}
 
 
 //TOWER DRAW METHODS
-void Tower::drawTowers(sf::RenderWindow &window) {
+void Tower::drawTowers(sf::RenderWindow &window) 
+{
+	window.draw(towerOutline);
 	window.draw(towerShape);
-
-	window.draw(laser);
+	
+	if (isFiring)
+		window.draw(laser);
+	
 }

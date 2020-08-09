@@ -5,7 +5,7 @@
 /*  CNTRL + M + O to collapse all */
 
 /*  Initializing static variables  */
-int GameState::maxFollowers = 3;
+int GameState::maxFollowers = 0;
 
 int GameState::numPlayers = 0;
 int GameState::maxPlayers_this = 0;
@@ -17,6 +17,7 @@ GameState::GameState(sf::RenderWindow* w_ptr) : State(w_ptr)
 {
 	players.push_back(Player(*w_ptr));
 	initVars();
+	initArt();
 	initTowers();
 }
 
@@ -56,9 +57,7 @@ void GameState::initArt()
 
 	//init playerColors
 	zsk::art::playerColors = { sf::Color::Red,
-								sf::Color::Blue, 
-								sf::Color::Magenta, 
-								sf::Color::Green };
+	sf::Color::Blue, sf::Color::Magenta, sf::Color::Green };
 
 }
 

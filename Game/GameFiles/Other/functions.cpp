@@ -63,6 +63,23 @@ namespace zsk
 
 	namespace art
 	{
+		/*  Art Vars declared extern as globals  */
+
+		//Const variables
+		sf::Color primColor;
+		sf::Color secColor;
+
+		sf::Color winClearColor;
+
+		//non const variales
+		std::vector<sf::Color> playerColors;
+
+
+
+		//min max color const vars for functions below
+		const static int maxColor = 255;
+		const static int minColor = 0;
+
 		sf::Image & changePixels(sf::Image & img,
 			const sf::Color & cFrom, const sf::Color & cTo, const int slack)
 		{
@@ -71,9 +88,6 @@ namespace zsk
 				by comparing to a target color to eliminate.  The more slack,
 				the wider the range we will set colored to transpartent.
 			*/
-			const static int maxColor = 255;
-			const static int minColor = 0;
-
 
 			int r1 = std::min(cFrom.r + slack, maxColor);
 			int g1 = std::min(cFrom.g + slack, maxColor);
@@ -108,8 +122,7 @@ namespace zsk
 		}
 
 
-
-
+		static bool output;
 
 		sf::Image & changePixelRange(sf::Image & img,
 			const sf::Color & cFrom, const sf::Color & cTo)
@@ -119,21 +132,6 @@ namespace zsk
 				range to ONE pixel type, we add the difference of c1 and c2 to 
 				complete the transformation 
 			*/
-			const static int maxColor = 255;
-			const static int minColor = 0;
-
-			//Find min color codes between two colors
-			int rMin = std::min(cFrom.r, cTo.r);
-			int gMin = std::min(cFrom.g, cTo.g);
-			int bMin = std::min(cFrom.b, cTo.b);
-
-			int rMax = std::max(cFrom.r, cTo.r);
-			int gMax = std::max(cFrom.g, cTo.g);
-			int bMax = std::max(cFrom.b, cTo.b);
-			
-			const sf::Color diff = sf::Color(rMax - rMin,
-											gMax - gMin,
-											bMax - bMin);
 
 			const int sizeX = img.getSize().x;
 			const int sizeY = img.getSize().y;
@@ -144,16 +142,35 @@ namespace zsk
 				{
 					sf::Color pixel = img.getPixel(x, y);
 
-					int newR = newCodeFromDiff(rMin, rMax, pixel.r, diff.r);
-					int newG = newCodeFromDiff(gMin, gMax, pixel.g, diff.g);
-					int newB = newCodeFromDiff(bMin, bMax, pixel.b, diff.b);
-					
-					const sf::Color newColor = sf::Color(newR, newG, newB, pixel.a);
+					//add pixels, we will test if two of them are close to white or black
+					int rgSum = pixel.r + pixel.g;
+					int rbSum = pixel.r + pixel.b;
+					int gbSum = pixel.g + pixel.b;
+
+					const static int minWSum = 480;
+					const static int minBSum = 30;
+
+					bool whitePix = (rgSum > minWSum) ||
+						(rbSum > minWSum) || (gbSum > minWSum);
+
+					bool blackPix = (pixel.r + pixel.b + pixel.g < minBSum);
+
+					sf::Color newColor = sf::Color::White;
+
+					if (whitePix)
+						newColor.a = minColor;
+					else if (blackPix)
+						newColor = sf::Color::Black;
+					else
+					{
+						int newR = newCodeFromDiff(cTo.r, cFrom.r, pixel.r);
+						int newG = newCodeFromDiff(cTo.g, cFrom.g, pixel.g);
+						int newB = newCodeFromDiff(cTo.b, cFrom.b, pixel.b);
+						
+						newColor = sf::Color(newR, newG, newB, pixel.a);
+					}
+
 					img.setPixel(x, y, newColor);
-
-					sf::Vector2f pix = sf::Vector2f(x, y);
-
-					cout << "pixel: (" << pix << ")";
 				}
 			}
 
@@ -161,21 +178,24 @@ namespace zsk
 		}
 
 
-		int newCodeFromDiff(int minC, int maxC, int pixC, int diffC)
+		int newCodeFromDiff(int to, int from, int pixC)
 		{
 			/*
 				Helper method generates the new color code from the 
 				min, max and current pixel color codes
 				Helper method for changePixelRange();
+
+				to -- to color for particular rgb code
+				from -- form color for particular rgb code
+				pixC -- pixels color val
 			*/
 
-			int minDiff = abs(minC - pixC);
-			int maxDiff = abs(maxC - pixC);
+			int diff = to - from;
 
-			if (minDiff < maxDiff)
-				return pixC + diffC;
+			if (diff < 0)
+				return std::max(pixC + diff, minColor);
 			else
-				return pixC - diffC;
+				return std::min(pixC + diff, maxColor);
 
 		}
 

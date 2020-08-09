@@ -12,22 +12,18 @@ private:
 	//towers will be circleShapes in each of the four coners of the map
 	//labels towers, 0, 1, 2, 3
 
-	enum towerOwned {NOTOWNED, PLAYER1, PLAYER2, PLAYER3, PLAYER4};
-	towerOwned towerOwnedBy;
+	enum towerOwned {NOTOWNED = 0, PLAYER1, PLAYER2, PLAYER3, PLAYER4};
+	int towerOwnedBy;
 	
 	sf::Vector2f towerPosition;
-
 	sf::CircleShape towerShape;
+	sf::CircleShape towerOutline;
 
-	/* Tower Artwork Vars  */
+	/* Tower laser Vars  */
+	
+	sf::Texture laserTexture;
 	sf::Sprite laser;
-	//Laser will be comprised of a series of drawn sprites
-
-	static sf::Image img;
-	//for loading/manipulating images
-
-	static sf::Texture laserTexture;
-	//Static sf textures
+	bool isFiring;
 
 	enum playerColors
 	{
@@ -40,13 +36,13 @@ private:
 public:
 	
 		/*  Constructors */
-	Tower(sf::RenderWindow const &window, int tNumber = 0);
+	Tower(sf::RenderWindow const &window, const int tNumber = 0);
 
 
 		/*  Init Methods  */
+	void initVars(const int tNumber);
 	void initTowerShape(sf::RenderWindow const &window);
-	static void addLaserTextures(const sf::Color& color);
-	void initLasers();
+	void initLaser();
 
 
 		/*  Setter methods  */
@@ -54,25 +50,27 @@ public:
 	void setPosition(sf::RenderWindow const &window, int tNumber);
 
 
-
 		/*  Accessor Methods  */
 	sf::FloatRect getTowerGlobalBounds();
+
 	sf::Vector2f getPosition();
+
 	float getTowerRadius();
+
 	sf::CircleShape getTowerShape();
 
+	int getTowerOwnership();
+
+	bool isLaserFiring() const;
 
 	//TOWER OWNERSHIP METHODS
-	bool isTowerOwned(sf::Vector2i mousePos, towerOwned i);
-	int getTowerOwnership();
+	void changeOwner(int newOwner);
 	
+
 	/*  Functions  */
 
 	//TOWER COLLISIONS
 	bool checkTowerCollision(Player &player);
-
-	//if (distanceFrom(playerPos) <= towerRadius)
-		//return true;
 
 	float distanceFrom(sf::Vector2f objectPos);
 
@@ -81,12 +79,8 @@ public:
 	//TOWER MECHANICS
 
 
-	//ACTIVATING LASER
-
-
-
-
-
+	//Laser Based Methods
+	void changeLaserColor(const int newOwner);
 
 	//TOWER DRAW METHODS
 	void drawTowers(sf::RenderWindow &window);

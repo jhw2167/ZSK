@@ -43,13 +43,13 @@ namespace zsk
 			/*  Art Variables  */
 
 		//Const variables
-		static sf::Color primColor;
-		static sf::Color secColor;
+		extern sf::Color primColor;
+		extern sf::Color secColor;
 
-		static sf::Color winClearColor;
+		extern sf::Color winClearColor;
 
 		//non const variales
-		static std::vector<sf::Color> playerColors;
+		extern std::vector<sf::Color> playerColors;
 
 
 			/*  Art Functions  */
@@ -59,7 +59,7 @@ namespace zsk
 		sf::Image & changePixelRange(sf::Image & img,
 			const sf::Color & cFrom, const sf::Color & cTo);
 
-		int newCodeFromDiff(int minC, int maxC, int pixC, int diffC);
+		int newCodeFromDiff(int minC, int maxC, int pixC);
 	}
 
 }
