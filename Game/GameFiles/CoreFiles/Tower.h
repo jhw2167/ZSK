@@ -7,6 +7,11 @@
 class Tower {
 
 private:
+
+	/*  Fundamentals  */
+	const sf::RenderWindow *win_ptr;
+
+	/*  Basic Properties  */
 	float towerRadius;		
 	int towerNumber; 
 	//towers will be circleShapes in each of the four coners of the map
@@ -20,8 +25,7 @@ private:
 	sf::CircleShape towerOutline;
 
 	/* Tower laser Vars  */
-	
-	sf::Texture laserTexture;
+	sf::Texture lTexture;
 	sf::Sprite laser;
 	bool isFiring;
 
@@ -40,8 +44,9 @@ public:
 
 
 		/*  Init Methods  */
-	void initVars(const int tNumber);
+	void initVars(const int tNumber, sf::RenderWindow const &window);
 	void initTowerShape(sf::RenderWindow const &window);
+	void initLaserTexture();
 	void initLaser();
 
 
@@ -85,4 +90,9 @@ public:
 	//TOWER DRAW METHODS
 	void drawTowers(sf::RenderWindow &window);
 
+	/*  Destructor  */
+	~Tower();
+
+	/*  Copy Constructor  */
+	Tower(const Tower& rhs);
 };
