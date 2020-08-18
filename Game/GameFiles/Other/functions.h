@@ -35,6 +35,7 @@ namespace zsk
 
 	double radsToDegs(double rads);
 		
+	double lawCosINV(double s1, double s2, double s3);
 
 	/*  Artistic Functions and constants for ZSK  */
 

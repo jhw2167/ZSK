@@ -75,7 +75,26 @@ void Tower::initLaser()
 	//set laser rotation
 	sf::Vector2f lPos = laser.getPosition();
 
-	//laser.setRotation()
+	float winL = win_ptr->getSize().x;
+	float winH = win_ptr->getSize().y;
+	sf::Vector2f center = sf::Vector2f(winL / 2.f, winH / 2.f);
+
+	float l1 = laser.getLocalBounds().width;
+	float l2 = zsk::distanceFrom(lPos, center);
+	float l3 = zsk::distanceFrom(lPos + sf::Vector2f(l1,0), center);
+
+	//L1 is simply length of the laser
+	//L2 is distance between laser origin (at tower) and map center
+	//L3 is distance between the "far" laser point and the map center
+
+	double radAngle = zsk::lawCosINV(l1, l2, l3);
+	double degAngle = zsk::radsToDegs(radAngle);
+
+	if (lPos.y < winH / 2.f)
+		laser.setRotation(degAngle);
+	else
+		laser.setRotation(-degAngle);
+	//set negative angle if we are below the origin
 }
 //End Inits
 
