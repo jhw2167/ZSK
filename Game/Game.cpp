@@ -255,7 +255,7 @@ void Game::render()
 		state in the stack
 	*/
 
-	window_ptr->clear(sf::Color::White);
+	window_ptr->clear(zsk::art::winClearColor);
 
 	if (!states.empty())
 		states.top()->render();

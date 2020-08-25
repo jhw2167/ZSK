@@ -75,19 +75,7 @@ namespace zsk
 
 	namespace art
 	{
-		/*  Art Vars declared extern as globals  */
-
-		//Const variables
-		sf::Color primColor;
-		sf::Color secColor;
-
-		sf::Color winClearColor;
-
-		//non const variales
-		std::vector<sf::Color> playerColors;
-
-
-
+		
 		//min max color const vars for functions below
 		const static int maxColor = 255;
 		const static int minColor = 0;

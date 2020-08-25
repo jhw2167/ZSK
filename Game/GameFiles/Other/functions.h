@@ -2,6 +2,7 @@
 
 #include "../../../BaseCode/pch/stdafx.h"
 #include "../../../BaseCode/Overloads/OverloadedFuncs.h"
+#include "../../../BaseCode/Globals/Globals.h"
 
 /*
 	functions.h supplies namespace level functions for the program to use 
@@ -14,9 +15,7 @@
 namespace zsk
 {
 
-	/*  Mathy Functions and constants for ZSK  */
-
-	const static double pi = 3.141592628;
+	/*  Mathy Functions ZSK  */
 
 	struct vect {
 		float a, b;
@@ -42,12 +41,6 @@ namespace zsk
 	namespace art 
 	{
 			/*  Art Variables  */
-
-		//Const variables
-		extern sf::Color primColor;
-		extern sf::Color secColor;
-
-		extern sf::Color winClearColor;
 
 		//non const variales
 		extern std::vector<sf::Color> playerColors;

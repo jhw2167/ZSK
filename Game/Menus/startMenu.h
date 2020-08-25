@@ -10,6 +10,8 @@
 
 //Precompiled header
 #include "../../BaseCode/pch/stdafx.h"
+#include "MenuObjects.h"
+
 
 class StartMenu
 {

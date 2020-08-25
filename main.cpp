@@ -6,11 +6,6 @@
 
 int main(int argc, char *argv[])
 {
-	//coutTests();				
-	//calls cout tests for creating cout variable statements
-
-	//vectorTests();
-
 	Game game;
 
 	while (game.windowIsOpen())
