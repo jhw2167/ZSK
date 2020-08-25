@@ -2,9 +2,8 @@
 #pragma once
 
 //Main file brings all objects together to create the game
-#include "Game.h"
+#include "Game/Game.h"
 #include "Other/coutTests.h"
-
 
 //TESTS
 void vectorTests()
