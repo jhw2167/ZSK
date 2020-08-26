@@ -7,23 +7,23 @@
 
 namespace MenuObjects {
 
-	//init static members
-	sf::Vector2f Button::defSize = sf::Vector2f(0,0);
-
 	/*  Button Class  */
 
-	//Button default Constructor
-	Button::Button(const sf::RenderWindow &window, 
-		const sf::Vector2f& pos)
+	//Button Default Constructor
+	Button::Button()
 	{
-		win_ptr = &window;
-
-		calcDefaultSizes();
-		initColors();
-		initSizes();
-		initText();
-		initPositions(pos);
 	}
+	
+	Button::Button(const sf::Vector2f & pos, const std::string & msg,
+		const short fontCode, const int textSize,
+		const sf::Vector2f & tightness)
+	{
+		initText(msg, fontCode);
+		setSize(textSize, tightness);
+		initColors();
+		setPosition(pos);
+	}
+
 
 	/*  Accessors  */
 	std::string Button::getString() const {
@@ -41,15 +41,15 @@ namespace MenuObjects {
 	}
 
 	sf::Color Button::getPrimColor() const{
-		return shape.getFillColor();
+		return box.getFillColor();
 	}
 
 	sf::Color Button::getSecColor() const {
-		return shape.getOutlineColor();
+		return box.getOutlineColor();
 	}
 
 	sf::Color Button::getTxtColor() const {
-		return text.getColor();
+		return text.getFillColor();
 	}
 
 
@@ -58,29 +58,8 @@ namespace MenuObjects {
 	{
 	}
 
-	void Button::setSize(const float multiplier)
-	{
-	}
-
-	void Button::getPrimColor(const sf::Color & newPrim)
-	{
-	}
-
-	void Button::setSecColor(const sf::Color & newSec)
-	{
-	}
-
-	void Button::setTxtColor(const sf::Color & newTxtcolor)
-	{
-	}
-
-	void Button::update()
-	{
-	}
-
-
-	/*  Other Private Functions  */
-	void Button::calcDefaultSizes()
+	void Button::setSize(const int textSize, const sf::Vector2f&
+		tightness)
 	{
 		/*
 			Calculate default and standard sizes based on the
@@ -89,9 +68,56 @@ namespace MenuObjects {
 			entirely.
 		*/
 
+		float thickness = textSize / 5.f;
+
+		text.setCharacterSize(textSize);
+
+		//set origin in the middle of th text
+		float length = text.getLocalBounds().width;
+		float height = text.getLocalBounds().height;
+
+		sf::Vector2f origin = sf::Vector2f(length / 2.f, height / 2.f);
+		text.setOrigin(origin);
+
+		//center the box around the text
+		const float adj = textSize / 2.f;
+		float rectLength = text.getLocalBounds().width * tightness.x;
+		float rectHeight = text.getLocalBounds().height * tightness.y + adj;
+
+		sf::Vector2f rectOrigin = sf::Vector2f(rectLength / 2.f,
+			(rectHeight - adj)/ 2.f);
+
+
+
+		box.setSize(sf::Vector2f(rectLength, rectHeight));
+		box.setOutlineThickness(thickness);
+		box.setOrigin(rectOrigin);
 	}
 
-	void Button::initText(const std::string& newString,
+	void Button::setOutlineThickness(const int thickness) {
+		box.setOutlineThickness(thickness);
+	}
+
+	void Button::setPosition(const sf::Vector2f & pos) {
+		text.setPosition(pos);
+		box.setPosition(pos);
+	}
+
+	void Button::setPrimColor(const sf::Color & newPrim) {
+		box.setFillColor(newPrim);
+	}
+
+	void Button::setSecColor(const sf::Color & newSec){
+		box.setOutlineColor(newSec);
+	}
+
+	void Button::setTxtColor(const sf::Color & newTxtcolor) {
+		text.setFillColor(newTxtcolor);
+	}
+
+	/*  Other Private Functions  */
+
+	void Button::initText(const std::string& msg,
 		const short font)
 	{
 		/*
@@ -115,29 +141,16 @@ namespace MenuObjects {
 			break;
 		}
 
-		text.setCharacterSize(textSize);
-		text.setColor(zsk::art::secColor);
+		text.setString(msg);
 	}
 
-	void Button::initSizes()
+	void Button::initColors(const sf::Color& prim,
+		const sf::Color& sec,
+		const sf::Color& txt)
 	{
-	}
-
-	void Button::initPositions(const sf::Vector2f& pos)
-	{
-		/*
-			Init positions for the bounding rectangle
-			and the contained text within it.
-			Origins will need to be set and formatted
-			similiarly
-		*/
-
-	}
-
-	void Button::initColors(const sf::Color& prim = zsk::art::primColor,
-		const sf::Color& sec = zsk::art::secColor,
-		const sf::Color& txt = zsk::art::secColor)
-	{
+		box.setFillColor(prim);
+		box.setOutlineColor(sec);
+		text.setFillColor(txt);
 	}
 
 
@@ -152,10 +165,16 @@ namespace MenuObjects {
 	}
 
 	
-
-
 	/*  Other Public Functions  */
 
+	void Button::update()
+	{
+	}
+
+	void Button::draw(sf::RenderWindow & window) {
+		window.draw(box);
+		window.draw(text);
+	}
 
 
 	/*  Destructors  */

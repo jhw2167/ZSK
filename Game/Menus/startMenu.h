@@ -41,6 +41,7 @@ private:
 
 	sf::RectangleShape playRect;
 	sf::RectangleShape quitRect;
+	MenuObjects::Button b1;
 
 	//Settings Vars
 	sf::RectangleShape settingsRect;

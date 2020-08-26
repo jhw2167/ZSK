@@ -26,21 +26,17 @@ namespace MenuObjects {
 	class Button
 	{
 	private:
-		//window pointer
-		const sf::RenderWindow* win_ptr;
-
-		//size and dewaults
-		sf::Vector2f size;
-		static sf::Vector2f defSize;
-
-		//position of box
-		sf::Vector2f pos;
-		sf::RectangleShape shape;
-		float outThickness;
-		
-		//text to display
+	
+		sf::RectangleShape box;
 		sf::Text text;
-		int textSize;
+		sf::Vector2f tightness;
+		sf::Color animateColor;
+	
+		/*
+			Buttons concists of a simple box and text with
+			a tightness factor indicating how tighly the button
+			grips the text
+		*/
 
 		enum fontCode{ARIAL = 0, 
 					  ARCDE};
@@ -48,11 +44,8 @@ namespace MenuObjects {
 		/*  Private Methods  */
 
 		//For hidden resizing methods
-		void calcDefaultSizes();
-		void initText(const std::string& newString = "", 
-			const short font = ARIAL);
-		void initSizes();
-		void initPositions(const sf::Vector2f& pos);
+		void initText(const std::string& msg, 
+			const short font);
 		void initColors(const sf::Color& prim = zsk::art::primColor,
 			const sf::Color& sec = zsk::art::secColor,
 			const sf::Color& txt = zsk::art::secColor);
@@ -65,8 +58,12 @@ namespace MenuObjects {
 	public:
 		/*  Constructors  */
 
-		//Default constructor - gives blank button
-		Button(const sf::RenderWindow &window, const sf::Vector2f& pos);
+		//Default constructor - Blank Button
+		Button();
+
+		Button(const sf::Vector2f& pos, const std::string& msg,
+			const short fontCode = ARIAL, const int textSize = 20, 
+			const sf::Vector2f& tightness = sf::Vector2f(1.1, 1.1));
 
 		/*  Init Methods  */
 
@@ -85,15 +82,20 @@ namespace MenuObjects {
 
 		/*  Modifiers  */
 		void setString(const std::string& newString);
-		void setSize(const float multiplier);
+		void setSize(const int textSize, const sf::Vector2f&
+			tightness);
 
-		void getPrimColor(const sf::Color& newPrim) ;
+		void setOutlineThickness(cont int thickness);
+		void setPosition(const sf::Vector2f& pos);
+
+		void setPrimColor(const sf::Color& newPrim);
 		void setSecColor(const sf::Color& newSec);
 		void setTxtColor(const sf::Color& newTxtcolor);
 
 		
 		/*  Other Public Methods  */
 		void update();
+		void draw(sf::RenderWindow& window);
 
 
 		/*  Destructor  */

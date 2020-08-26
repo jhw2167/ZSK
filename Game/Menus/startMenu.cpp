@@ -16,6 +16,10 @@ StartMenu::StartMenu(sf::RenderWindow &window)
 
 	initGameTitle();
 	initMenuOptions();
+
+	sf::Vector2f pos = sf::Vector2f(750, 900);
+	sf::Vector2f t = sf::Vector2f(2, 1.5);
+	b1 = MenuObjects::Button(pos, "This is ZSK", 0, 40, t);
 }
 
 //One Line title, One option
@@ -47,7 +51,7 @@ void StartMenu::initGameTitle()
 	//Title 2
 	title2.setFont(zsk::art::arcade);
 	title2.setString("Killer");
-	title2.setFillColor(zsk::art::primColor);
+	title2.setFillColor(zsk::art::secColor);
 	
 	//set text size for t1 and t2
 	setTitleSize(textSize);
@@ -64,7 +68,7 @@ void StartMenu::initMenuOptions()
 	float posX = wLength / 2.f;
 	float posY = wHeight / 2.f;
 
-	int textSize = (wLength / 100.f) * (wHeight / 100.f) * (1.f / 4.f);
+	int textSize = (wLength / 100.f) * (wHeight / 100.f) * (0.25f);
 	float thickness = 10.f;
 
 	//Set Text Aspects Strings
@@ -312,6 +316,8 @@ void StartMenu::drawMenu(sf::RenderWindow & window) {
 		window.draw(quitText);
 		//title screen
 
+		b1.draw(window);
+
 		break;
 	case 1:
 		//play Game;
@@ -323,8 +329,6 @@ void StartMenu::drawMenu(sf::RenderWindow & window) {
 		//quit game
 		break;
 	}
-
-	
 }
 
 
