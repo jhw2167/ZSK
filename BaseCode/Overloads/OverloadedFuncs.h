@@ -13,6 +13,8 @@ sf::Vector2f operator/(const sf::Vector2f v1, const sf::Vector2f v2);
 
 sf::Vector2f abs(sf::Vector2f v1);
 
+sf::Vector2f convert(const sf::Vector2i& vec);
+
 //Stream overloaders
 std::ostream& operator<< (std::ostream &out, const sf::Vector2f v1);
 

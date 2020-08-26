@@ -49,7 +49,8 @@ namespace zsk {
 		sf::Color primColor = sf::Color::White;
 		sf::Color secColor = sf::Color::Black;
 
-		sf::Color lightTertCol;
+		//a nice gray color
+		sf::Color lightTertCol = sf::Color(168, 168, 168, 255);
 		sf::Color darkTertCol;
 
 		sf::Color winClearColor = sf::Color::White;

@@ -18,8 +18,9 @@ StartMenu::StartMenu(sf::RenderWindow &window)
 	initMenuOptions();
 
 	sf::Vector2f pos = sf::Vector2f(750, 900);
-	sf::Vector2f t = sf::Vector2f(2, 1.5);
-	b1 = MenuObjects::Button(pos, "This is ZSK", 0, 40, t);
+	sf::Vector2f t = sf::Vector2f(1.2, 1);
+	b1 = MenuObjects::Button(pos, "This is ZSK", zsk::ARCDE, 40, t);
+	b1.setAnimateColor(zsk::art::lightTertCol);
 }
 
 //One Line title, One option
@@ -204,6 +205,7 @@ void StartMenu::update(sf::Vector2i const & mousePos)
 
 	animateTitle();
 	hoverOptions(mousePos);
+	b1.update(*win_ptr);
 }
 
 void StartMenu::animateTitle()

@@ -7,6 +7,7 @@
 
 #include "../../BaseCode/pch/stdafx.h"
 #include "../../BaseCode/Globals/Globals.h"
+#include "../../BaseCode/Overloads/OverloadedFuncs.h"
 
 namespace MenuObjects {
 	
@@ -27,10 +28,16 @@ namespace MenuObjects {
 	{
 	private:
 	
+		//core quantities
 		sf::RectangleShape box;
 		sf::Text text;
 		sf::Vector2f tightness;
+		sf::Color primColor;
+
+		//Animation quantities
 		sf::Color animateColor;
+		bool hovered;
+		bool clicked;
 	
 		/*
 			Buttons concists of a simple box and text with
@@ -52,8 +59,8 @@ namespace MenuObjects {
 
 
 		//For Button functionality and animation
-		bool checkHovering();
 		void animateOnHover();
+		void resetSize();
 
 	public:
 		/*  Constructors  */
@@ -69,7 +76,7 @@ namespace MenuObjects {
 
 		/*  Accessors  */
 		std::string getString() const;
-		bool isHovered() const;
+		bool isHovered(const sf::RenderWindow& window) const;
 		bool isClicked() const;
 
 		//button color
@@ -85,16 +92,17 @@ namespace MenuObjects {
 		void setSize(const int textSize, const sf::Vector2f&
 			tightness);
 
-		void setOutlineThickness(cont int thickness);
+		void setOutlineThickness(const int thickness);
 		void setPosition(const sf::Vector2f& pos);
 
 		void setPrimColor(const sf::Color& newPrim);
 		void setSecColor(const sf::Color& newSec);
 		void setTxtColor(const sf::Color& newTxtcolor);
+		void setAnimateColor(const sf::Color& newCol);
 
 		
 		/*  Other Public Methods  */
-		void update();
+		void update(const sf::RenderWindow& window);
 		void draw(sf::RenderWindow& window);
 
 
