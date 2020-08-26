@@ -12,9 +12,6 @@ const float Follower::speedBN = 10.f;
 const int Follower::dmgBN = 5;
 
 
-sf::Font Follower::arial;
-
-
 
 	/*  Constructor  */
 Follower::Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor, int startHealth, 
@@ -87,12 +84,9 @@ void Follower::initFollowerBox(FollowerShape &shape, bool showBoxes)
 
 void Follower::initHealthText() {
 
-	if (!arial.loadFromFile("Art/Fonts/arial.ttf")) { 	//loads font to use for text drawing
-		std::cout << "Error loading text" << std::endl;
-	}
 	int textSize = 26;
 
-	healthText.setFont(arial);
+	healthText.setFont(zsk::art::arial);
 	healthText.setCharacterSize(textSize);
 	healthText.setFillColor(sf::Color::White);
 

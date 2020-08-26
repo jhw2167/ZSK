@@ -209,8 +209,6 @@ sf::Color Player::pColors[] = { sf::Color::Red, sf::Color::Blue,
 FollowerShape Player::scoreFigure = FollowerShape(sf::Color::Black, 3.f);
 PlayerShape Player::lifeFigure = PlayerShape(2.5f);
 
-sf::Font Player::arial;
-
 
 
 /*  Forward Declarations  */
@@ -274,7 +272,8 @@ Player::Player(sf::RenderWindow &window, int pNumber, int startLives, float scal
 
 
 	/*  Init Methods  */
-void Player::initHealthBar(sf::RenderWindow &window, float sHealth, float sMaxHealth)
+void Player::initHealthBar(sf::RenderWindow &window,
+	float sHealth, float sMaxHealth)
 	{
 		maxHealth = sMaxHealth;
 		
@@ -302,7 +301,8 @@ void Player::initHealthBar(sf::RenderWindow &window, float sHealth, float sMaxHe
 		healthBarGreen.setFillColor(sf::Color::Green);
 	}
 
-void Player::initShieldBar(sf::RenderWindow &window, float sShield, float sMaxShield)
+void Player::initShieldBar(sf::RenderWindow &window,
+	float sShield, float sMaxShield)
 	{
 		maxShield = sMaxShield;
 		shieldRegen = 1.f;
@@ -316,18 +316,15 @@ void Player::initShieldBar(sf::RenderWindow &window, float sShield, float sMaxSh
 void Player::initHealthText()
 	{
 		// loads text for putting health in string format
-		if (!arial.loadFromFile("Art/Fonts/arial.ttf")) 	//loads font to use for text drawing
-		{
-			std::cout << "Error loading text" << std::endl;
-		}
+		
 		int textSize = 35;
 		float thickness = 2.f;
 		sf::Vector2f centerHealthBar = sf::Vector2f(-60.f, -8.f);		//vector adjusts health string text display for centering
 
-		healthText.setFont(arial);
+		healthText.setFont(zsk::art::arial);
 		healthText.setCharacterSize(textSize);
-		healthText.setFillColor(sf::Color::White);
-		healthText.setOutlineColor(sf::Color::Black);
+		healthText.setFillColor(zsk::art::primColor);
+		healthText.setOutlineColor(zsk::art::secColor);
 		healthText.setOutlineThickness(thickness);
 		centerHealthText();
 	}
@@ -336,9 +333,9 @@ void Player::initScore()
 	{
 		int textSize = 45;
 
-		scoreText.setFont(arial);
+		scoreText.setFont(zsk::art::arial);
 		scoreText.setCharacterSize(textSize);
-		scoreText.setFillColor(sf::Color::Black);
+		scoreText.setFillColor(zsk::art::secColor);
 
 		sf::Vector2f pos = sf::Vector2f(wLength / 1.54f, 0.f);
 
@@ -357,9 +354,9 @@ void Player::initLives(int newLives)
 {
 		int textSize = 45;
 
-		lifeText.setFont(arial);
+		lifeText.setFont(zsk::art::arial);
 		lifeText.setCharacterSize(textSize);
-		lifeText.setFillColor(sf::Color::Black);
+		lifeText.setFillColor(zsk::art::secColor);
 
 		sf::Vector2f pos = sf::Vector2f(wLength / 1.35f, 0.f);
 
@@ -729,8 +726,8 @@ sf::Vector2f Player::towerCollisions(int dir, int towerNum, sf::Vector2f const &
 	float pushY = 0.f;
 	sf::Vector2f dirVect = sf::Vector2f(1, 1);
 
-	switch (towerNum)				//We want to keep players from intersecting towers completely
-	{									//So we set the hard barrier at their bounding box, pBox
+	switch (towerNum)		//We want to keep players from intersecting towers completely
+	{						//So we set the hard barrier at their bounding box, pBox
 	case 1:
 		pushX = -pBox.getLocalBounds().width / 2.f;
 		pushY = -pBox.getLocalBounds().height / 3.f;

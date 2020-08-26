@@ -25,7 +25,7 @@ void Tower::initVars(const int tNumber, sf::RenderWindow const &window) {
 	win_ptr = &window;
 	towerNumber = tNumber;
 	towerOwnedBy = NOTOWNED;
-	isFiring = true;
+	isFiring = false;
 }
 
 void Tower::initTowerShape(sf::RenderWindow const &window)
@@ -199,22 +199,14 @@ void Tower::changeOwner(int newOwner)
 //TOWER COLLISIONS
 bool Tower::checkTowerCollision(Player &player)
 {
-	bool collision = player.getPlayerBounds().intersects(towerShape.getGlobalBounds());
+	bool collision = player.getPlayerBounds().intersects(
+		towerShape.getGlobalBounds());
+
 	return collision;
 }
 
 //if (distanceFrom(playerPos) <= towerRadius)
 	//return true;
-
-float Tower::distanceFrom(sf::Vector2f objectPos)
-//calculates vector distance from player or tower object
-{
-	float xDist = abs(objectPos.x - towerPosition.x);			//calculates x and y distances away follower is from player
-	float yDist = abs(objectPos.y - towerPosition.y);
-
-	return pow(xDist * xDist + yDist * yDist, 0.5);							//calculates vector for distance from follower to player
-}
-
 
 
 //TOWER MECHANICS
@@ -276,6 +268,7 @@ Tower::Tower(const Tower & rhs)
 
 	//tower vars
 	this->towerNumber = rhs.towerNumber;
+	this->towerRadius = rhs.towerRadius;
 	this->towerOutline = rhs.towerOutline;
 	this->towerOwnedBy = rhs.towerOwnedBy;
 	this->towerPosition = rhs.towerPosition;

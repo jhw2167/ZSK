@@ -22,11 +22,9 @@ private:
 	//and 0 is default
 
 	//Window Vars
-	float wLength;
-	float wHeight;
+	sf::RenderWindow *win_ptr;
 
 	//Title Vars
-	sf::Font arcade;
 	sf::Text title1;
 	sf::Text title2;
 	sf::Vector2f t1Pos;
@@ -71,7 +69,6 @@ public:
 	//StartMenu(sf::RenderWindow &window, std::string *options[] );
 
 		/*  Setter Methods  */
-	void setWindowSize(sf::RenderWindow &window);
 	void setTitlePos(sf::Vector2f const &newPos);
 	void setTitleSize(int newSize);
 

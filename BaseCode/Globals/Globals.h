@@ -15,10 +15,22 @@ namespace zsk {
 
 	namespace art {
 
-		//Art related global constants
-		//Const variables
+		/*	Art related global constants	*/
+		
+		//Const font variables
+		extern sf::Font arcade;
+		extern sf::Font arial;
+
+		extern void loadFonts();
+
+
+		//Const color variables
 		extern sf::Color primColor;
 		extern sf::Color secColor;
+
+		//light and dark tertiary colors
+		extern sf::Color lightTertCol;
+		extern sf::Color darkTertCol;
 
 		extern sf::Color winClearColor;
 

@@ -11,7 +11,7 @@ StartMenu::StartMenu()
 //Start Menu Constructor
 StartMenu::StartMenu(sf::RenderWindow &window)
 {
-	setWindowSize(window);
+	win_ptr = &window;
 	initvars();
 
 	initGameTitle();
@@ -31,25 +31,23 @@ void StartMenu::initvars()
 
 void StartMenu::initGameTitle()
 {
+	float wLength = win_ptr->getSize().x;
+	float wHeight = win_ptr->getSize().y;
+
 	float titleX = wLength / 2.f;
 	float titleY = wHeight / 6.f;
 
 	int textSize = (wLength / 100.f) * (wHeight / 100.f) * (1.f / 2.f);
 
-	if (!arcade.loadFromFile("Art/Fonts/ARCADE_N.ttf")) 	{
-		//loads font to use for text drawing
-		std::cout << "Error loading arcade text in \n startMenu.cpp" << std::endl;
-	}
-
 	//Title 1
-	title1.setFont(arcade);
+	title1.setFont(zsk::art::arcade);
 	title1.setString("Zombie Slayer");
-	title1.setFillColor(sf::Color::Black);
+	title1.setFillColor(zsk::art::secColor);
 
 	//Title 2
-	title2.setFont(arcade);
+	title2.setFont(zsk::art::arcade);
 	title2.setString("Killer");
-	title2.setFillColor(sf::Color::Black);
+	title2.setFillColor(zsk::art::primColor);
 	
 	//set text size for t1 and t2
 	setTitleSize(textSize);
@@ -60,6 +58,9 @@ void StartMenu::initGameTitle()
 
 void StartMenu::initMenuOptions()
 {
+	float wLength = win_ptr->getSize().x;
+	float wHeight = win_ptr->getSize().y;
+
 	float posX = wLength / 2.f;
 	float posY = wHeight / 2.f;
 
@@ -73,8 +74,8 @@ void StartMenu::initMenuOptions()
 	playText.setFillColor(sf::Color::Black);
 	quitText.setFillColor(sf::Color::Black);
 
-	playText.setFont(arcade);
-	quitText.setFont(arcade);
+	playText.setFont(zsk::art::arcade);
+	quitText.setFont(zsk::art::arcade);
 
 	setOptionsSize(textSize);
 
@@ -96,13 +97,11 @@ void StartMenu::initMenuOptions()
 
 
 	/*  Setter Methods  */
-void StartMenu::setWindowSize(sf::RenderWindow & window) {
-	wLength = window.getSize().x;
-	wHeight = window.getSize().y;
-}
-
 void StartMenu::setTitlePos(sf::Vector2f const &newPos)
 {
+	float wLength = win_ptr->getSize().x;
+	float wHeight = win_ptr->getSize().y;
+
 	t1Pos = newPos;
 	t2Pos = newPos + sf::Vector2f(0, wLength/ 12.f);
 
@@ -165,6 +164,9 @@ void StartMenu::setOptionsSize(int txtSize)
 
 void StartMenu::setOptionsPos(sf::Vector2f const & newPos)
 {
+	float wLength = win_ptr->getSize().x;
+	float wHeight = win_ptr->getSize().y;
+
 	sf::Vector2f spacing = sf::Vector2f(0.f, wHeight / 12.f);
 
 	//Set Rect positions

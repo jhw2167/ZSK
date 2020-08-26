@@ -69,7 +69,6 @@ namespace zsk
 		double numer = pow(s1, 2) + pow(s2, 2) - pow(s3, 2);
 		double denom = 2 * s1*s2;
 
-		cout << "res is: " << std::acos(numer / denom) << endl;
 		return std::acos(numer / denom);
 	}
 

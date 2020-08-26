@@ -77,9 +77,6 @@ public:
 	//TOWER COLLISIONS
 	bool checkTowerCollision(Player &player);
 
-	float distanceFrom(sf::Vector2f objectPos);
-
-
 
 	//TOWER MECHANICS
 

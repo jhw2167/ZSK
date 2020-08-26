@@ -22,7 +22,6 @@ private:
 	int health;
 	int dmgDone;
 	sf::Text healthText;
-	static sf::Font arial;
 
 	/*  Merging  */
 	int mergeCount;

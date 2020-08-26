@@ -28,6 +28,9 @@ void Game::initVars()
 	window_ptr = nullptr;
 	gameState = 0;
 	numPlayers = 0;
+
+	//load game art and objects
+	zsk::art::loadFonts();
 }
 
 void Game::initWindow()
