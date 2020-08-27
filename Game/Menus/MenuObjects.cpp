@@ -11,14 +11,16 @@ namespace MenuObjects {
 
 	//Button Default Constructor
 	Button::Button() {
+		clickable = false;
 		clicked = false;
 		hovered = false;
 	}
 	
 	Button::Button(const sf::Vector2f & pos, const std::string & msg,
-		const short fontCode, const int textSize,
+		const short fontCode, const int textSize, const bool canBeClicked,
 		const sf::Vector2f & tightness)
 	{
+		clickable = canBeClicked;
 		clicked = false;
 		hovered = false;
 
@@ -83,6 +85,10 @@ namespace MenuObjects {
 
 	bool Button::isClicked() const {
 		return clicked;
+	}
+
+	bool Button::isClickable() const {
+		return clickable;
 	}
 
 	sf::Color Button::getPrimColor() const{
@@ -163,6 +169,10 @@ namespace MenuObjects {
 	void Button::setAnimateColor(const sf::Color & newCol) {
 		animateColor = newCol;
 	}
+
+	void Button::setClickable(const bool canBeClicked){
+		clickable = canBeClicked;
+	}
 	//END MODIFIERS
 
 
@@ -192,24 +202,35 @@ namespace MenuObjects {
 
 	void Button::update(const sf::RenderWindow& window)
 	{
-		if (isHovered(window)) {
+		/*
+			The main update function for each button should
+			be run once per while loop refresh.  If the
+			button is clickable it tests for hovering,
+			animates the button, and sets click to 
+			true if necessary
+		*/
+		if (clickable)
+		{
+			if (isHovered(window)) {
 
-			if (!hovered)
-				animateOnHover();
-			hovered = true;
+				if (!hovered)
+					animateOnHover();
+				hovered = true;
 
-			if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right))
-				clicked = true;
-		}
-		else if (hovered) {
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+					clicked = true;
+				}
+					
+			}
+			else if (hovered) {
 
-			//reset sieze
-			cout << "reseting Size!" << endl;
-			resetSize();
+				//reset sieze
+				resetSize();
 
-			//reset colors
-			setPrimColor(primColor);
-			hovered = false;
+				//reset colors
+				setPrimColor(primColor);
+				hovered = false;
+			}
 		}
 			
 	}

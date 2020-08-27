@@ -36,15 +36,11 @@ private:
 	//Option Vars
 	short numOptions;
 
-	sf::Text playText;
-	sf::Text quitText;
-
-	sf::RectangleShape playRect;
-	sf::RectangleShape quitRect;
-	MenuObjects::Button b1;
+	MenuObjects::Button play;
+	MenuObjects::Button quit;
 
 	//Settings Vars
-	sf::RectangleShape settingsRect;
+	MenuObjects::Button settings;
 
 	/*  Init Methods  */
 	void initvars();
@@ -54,9 +50,8 @@ private:
 	/*  Other Functions  */
 	void updateOption(short selection);
 	void animateTitle();
-	void hoverOptions(sf::Vector2i const &mousePos);
-	void selectRect(sf::RectangleShape &rect, sf::Text & text);
-
+	void hoverOptions();
+	
 public:
 
 		/*  Constructors  */
@@ -72,11 +67,6 @@ public:
 		/*  Setter Methods  */
 	void setTitlePos(sf::Vector2f const &newPos);
 	void setTitleSize(int newSize);
-
-	void setOptionsSize(int txtSize);
-	void setOptionsPos(sf::Vector2f const &newPos);
-	
-	//for options menu, consists of a few boxes
 
 
 		/*  Accessor Methods  */

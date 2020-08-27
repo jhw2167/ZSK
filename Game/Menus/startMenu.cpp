@@ -16,11 +16,6 @@ StartMenu::StartMenu(sf::RenderWindow &window)
 
 	initGameTitle();
 	initMenuOptions();
-
-	sf::Vector2f pos = sf::Vector2f(750, 900);
-	sf::Vector2f t = sf::Vector2f(1.2, 1);
-	b1 = MenuObjects::Button(pos, "This is ZSK", zsk::ARCDE, 40, t);
-	b1.setAnimateColor(zsk::art::lightTertCol);
 }
 
 //One Line title, One option
@@ -63,39 +58,39 @@ void StartMenu::initGameTitle()
 
 void StartMenu::initMenuOptions()
 {
+	//set Positions of options relative to window
 	float wLength = win_ptr->getSize().x;
 	float wHeight = win_ptr->getSize().y;
 
 	float posX = wLength / 2.f;
 	float posY = wHeight / 2.f;
 
+	sf::Vector2f posPlay = sf::Vector2f(posX, posY);
+	sf::Vector2f spacing = sf::Vector2f(0.f, wHeight / 12.f);
+
 	int textSize = (wLength / 100.f) * (wHeight / 100.f) * (0.25f);
-	float thickness = 10.f;
+	float thickness = 8.f;
 
 	//Set Text Aspects Strings
-	playText.setString("Play Game");
-	quitText.setString("Quit");
+	std::string playText = "Play Game";
+	std::string quitText = "Quit";
 
-	playText.setFillColor(sf::Color::Black);
-	quitText.setFillColor(sf::Color::Black);
+	sf::Vector2f playTightness = sf::Vector2f(1.31f, 1.1);
+	sf::Vector2f quitTightness = sf::Vector2f(3.f, 1.1);
+	
+	//create the buttons
+	play = MenuObjects::Button(posPlay, playText, zsk::ARCDE,
+		textSize, true, playTightness);
 
-	playText.setFont(zsk::art::arcade);
-	quitText.setFont(zsk::art::arcade);
+	quit = MenuObjects::Button(posPlay + spacing, quitText, zsk::ARCDE,
+		textSize, true, quitTightness);
 
-	setOptionsSize(textSize);
+	//set Animate color to light gray and border thickness
+	play.setAnimateColor(zsk::art::lightTertCol);
+	quit.setAnimateColor(zsk::art::lightTertCol);
 
-	//Set Other Aspects - Rects
-	playRect.setFillColor(sf::Color::White);
-	quitRect.setFillColor(sf::Color::White);
-
-	playRect.setOutlineColor(sf::Color::Black);
-	playRect.setOutlineThickness(thickness);
-
-	quitRect.setOutlineColor(sf::Color::Black);
-	quitRect.setOutlineThickness(thickness);
-
-	//Set size and Position
-	setOptionsPos(sf::Vector2f(posX, posY));
+	play.setOutlineThickness(thickness);
+	quit.setOutlineThickness(thickness);
 }
 
 //End Init Methods
@@ -125,64 +120,6 @@ void StartMenu::setTitleSize(int newSize) {
 	title2.setCharacterSize(newSize);
 }
 
-void StartMenu::setOptionsSize(int txtSize)
-{
-	//set text sizes
-	playText.setCharacterSize(txtSize);
-	quitText.setCharacterSize(txtSize);
-
-	float length = playText.getLocalBounds().width;
-	float length2 = quitText.getLocalBounds().width;
-	float height = playText.getLocalBounds().height;
-
-	sf::Vector2f origin = sf::Vector2f(length / 2.f, height / 2.f);
-	sf::Vector2f origin2 = sf::Vector2f(length2 / 2.f, height / 2.f);
-
-	playText.setOrigin(origin);
-	quitText.setOrigin(origin2);
-
-	//rectangle size is just taller than text
-	//and just was wide as main title font
-	float adj = 10.f;
-	float rectLength = title2.getLocalBounds().width;
-	float rectHeight = playText.getLocalBounds().height + adj;
-
-	sf::Vector2f size = sf::Vector2f(rectLength, rectHeight);
-
-	playRect.setSize(size);
-	quitRect.setSize(size);
-
-	sf::Vector2f rectOrigin = sf::Vector2f(rectLength / 2.f,
-		(rectHeight - adj) / 2.f);
-
-	playRect.setOrigin(rectOrigin);
-	quitRect.setOrigin(rectOrigin);
-
-	//Set Scales to 1.f
-	static sf::Vector2f scale = sf::Vector2f(1, 1);
-	playRect.setScale(scale);
-	quitRect.setScale(scale);
-
-	playText.setScale(scale);
-	quitText.setScale(scale);
-}
-
-void StartMenu::setOptionsPos(sf::Vector2f const & newPos)
-{
-	float wLength = win_ptr->getSize().x;
-	float wHeight = win_ptr->getSize().y;
-
-	sf::Vector2f spacing = sf::Vector2f(0.f, wHeight / 12.f);
-
-	//Set Rect positions
-	playRect.setPosition(newPos);
-	quitRect.setPosition(newPos + spacing);
-
-	//Set text Positions
-	playText.setPosition(newPos);
-	quitText.setPosition(newPos + spacing);
-}
-
 
 //End Setter Methods
 
@@ -204,8 +141,7 @@ void StartMenu::update(sf::Vector2i const & mousePos)
 	*/
 
 	animateTitle();
-	hoverOptions(mousePos);
-	b1.update(*win_ptr);
+	hoverOptions();
 }
 
 void StartMenu::animateTitle()
@@ -230,72 +166,18 @@ void StartMenu::animateTitle()
 
 }
 
-void StartMenu::hoverOptions(sf::Vector2i const &mousePos)
+void StartMenu::hoverOptions()
 {
-	short selection = 0;
-	static bool unSelected = true;
-	//default option 0 selected
-	sf::Vector2f pos_2f = sf::Vector2f(mousePos.x, mousePos.y);
+	
+	play.update(*win_ptr);
+	quit.update(*win_ptr);
 
-	if (playRect.getGlobalBounds().contains(pos_2f)) {
-		selection = 1;
-		//"Play Game" Button
+	if (play.isClicked()){
+		updateOption(1);
 	}
-	else if (false) {
-		selection = 2;
-		//"Options" Menu
+	else if (quit.isClicked()) {
+		updateOption(3);
 	}
-	else if (quitRect.getGlobalBounds().contains(pos_2f)) {
-		selection = 3;
-		//"Quit" Button
-	}
-	else if (selection == 0 && !(unSelected)) {
-		selection = 4;
-		unSelected = true;
-	}
-
-	switch (selection * unSelected)
-	{
-	case 0:
-		//no action
-		break;
-
-	case 1:
-		selectRect(playRect, playText);
-		unSelected = false;
-		break;
-		// "Play Game" Button
-
-	case 2:
-		unSelected = false;
-		break;
-		//"Options" Button
-
-	case 3:
-		selectRect(quitRect, quitText);
-		unSelected = false;
-		break;
-		//"Quit" Button
-
-	case 4:
-		initMenuOptions();
-		break;
-		//reInitialize options
-	}
-
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
-		optionSelected = selection;
-
-}
-
-void StartMenu::selectRect(sf::RectangleShape & rect, sf::Text & text )
-{
-	static sf::Color gray = sf::Color(168, 168, 168, 255);
-	static sf::Vector2f scaling = sf::Vector2f(1.1f, 1.1f);
-
-	rect.setFillColor(gray);
-	rect.scale(scaling);
-	text.scale(scaling);
 }
 
 void StartMenu::updateOption(short selection) {
@@ -308,18 +190,13 @@ void StartMenu::drawMenu(sf::RenderWindow & window) {
 	switch (optionSelected)
 	{
 	case 0:
+		//title screen
 		window.draw(title1);
 		window.draw(title2);
 
-		window.draw(playRect);
-		window.draw(quitRect);
-
-		window.draw(playText);
-		window.draw(quitText);
-		//title screen
-
-		b1.draw(window);
-
+		play.draw(*win_ptr);
+		quit.draw(*win_ptr);
+		
 		break;
 	case 1:
 		//play Game;

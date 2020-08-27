@@ -36,6 +36,7 @@ namespace MenuObjects {
 
 		//Animation quantities
 		sf::Color animateColor;
+		bool clickable;
 		bool hovered;
 		bool clicked;
 	
@@ -70,6 +71,7 @@ namespace MenuObjects {
 
 		Button(const sf::Vector2f& pos, const std::string& msg,
 			const short fontCode = ARIAL, const int textSize = 20, 
+			const bool canBeClicked = true,
 			const sf::Vector2f& tightness = sf::Vector2f(1.1, 1.1));
 
 		/*  Init Methods  */
@@ -78,6 +80,7 @@ namespace MenuObjects {
 		std::string getString() const;
 		bool isHovered(const sf::RenderWindow& window) const;
 		bool isClicked() const;
+		bool isClickable() const;
 
 		//button color
 		sf::Color getPrimColor() const;
@@ -99,6 +102,8 @@ namespace MenuObjects {
 		void setSecColor(const sf::Color& newSec);
 		void setTxtColor(const sf::Color& newTxtcolor);
 		void setAnimateColor(const sf::Color& newCol);
+
+		void setClickable(const bool canBeClicked);
 
 		
 		/*  Other Public Methods  */
