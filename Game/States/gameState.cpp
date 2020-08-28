@@ -5,7 +5,7 @@
 /*  CNTRL + M + O to collapse all */
 
 /*  Initializing static variables  */
-int GameState::maxFollowers = 0;
+int GameState::maxFollowers = 5;
 
 int GameState::numPlayers = 0;
 int GameState::maxPlayers_this = 0;
@@ -75,10 +75,8 @@ void GameState::initVars()
 		Initiate fundamental non-static vars
 	*/
 
-	numberOfTowers = maxPlayers_this;
+	numberOfTowers = std::max(maxPlayers_this, 4);
 }
-//End Private Functions
-
 
 //Game Update Functions
 
@@ -132,7 +130,7 @@ void GameState::otherPlayerMechs()
 	*/
 
 	//Grow follow area
-	players.at(0).growLargeFollowArea();
+	players.at(0).growLargeFollowArea(sf::Mouse::isButtonPressed(sf::Mouse::Right));
 
 	//regenShield
 	players.at(0).regenShield();

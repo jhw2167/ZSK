@@ -327,7 +327,7 @@ public:
 
 	int dmgFollower(int i);
 
-	void growLargeFollowArea(float growRate = 2.f);
+	void growLargeFollowArea(bool grow, float growRate = 2.f);
 
 
 	//DRAWING METHODS OF CLASS PLAYER

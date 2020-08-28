@@ -12,7 +12,7 @@ namespace zsk {
 	/* Non art related global constants */ 
 
 	const static double pi = 3.141592628;
-	extern enum FONT_CODES {ARIAL = 0, ARCDE};
+	enum FONT_CODES {ARIAL = 0, ARCDE};
 
 	namespace art {
 

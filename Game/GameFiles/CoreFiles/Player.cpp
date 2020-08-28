@@ -869,7 +869,7 @@ int Player::dmgFollower(int i)
 	//needs to know if it shot a follower
 }
 
-void Player::growLargeFollowArea(float growRate)
+void Player::growLargeFollowArea(bool grow, float growRate)
 {
 	/*
 		Large follower area grows upon holding right
@@ -880,7 +880,7 @@ void Player::growLargeFollowArea(float growRate)
 
 	//potential issues with snap being false with mutiple players
 
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) 
+	if (grow) 
 	{
 		float newRad = largeFollowArea.getRadius() + growRate;
 
@@ -895,12 +895,12 @@ void Player::growLargeFollowArea(float growRate)
 	}
 	else if (snap)
 	{
-		if (snap) {
-			float newRad = 0; // smallFollowArea.getRadius() * 0.25;
-			setSmallFollowerRadius(newRad);
-			setLargeFollowerRadius(newRad);
-			snap = false;
-		}
+		
+		float newRad = 0; // smallFollowArea.getRadius() * 0.25;
+		setSmallFollowerRadius(newRad);
+		setLargeFollowerRadius(newRad);
+		snap = false;
+		
 	} 
 	else {
 

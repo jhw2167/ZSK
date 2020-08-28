@@ -9,6 +9,10 @@
 
 namespace zsk 
 {
+	/*  Struct Vect  - defined and implemented in .h*/
+
+
+		/*  Functions  */
 	zsk::vect randomSpawn(const vect& range_x, const vect& range_y)
 	{
 
