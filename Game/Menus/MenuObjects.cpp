@@ -7,22 +7,24 @@
 
 namespace MenuObjects {
 
-	/*  Button Class  */
+	/*  Menu Object Base Class */
 
-	//Button Default Constructor
-	Button::Button() {
+
+		//MenuObject Default Constructor
+	MenuObject::MenuObject() {
 		clickable = false;
 		clicked = false;
 		hovered = false;
 	}
-	
-	Button::Button(const sf::Vector2f & pos, const std::string & msg,
+
+	MenuObject::MenuObject(const sf::Vector2f & pos, const std::string & msg,
 		const short fontCode, const int textSize, const bool canBeClicked,
 		const sf::Vector2f & tightness)
 	{
 		clickable = canBeClicked;
 		clicked = false;
 		hovered = false;
+		animateScale = sf::Vector2f(1.1, 1.1);
 
 		//init Functions
 		initText(msg, fontCode);
@@ -34,11 +36,11 @@ namespace MenuObjects {
 
 	/*  Init Functions  */
 
-	void Button::initText(const std::string& msg,
+	void MenuObject::initText(const std::string& msg,
 		const short font)
 	{
 		/*
-			Initialize our button text with a font, textSize
+			Initialize our MenuObject text with a font, textSize
 			and color
 		*/
 
@@ -61,7 +63,7 @@ namespace MenuObjects {
 		text.setString(msg);
 	}
 
-	void Button::initColors(const sf::Color& prim,
+	void MenuObject::initColors(const sf::Color& prim,
 		const sf::Color& sec,
 		const sf::Color& txt)
 	{
@@ -74,49 +76,49 @@ namespace MenuObjects {
 
 
 	/*  Accessors  */
-	std::string Button::getString() const {
+	std::string MenuObject::getString() const {
 		return text.getString();
 	}
 
-	bool Button::isHovered(const sf::RenderWindow& window) const {
-		sf::Vector2f pos = convert( sf::Mouse::getPosition(window) );
+	bool MenuObject::isHovered(sf::RenderWindow& window) const {
+		sf::Vector2f pos = convert(sf::Mouse::getPosition(window));
 		return box.getGlobalBounds().contains(pos);
 	}
 
-	bool Button::isClicked() const {
+	bool MenuObject::isClicked() const {
 		return clicked;
 	}
 
-	bool Button::isClickable() const {
+	bool MenuObject::isClickable() const {
 		return clickable;
 	}
 
-	sf::Color Button::getPrimColor() const{
+	sf::Color MenuObject::getPrimColor() const {
 		return box.getFillColor();
 	}
 
-	sf::Color Button::getSecColor() const {
+	sf::Color MenuObject::getSecColor() const {
 		return box.getOutlineColor();
 	}
 
-	sf::Color Button::getTxtColor() const {
+	sf::Color MenuObject::getTxtColor() const {
 		return text.getFillColor();
 	}
 	//end accessors
 
 
 	/*  Modifiers  */
-	void Button::setString(const std::string & newString)
+	void MenuObject::setString(const std::string & newString)
 	{
 	}
 
-	void Button::setSize(const int textSize, const sf::Vector2f&
+	void MenuObject::setSize(const int textSize, const sf::Vector2f&
 		tightness)
 	{
 		/*
 			Calculate default and standard sizes based on the
 			window for the box and text.
-			The button size can thereafter be scaled or reset
+			The MenuObject size can thereafter be scaled or reset
 			entirely.
 		*/
 
@@ -137,40 +139,44 @@ namespace MenuObjects {
 		float rectHeight = text.getLocalBounds().height * tightness.y + adj;
 
 		sf::Vector2f rectOrigin = sf::Vector2f(rectLength / 2.f,
-			(rectHeight - (adj / 2.f))/ 2.f);
+			(rectHeight - (adj / 2.f)) / 2.f);
 
 		box.setSize(sf::Vector2f(rectLength, rectHeight));
 		box.setOutlineThickness(thickness);
 		box.setOrigin(rectOrigin);
 	}
 
-	void Button::setOutlineThickness(const int thickness) {
+	void MenuObject::setOutlineThickness(const int thickness) {
 		box.setOutlineThickness(thickness);
 	}
 
-	void Button::setPosition(const sf::Vector2f & pos) {
+	void MenuObject::setPosition(const sf::Vector2f & pos) {
 		text.setPosition(pos);
 		box.setPosition(pos);
 	}
 
-	void Button::setPrimColor(const sf::Color & newPrim) {
+	void MenuObject::setPrimColor(const sf::Color & newPrim) {
 		primColor = newPrim;
 		box.setFillColor(newPrim);
 	}
 
-	void Button::setSecColor(const sf::Color & newSec){
+	void MenuObject::setSecColor(const sf::Color & newSec) {
 		box.setOutlineColor(newSec);
 	}
 
-	void Button::setTxtColor(const sf::Color & newTxtcolor) {
+	void MenuObject::setTxtColor(const sf::Color & newTxtcolor) {
 		text.setFillColor(newTxtcolor);
 	}
 
-	void Button::setAnimateColor(const sf::Color & newCol) {
+	void MenuObject::setAnimateColor(const sf::Color & newCol) {
 		animateColor = newCol;
 	}
 
-	void Button::setClickable(const bool canBeClicked){
+	void MenuObject::setAnimateScaler(const sf::Vector2f & newScale) {
+		animateScale = newScale;
+	}
+
+	void MenuObject::setClickable(const bool canBeClicked) {
 		clickable = canBeClicked;
 	}
 	//END MODIFIERS
@@ -179,34 +185,23 @@ namespace MenuObjects {
 
 	/*  Other Private Functions  */
 
-	//Button Functionality
-	void Button::animateOnHover()
-	{
-		sf::Vector2f scaling = sf::Vector2f(1.1f, 1.1f);
+	//MenuObject Functionality - virtual functions
 
-		box.setFillColor(animateColor);
-		box.scale(scaling);
-		text.scale(scaling);
-	}
-
-	void Button::resetSize()
-	{
-		sf::Vector2f reset = sf::Vector2f(1, 1);
-		text.setScale(reset);
-		box.setScale(reset);
+	void MenuObject::waitForUnclick() {
+		while (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {}
+		clickable = true;
 	}
 
 
-	
+
 	/*  Other Public Functions  */
-
-	void Button::update(const sf::RenderWindow& window)
+	void MenuObject::update(sf::RenderWindow& window)
 	{
 		/*
-			The main update function for each button should
+			The main update function for each MenuObject should
 			be run once per while loop refresh.  If the
-			button is clickable it tests for hovering,
-			animates the button, and sets click to 
+			MenuObject is clickable it tests for hovering,
+			animates the MenuObject, and sets click to
 			true if necessary
 		*/
 		if (clickable)
@@ -217,10 +212,10 @@ namespace MenuObjects {
 					animateOnHover();
 				hovered = true;
 
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 					clicked = true;
 				}
-					
+
 			}
 			else if (hovered) {
 
@@ -232,7 +227,111 @@ namespace MenuObjects {
 				hovered = false;
 			}
 		}
-			
+
+	}
+
+	void MenuObject::bufferClickable() {
+		/*
+			Waits for user to release mouse MenuObject so buttons are
+			not clicked unintentionally.
+		*/
+		std::thread t1{ &MenuObject::waitForUnclick, this };
+		t1.detach();
+	}
+
+	void MenuObject::draw(sf::RenderWindow & window) {
+		window.draw(box);
+		window.draw(text);
+	}
+
+
+	//End Base Menu Object Class
+}
+
+namespace MenuObjects {
+
+	/*  Button Class  */
+
+	//Button Default Constructor
+	Button::Button() : MenuObject() {}
+
+	Button::Button(const sf::Vector2f & pos, const std::string & msg,
+		const short fontCode, const int textSize, const bool canBeClicked,
+		const sf::Vector2f & tightness) :
+		MenuObject(pos, msg, fontCode, textSize, canBeClicked, tightness) {}
+
+
+	/*  Init Functions - Base Class */
+
+	//END INIT FUNCTIONS
+
+
+	/*  Accessors - Base Class */
+
+	//end accessors
+
+
+	/*  Modifiers - Base Class */
+
+	//END MODIFIERS
+
+
+
+	/*  Other Private Functions  */
+
+	//Button Functionality - virtual functions
+	void Button::animateOnHover()
+	{
+		box.setFillColor(animateColor);
+		box.scale(animateScale);
+		text.scale(animateScale);
+	}
+
+	void Button::resetSize()
+	{
+		sf::Vector2f reset = sf::Vector2f(1, 1);
+		text.setScale(reset);
+		box.setScale(reset);
+	}
+
+
+
+
+	/*  Other Public Functions  */
+
+	void Button::update(sf::RenderWindow& window)
+	{
+		/*
+			The main update function for each button should
+			be run once per while loop refresh.  If the
+			button is clickable it tests for hovering,
+			animates the button, and sets click to
+			true if necessary
+		*/
+		if (clickable)
+		{
+			if (isHovered(window)) {
+
+				if (!hovered)
+					animateOnHover();
+				hovered = true;
+
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+					clicked = true;
+				}
+
+			}
+			else if (hovered) {
+
+				//reset sieze
+				resetSize();
+
+				//reset colors
+				setPrimColor(primColor);
+				hovered = false;
+			}
+		}
+
 	}
 
 	void Button::draw(sf::RenderWindow & window) {
@@ -247,35 +346,163 @@ namespace MenuObjects {
 	}
 	//END Button Class
 
+}
 
-
-
-
-
+namespace MenuObjects {
 
 	/*  Textbox Class  */
 
 //Textbox default Constructor
-	Textbox::Textbox()
+	Textbox::Textbox() : MenuObject(){}
+
+	Textbox::Textbox(const sf::Vector2f & pos, const std::string & msg,
+		const short fontCode, const int textSize,
+		const bool canBeClicked, const sf::Vector2f & tightness) :
+		MenuObject(pos, msg, fontCode, textSize, canBeClicked, tightness) 
 	{
+		lockClick = false;
+		animateScale = sf::Vector2f(1, 1);
+		MenuObject::setTxtColor(zsk::art::lightTertCol);
 	}
+	
+	/*  Init Functions - Base Class */
 
-	/*  Accessors  */
+	//END INIT FUNCTIONS
 
 
-	/*  Modifiers  */
+	/*  Accessors - Base Class */
+
+	//end accessors
+
+
+	/*  Modifiers - Base Class */
+
+	//END MODIFIERS
+
 
 
 	/*  Other Private Functions  */
 
+	//Button Functionality - virtual functions
+	void Textbox::animateOnHover()
+	{
+		box.setFillColor(animateColor);
+		box.scale(animateScale);
+		text.scale(animateScale);
+	}
+
+	void Textbox::resetSize()
+	{
+		sf::Vector2f reset = sf::Vector2f(1, 1);
+		text.setScale(reset);
+		box.setScale(reset);
+	}
+
+	void Textbox::checkTextInput(sf::RenderWindow& window)
+	{
+		/*
+			checks for text input in threaded while loop
+		*/
+
+		//gets text from keyboard
+		sf::Event e;
+	
+		while (clicked)
+		{
+			window.waitEvent(e);
+
+			std::string input;
+
+			if (e.type == sf::Event::TextEntered) {
+				cout << "made it" << endl;
+				input += e.text.unicode;
+				text.setString(input);
+			}
+
+			//escape condition
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
+				clicked = false;
+		}
+
+		lockClick = false;
+		//function exits, can be engaged again upon reclick
+	}
+
+
+
+
 	/*  Other Public Functions  */
+
+	void Textbox::update(sf::RenderWindow& window)
+	{
+		/*
+			The main update function for each textBox should
+			be run once per while loop refresh.  If the
+			button is clickable it tests for hovering,
+			animates the button, and sets click to
+			true if necessary
+		*/
+
+		if (clickable)
+		{
+			if (isHovered(window)) {
+
+				if (!hovered)
+					animateOnHover();
+				hovered = true;
+				//little trick to set the animation only once
+
+				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+					clicked = true;
+
+					/*
+						Part 2 - for textbox, if it is clicked, keep checking
+						for user input in the textbox until they click out -
+						use threads
+					*/
+
+					if (!lockClick) {
+						lockClick = true;
+						std::thread t1{ &Textbox::checkTextInput, this,
+							std::ref(window) };
+						t1.detach();
+					}
+				}
+
+			}
+			else if (hovered) {
+
+				//reset sieze
+				resetSize();
+
+				//reset colors
+				setPrimColor(primColor);
+				hovered = false;
+			}
+			else if (sf::Mouse::isButtonPressed(sf::Mouse::Left) ||
+				sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
+				/*
+					if its clickable, we need to UNSELECT (click = false)
+					if the user clicks elsewhere in the window
+				*/
+				clicked = false;
+			}
+
+		}
+
+	}
+
+
+	void Textbox::draw(sf::RenderWindow & window) {
+		window.draw(box);
+		window.draw(text);
+	}
 
 
 
 	/*  Destructors  */
 	Textbox::~Textbox()
-	{
-	}
+	{}
 	//END Textbox Class
 
 

@@ -358,16 +358,14 @@ void Player::initLives(int newLives)
 		lifeText.setCharacterSize(textSize);
 		lifeText.setFillColor(zsk::art::secColor);
 
-		sf::Vector2f pos = sf::Vector2f(wLength / 1.35f, 0.f);
+		sf::Vector2f pos = sf::Vector2f(wLength / 1.33f, 0.f);
 
 		lifeText.setPosition(pos);
 		setLives(newLives);
 
-		if (playerNumber == 1) {
-			sf::Vector2f adj = sf::Vector2f(-30.f, 22.f);
-			lifeFigure.setPosition(pos + adj);
-		}
-
+		
+		sf::Vector2f adj = sf::Vector2f(-24.f, 22.f);
+		lifeFigure.setPosition(pos + adj);
 }
 
 void Player::initSmallFollowerRadius(float newRadius)
@@ -458,6 +456,30 @@ void Player::setScore(int newScore)
 
 		std::string newText = "x" + std::to_string(score);
 		scoreText.setString(newText);
+
+		//We may need to adjust spacing too
+		sf::Vector2f adj = sf::Vector2f(22.f, 0);
+		sf::Vector2f newTextPos = lifeText.getPosition() + adj;
+		sf::Vector2f newFigPos = lifeFigure.getPosition() + adj;
+
+		static int set = 0;
+		bool adj_if = (score == 1000) ||
+			(score == 100) ||
+			(score == 10);
+
+		if (adj_if) {
+			set++;
+		}
+		else if (set > int(std::log10(score))) {
+			adj = -adj;
+			set--;
+		}
+		else
+			adj = adj * 0;
+
+		lifeText.move(adj);
+		lifeFigure.movePlayershape(adj);
+		
 	}
 
 void Player::setplayerSpeed(float newSpeed) {

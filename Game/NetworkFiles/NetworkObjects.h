@@ -111,7 +111,7 @@ namespace NetworkObjects {
 		bool playerQuit;
 	};
 
-	//gameInfoPkt - 10
+	//gameInfoPkt - 11
 	/*
 		gameInfoPkt - screenshot of gameState at a timepoint
 		distributed to all players in a game
@@ -196,4 +196,22 @@ namespace NetworkObjects {
 		float timer;
 		float maxTimer;
 	};
+
+	//gameInfoPkt - 11 implementation
+	struct gameInfoPkt {
+		std::vector<playerData> players;
+		std::vector<followerData> followers;
+		std::vector<towerData> towers;
+	};
+
 }
+
+/*  Operator Overloads for Packet loading/unloading */
+
+	/*  Vectors  */
+
+sf::Packet& operator>>(sf::Packet& pkt, sf::Vector2f& obj);
+
+sf::Packet& operator<<(sf::Packet& pkt, const sf::Vector2f& obj);
+
+//End Vector Overloads

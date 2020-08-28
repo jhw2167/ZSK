@@ -11,23 +11,16 @@
 
 namespace MenuObjects {
 	
-	/*
-		First class if interest is the "Button" class,
-		a button knows:
-		- its size, shape and position
-		- the text it displays, as a string
-		- the font its using
-		- when it is hovered over, animation therefore
-		- its secondary color to change to
-		- if it has been pressed
-	*/
+	enum fontCode {
+		ARIAL = 0,
+		ARCDE
+	};
 
+	/*  Menu Object Base Class - for buttons, text boxes and others  */
 
-	//BUTTON CLASS
-	class Button
-	{
-	private:
-	
+	class MenuObject{
+
+	protected:
 		//core quantities
 		sf::RectangleShape box;
 		sf::Text text;
@@ -36,23 +29,20 @@ namespace MenuObjects {
 
 		//Animation quantities
 		sf::Color animateColor;
+		sf::Vector2f animateScale;
 		bool clickable;
 		bool hovered;
 		bool clicked;
-	
+
 		/*
 			Buttons concists of a simple box and text with
 			a tightness factor indicating how tighly the button
 			grips the text
 		*/
 
-		enum fontCode{ARIAL = 0, 
-					  ARCDE};
-
-		/*  Private Methods  */
 
 		//For hidden resizing methods
-		void initText(const std::string& msg, 
+		void initText(const std::string& msg,
 			const short font);
 		void initColors(const sf::Color& prim = zsk::art::primColor,
 			const sf::Color& sec = zsk::art::secColor,
@@ -60,17 +50,18 @@ namespace MenuObjects {
 
 
 		//For Button functionality and animation
-		void animateOnHover();
-		void resetSize();
+		virtual void animateOnHover() = 0;
+		virtual void resetSize() = 0;
+		void waitForUnclick();
 
 	public:
 		/*  Constructors  */
 
 		//Default constructor - Blank Button
-		Button();
+		MenuObject();
 
-		Button(const sf::Vector2f& pos, const std::string& msg,
-			const short fontCode = ARIAL, const int textSize = 20, 
+		MenuObject(const sf::Vector2f& pos, const std::string& msg,
+			const short fontCode = ARIAL, const int textSize = 20,
 			const bool canBeClicked = true,
 			const sf::Vector2f& tightness = sf::Vector2f(1.1, 1.1));
 
@@ -78,7 +69,7 @@ namespace MenuObjects {
 
 		/*  Accessors  */
 		std::string getString() const;
-		bool isHovered(const sf::RenderWindow& window) const;
+		bool isHovered(sf::RenderWindow& window) const;
 		bool isClicked() const;
 		bool isClickable() const;
 
@@ -102,12 +93,59 @@ namespace MenuObjects {
 		void setSecColor(const sf::Color& newSec);
 		void setTxtColor(const sf::Color& newTxtcolor);
 		void setAnimateColor(const sf::Color& newCol);
+		void setAnimateScaler(const sf::Vector2f & newScale);
 
 		void setClickable(const bool canBeClicked);
 
-		
+
 		/*  Other Public Methods  */
-		void update(const sf::RenderWindow& window);
+		virtual void update(sf::RenderWindow& window) = 0;
+		void bufferClickable();
+		virtual void draw(sf::RenderWindow& window) = 0;
+
+	};
+
+	/*
+		First class if interest is the "Button" class,
+		a button knows:
+		- its size, shape and position
+		- the text it displays, as a string
+		- the font its using
+		- when it is hovered over, animation therefore
+		- its secondary color to change to
+		- if it has been pressed
+	*/
+
+
+	//BUTTON CLASS
+	class Button : public MenuObject
+	{
+	private:
+		
+		/*
+			Buttons concists of a simple box and text with
+			a tightness factor indicating how tighly the button
+			grips the text
+		*/
+		
+		/*  Virtual Private Methods  */
+		void animateOnHover();
+		void resetSize();
+
+	public:
+		/*  Constructors  */
+
+		//Default constructor - Blank Button
+		Button();
+
+		Button(const sf::Vector2f& pos, const std::string& msg,
+			const short fontCode = ARIAL, const int textSize = 20, 
+			const bool canBeClicked = true,
+			const sf::Vector2f& tightness = sf::Vector2f(1.1, 1.1));
+
+
+		/*  Virtual Public Methods  */
+		void update(sf::RenderWindow& window);
 		void draw(sf::RenderWindow& window);
 
 
@@ -132,14 +170,41 @@ namespace MenuObjects {
 	*/
 
 	//TEXTBOX CLASS
-	class Textbox
+	class Textbox : public MenuObject
 	{
 	private:
+		sf::Text entry;
+		sf::Text cursor;
+
+		bool lockClick;
+		//ensures textbox can only be clicked once when engaged
+
+		/*  Virtual Private Methods  */
+		void animateOnHover();
+		void resetSize();
+
+		void checkTextInput(sf::RenderWindow& window);
 
 	public:
+		/*  Constructors  */
+
+		//Default constructor - Textbox
 		Textbox();
+
+		Textbox(const sf::Vector2f& pos, const std::string& msg,
+			const short fontCode = ARIAL, const int textSize = 20,
+			const bool canBeClicked = true,
+			const sf::Vector2f& tightness = sf::Vector2f(1.1, 1.1));
+
+
+		/*  Virtual Public Methods  */
+		void update(sf::RenderWindow& window);
+		void draw(sf::RenderWindow& window);
+
 		~Textbox();
 	};
+
+
 }
 
 

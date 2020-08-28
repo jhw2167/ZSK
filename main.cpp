@@ -4,6 +4,8 @@
 
 #include "main.h"
 
+void myFunc(State *s);
+
 int main(int argc, char *argv[])
 {
 	Game game;
@@ -21,8 +23,5 @@ int main(int argc, char *argv[])
 	return 0;
 }
 //END MAIN METHOD
-
-
-
 
 

@@ -18,6 +18,8 @@
 #include <map>
 #include <ctime>
 #include <random>
+#include <thread>
+#include <mutex>
 
 	//stream ops
 #include <fstream>

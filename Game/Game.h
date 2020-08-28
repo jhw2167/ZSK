@@ -21,6 +21,7 @@
 #include "States/State.h"
 #include "States/gameState.h"
 #include "States/MenuState.h"
+#include "States/LobbyState.h"
 
 
 //Template definition
@@ -46,9 +47,6 @@ private:
 	//Game Based
 	short numPlayers;
 	const static short maxPlayers;
-
-	//Gamestate handling
-	enum STATE {MAIN_MENU = 0, GAME, PAUSE, QUIT};
 
 	short gameState;
 	//0 - Startmenu, 1 - in game, 2 - pauseMenu

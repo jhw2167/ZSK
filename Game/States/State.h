@@ -9,6 +9,9 @@
 //Include Exceptions class
 #include "../../BaseCode/Exceptions/Exceptions.h"
 
+//Global Enum Defined in .h for gameState Handling
+enum STATE { MAIN_MENU = 0, LOBBY, GAME, PAUSE, SHOP, QUIT };
+
 class State
 {
 protected:

@@ -26,7 +26,7 @@ void Game::initVars()
 {
 	//init window_ptr to nullptr
 	window_ptr = nullptr;
-	gameState = 0;
+	gameState = MAIN_MENU;
 	numPlayers = 0;
 
 	//load game art and objects
@@ -123,12 +123,18 @@ void Game::updateGameState(short gs)
 {
 	if (gs != gameState)
 	{
+		//cout << "gs is: " << gs << endl;
+
 		switch (gs)
 		{
 		case MAIN_MENU:
 			//Create new MenuState and add
 			//it to the stack
 			updateState<MenuState>(true);
+			break;
+
+		case LOBBY:
+			updateState<LobbyState>(true);
 			break;
 
 		case GAME:
@@ -190,6 +196,9 @@ void Game::pollEvents()
 
 	while (window_ptr->pollEvent(event))
 	{
+		//poll for events
+		//window_ptr->pollEvent(event)
+
 		switch (event.type)
 		{
 
@@ -229,12 +238,12 @@ void Game::update()
 	pollEvents();
 	updateDt();
 
-	short gs = 0;
+	short gs = MAIN_MENU;
 	if (!states.empty())
 		gs = states.top()->update(mousePos, dt);
 	else
-		gs = 3;
-		//gameState 3 is quit;
+		gs = QUIT;
+		//gameState quit;
 
 	static int c = 0;
 	if (c > 200)

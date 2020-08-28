@@ -333,11 +333,11 @@ short GameState::update(sf::Vector2i &mPos, const float& dt)
 	shootingMechanics();
 	followerMechanics();
 
-	if (isGameOver()) {
-		return 0;
+	if (!isGameOver()) {
+		return GAME;
 	}
 
-	return 1;
+	return MAIN_MENU;
 }
 
 void GameState::render(sf::RenderTarget* rt)
