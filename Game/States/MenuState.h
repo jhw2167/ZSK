@@ -59,7 +59,7 @@ public:
 
 		/*  Constructors  */
 
-	MenuState(sf::RenderWindow* w_ptr);
+	MenuState(sf::RenderWindow* w_ptr, std::vector<sf::Event>* evs);
 
 
 		/*  Modifiers  */

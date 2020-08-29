@@ -7,8 +7,8 @@
 
 
 /*  Constructors  */
-MenuState::MenuState(sf::RenderWindow* w_ptr) 
-	: State(w_ptr)
+MenuState::MenuState(sf::RenderWindow* w_ptr, std::vector<sf::Event>* evs)
+	: State(w_ptr, evs)
 {
 	initvars();
 	initGameTitle();

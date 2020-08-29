@@ -35,6 +35,8 @@ private:
 	sf::RenderWindow* window_ptr;
 	sf::VideoMode vidMode;
 	sf::Event event;
+
+	std::vector<sf::Event> events;
 	sf::Vector2i mousePos;
 
 	//Clock variables, move irrespective to framerate
@@ -108,6 +110,6 @@ inline void Game::updateState(bool pop)
 		states.pop();
 	}
 	
-	stateType* s = new stateType(window_ptr);
+	State* s = new stateType(window_ptr, &events);
 	states.push(s);
 }

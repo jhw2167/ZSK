@@ -13,7 +13,7 @@ int GameState::maxPlayers_this = 0;
 
 	/*  Constructors  */
 
-GameState::GameState(sf::RenderWindow* w_ptr) : State(w_ptr)
+GameState::GameState(sf::RenderWindow* w_ptr, std::vector<sf::Event>* evs) : State(w_ptr, evs)
 {
 	players.push_back(Player(*w_ptr));
 	initVars();

@@ -6,8 +6,9 @@
 
 
 /*  Constructors  */
-LobbyState::LobbyState(sf::RenderWindow* w_ptr)
-	: State(w_ptr)
+LobbyState::LobbyState(sf::RenderWindow* w_ptr,
+	std::vector<sf::Event>* evs)
+	: State(w_ptr, evs)
 {
 	initvars();
 	initGameTitle();
@@ -124,6 +125,7 @@ void LobbyState::initTextBox(const float width, const float height)
 	enterCode = MenuObjects::Textbox(pos, defaultText, zsk::ARIAL,
 		textSize, false, tightness);
 	enterCode.bufferClickable();
+	enterCode.setEventsPtr(events);
 
 	//set animate color and thickness
 	enterCode.setAnimateColor(sf::Color::Yellow);

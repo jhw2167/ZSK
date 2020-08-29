@@ -112,7 +112,7 @@ void Game::initWindow()
 }
 
 void Game::initStartMenu() {
-	MenuState* mm = new MenuState(window_ptr);
+	MenuState* mm = new MenuState(window_ptr, &events);
 	states.push(mm);
 }
 
@@ -193,11 +193,12 @@ const bool Game::windowIsOpen() const {
 	/*  Game Update Functions  */
 void Game::pollEvents()
 {
+	//clear vector of events so new events set
+	events.clear();
 
 	while (window_ptr->pollEvent(event))
 	{
 		//poll for events
-		//window_ptr->pollEvent(event)
 
 		switch (event.type)
 		{
@@ -214,6 +215,7 @@ void Game::pollEvents()
 			break;
 		}
 
+		events.push_back(event);
 	}
 	//End window.pollEvent
 

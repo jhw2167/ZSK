@@ -176,14 +176,20 @@ namespace MenuObjects {
 		sf::Text entry;
 		sf::Text cursor;
 
+		std::vector<sf::Event>* events;
 		bool lockClick;
 		//ensures textbox can only be clicked once when engaged
+
+		bool rmDefTextOpts;
+		//removes desault text options
 
 		/*  Virtual Private Methods  */
 		void animateOnHover();
 		void resetSize();
 
+		/*  Unique Private text Methods  */
 		void checkTextInput(sf::RenderWindow& window);
+		void removeDefText();
 
 	public:
 		/*  Constructors  */
@@ -196,6 +202,8 @@ namespace MenuObjects {
 			const bool canBeClicked = true,
 			const sf::Vector2f& tightness = sf::Vector2f(1.1, 1.1));
 
+		/*  Unique Public methods */
+		void setEventsPtr(std::vector<sf::Event>* evs);
 
 		/*  Virtual Public Methods  */
 		void update(sf::RenderWindow& window);

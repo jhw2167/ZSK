@@ -61,7 +61,7 @@ public:
 
 	/*  Constructors  */
 
-	LobbyState(sf::RenderWindow* w_ptr);
+	LobbyState(sf::RenderWindow* w_ptr, std::vector<sf::Event>* events);
 
 
 	/*  Modifiers  */

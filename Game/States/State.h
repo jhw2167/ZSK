@@ -18,7 +18,7 @@ protected:
 	/*  Protected Members are availible to
 				Base Classes			*/
 	sf::RenderWindow* window_ptr;
-
+	std::vector<sf::Event>* events;
 
 private:
 	//Private Variables
@@ -26,7 +26,7 @@ private:
 public:
 
 	//Constructors
-	State(sf::RenderWindow* w_ptr);
+	State(sf::RenderWindow* w_ptr, std::vector<sf::Event>* evs);
 
 
 	/*

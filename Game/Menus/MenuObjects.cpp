@@ -353,7 +353,7 @@ namespace MenuObjects {
 	/*  Textbox Class  */
 
 //Textbox default Constructor
-	Textbox::Textbox() : MenuObject(){}
+	Textbox::Textbox() : MenuObject() { events = nullptr; }
 
 	Textbox::Textbox(const sf::Vector2f & pos, const std::string & msg,
 		const short fontCode, const int textSize,
@@ -361,8 +361,16 @@ namespace MenuObjects {
 		MenuObject(pos, msg, fontCode, textSize, canBeClicked, tightness) 
 	{
 		lockClick = false;
+		events = nullptr;
+
 		animateScale = sf::Vector2f(1, 1);
 		MenuObject::setTxtColor(zsk::art::lightTertCol);
+
+		rmDefTextOpts = true;
+	}
+
+	void Textbox::setEventsPtr(std::vector<sf::Event>* evs){
+		events = evs;
 	}
 	
 	/*  Init Functions - Base Class */
@@ -405,27 +413,46 @@ namespace MenuObjects {
 		*/
 
 		//gets text from keyboard
-		sf::Event e;
 	
-		while (clicked)
+		if (!events->empty())
 		{
-			window.waitEvent(e);
+			std::string input = text.getString();
+			
+			for (size_t i = events->size() - 1; i != -1; i--)
+			{
+				sf::Event e = events->at(i);
+				if (e.type == sf::Event::TextEntered) 
+				{
+					char c = e.text.unicode;
+					int n = c;
+					
+					if (n == 8)
+						input.pop_back();
+					else if (n < 32 || n == 127) {
+						// do nothing, not valid characters
+					}
+					else
+						input += e.text.unicode;
+					
+					text.setString(input);
+				}
 
-			std::string input;
-
-			if (e.type == sf::Event::TextEntered) {
-				cout << "made it" << endl;
-				input += e.text.unicode;
-				text.setString(input);
+				//escape condition
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
+					clicked = false;
 			}
 
-			//escape condition
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
-				clicked = false;
 		}
 
 		lockClick = false;
 		//function exits, can be engaged again upon reclick
+	}
+
+	void Textbox::removeDefText()
+	{
+		setTxtColor(zsk::art::secColor);
+		text.setString("");
+		rmDefTextOpts = false;
 	}
 
 
@@ -455,18 +482,8 @@ namespace MenuObjects {
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 					clicked = true;
 
-					/*
-						Part 2 - for textbox, if it is clicked, keep checking
-						for user input in the textbox until they click out -
-						use threads
-					*/
-
-					if (!lockClick) {
-						lockClick = true;
-						std::thread t1{ &Textbox::checkTextInput, this,
-							std::ref(window) };
-						t1.detach();
-					}
+					if (rmDefTextOpts)
+						removeDefText();
 				}
 
 			}
@@ -481,13 +498,14 @@ namespace MenuObjects {
 			}
 			else if (sf::Mouse::isButtonPressed(sf::Mouse::Left) ||
 				sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
-				/*
-					if its clickable, we need to UNSELECT (click = false)
-					if the user clicks elsewhere in the window
-				*/
+				
 				clicked = false;
 			}
 
+
+			//if clicked, check events for text input
+			if (clicked)
+				checkTextInput(window);
 		}
 
 	}

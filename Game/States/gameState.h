@@ -85,8 +85,8 @@ private:
 
 public:
 
-	/*  g*/
-	GameState(sf::RenderWindow* w_ptr);
+	/*  Gamestate Constructor  */
+	GameState(sf::RenderWindow* w_ptr, std::vector<sf::Event>* evs);
 
 	//Modifiers
 	void setMousePos(sf::Vector2i &mPos);
