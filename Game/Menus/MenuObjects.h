@@ -26,6 +26,7 @@ namespace MenuObjects {
 		sf::Text text;
 		sf::Vector2f tightness;
 		sf::Color primColor;
+		sf::Vector2f boxSize;
 
 		//Animation quantities
 		sf::Color animateColor;
@@ -63,7 +64,7 @@ namespace MenuObjects {
 		MenuObject(const sf::Vector2f& pos, const std::string& msg,
 			const short fontCode = ARIAL, const int textSize = 20,
 			const bool canBeClicked = true,
-			const sf::Vector2f& tightness = sf::Vector2f(1.1, 1.1));
+			const sf::Vector2f& tghtness = sf::Vector2f(1.1, 1.1));
 
 		/*  Init Methods  */
 
@@ -175,6 +176,7 @@ namespace MenuObjects {
 	private:
 		sf::Text entry;
 		sf::Text cursor;
+		short maxMsgSize;
 
 		std::vector<sf::Event>* events;
 		bool lockClick;
@@ -200,10 +202,11 @@ namespace MenuObjects {
 		Textbox(const sf::Vector2f& pos, const std::string& msg,
 			const short fontCode = ARIAL, const int textSize = 20,
 			const bool canBeClicked = true,
-			const sf::Vector2f& tightness = sf::Vector2f(1.1, 1.1));
+			const sf::Vector2f& tghtnss = sf::Vector2f(1.1, 1.1));
 
 		/*  Unique Public methods */
 		void setEventsPtr(std::vector<sf::Event>* evs);
+		void setString(const std::string & newString);
 
 		/*  Virtual Public Methods  */
 		void update(sf::RenderWindow& window);

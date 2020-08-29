@@ -19,16 +19,17 @@ namespace MenuObjects {
 
 	MenuObject::MenuObject(const sf::Vector2f & pos, const std::string & msg,
 		const short fontCode, const int textSize, const bool canBeClicked,
-		const sf::Vector2f & tightness)
+		const sf::Vector2f & tghtness)
 	{
 		clickable = canBeClicked;
 		clicked = false;
 		hovered = false;
 		animateScale = sf::Vector2f(1.1, 1.1);
+		boxSize = sf::Vector2f(20.f, 20.f);
 
 		//init Functions
 		initText(msg, fontCode);
-		setSize(textSize, tightness);
+		setSize(textSize, tghtness);
 		initColors();
 		setPosition(pos);
 	}
@@ -110,10 +111,12 @@ namespace MenuObjects {
 	/*  Modifiers  */
 	void MenuObject::setString(const std::string & newString)
 	{
+		text.setString(newString);
+		setSize(text.getCharacterSize(), tightness);
 	}
 
 	void MenuObject::setSize(const int textSize, const sf::Vector2f&
-		tightness)
+		tghtness)
 	{
 		/*
 			Calculate default and standard sizes based on the
@@ -123,6 +126,7 @@ namespace MenuObjects {
 		*/
 
 		float thickness = textSize / 5.f;
+		tightness = tghtness;
 
 		text.setCharacterSize(textSize);
 
@@ -138,10 +142,15 @@ namespace MenuObjects {
 		float rectLength = text.getLocalBounds().width * tightness.x;
 		float rectHeight = text.getLocalBounds().height * tightness.y + adj;
 
-		sf::Vector2f rectOrigin = sf::Vector2f(rectLength / 2.f,
-			(rectHeight - (adj / 2.f)) / 2.f);
+		//Control for undersized words
+		rectLength = std::max(boxSize.x, rectLength);
+		rectHeight = std::max(boxSize.y, rectHeight);
+		boxSize = sf::Vector2f(rectLength, rectHeight);
 
-		box.setSize(sf::Vector2f(rectLength, rectHeight));
+		sf::Vector2f rectOrigin = sf::Vector2f(boxSize.x / 2.f,
+			(boxSize.y - (adj / 2.f)) / 2.f);
+
+		box.setSize(boxSize);
 		box.setOutlineThickness(thickness);
 		box.setOrigin(rectOrigin);
 	}
@@ -247,6 +256,8 @@ namespace MenuObjects {
 
 	//End Base Menu Object Class
 }
+
+
 
 namespace MenuObjects {
 
@@ -357,11 +368,12 @@ namespace MenuObjects {
 
 	Textbox::Textbox(const sf::Vector2f & pos, const std::string & msg,
 		const short fontCode, const int textSize,
-		const bool canBeClicked, const sf::Vector2f & tightness) :
-		MenuObject(pos, msg, fontCode, textSize, canBeClicked, tightness) 
+		const bool canBeClicked, const sf::Vector2f & tghtness) :
+		MenuObject(pos, msg, fontCode, textSize, canBeClicked, tghtness) 
 	{
 		lockClick = false;
 		events = nullptr;
+		maxMsgSize = 18;
 
 		animateScale = sf::Vector2f(1, 1);
 		MenuObject::setTxtColor(zsk::art::lightTertCol);
@@ -371,6 +383,15 @@ namespace MenuObjects {
 
 	void Textbox::setEventsPtr(std::vector<sf::Event>* evs){
 		events = evs;
+	}
+
+	void Textbox::setString(const std::string & newString)
+	{
+		if (newString.length() <= maxMsgSize)
+		{
+			text.setString(newString);
+			setSize(text.getCharacterSize(), tightness);
+		}
 	}
 	
 	/*  Init Functions - Base Class */
@@ -426,7 +447,7 @@ namespace MenuObjects {
 					char c = e.text.unicode;
 					int n = c;
 					
-					if (n == 8)
+					if (n == 8 && input.size() > 0)
 						input.pop_back();
 					else if (n < 32 || n == 127) {
 						// do nothing, not valid characters
@@ -434,7 +455,7 @@ namespace MenuObjects {
 					else
 						input += e.text.unicode;
 					
-					text.setString(input);
+					setString(input);
 				}
 
 				//escape condition
