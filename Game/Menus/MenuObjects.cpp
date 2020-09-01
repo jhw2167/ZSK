@@ -29,7 +29,7 @@ namespace MenuObjects {
 
 		//init Functions
 		initText(msg, fontCode);
-		setSize(textSize, tghtness);
+		setSize(textSize, tghtness, true);
 		initColors();
 		setPosition(pos);
 	}
@@ -116,41 +116,53 @@ namespace MenuObjects {
 	}
 
 	void MenuObject::setSize(const int textSize, const sf::Vector2f&
-		tghtness)
+		tghtness, const bool init)
 	{
 		/*
 			Calculate default and standard sizes based on the
 			window for the box and text.
 			The MenuObject size can thereafter be scaled or reset
 			entirely.
+
+			Certain values are set only on initialization
 		*/
 
 		float thickness = textSize / 5.f;
 		tightness = tghtness;
 
 		text.setCharacterSize(textSize);
+		
+		float height = text.getLocalBounds().height;
+		float length = text.getLocalBounds().width;
+
+		if (init)
+			textDims = sf::Vector2f(length, height);
 
 		//set origin in the middle of th text
-		float length = text.getLocalBounds().width;
-		float height = text.getLocalBounds().height;
-
-		sf::Vector2f origin = sf::Vector2f(length / 2.f, height / 2.f);
+		sf::Vector2f origin = sf::Vector2f(length / 2.f, textDims.y / 2.f);
 		text.setOrigin(origin);
 
 		//center the box around the text
-		const float adj = 20.f;
+		const float adj = 10.f;
 		float rectLength = text.getLocalBounds().width * tightness.x;
-		float rectHeight = text.getLocalBounds().height * tightness.y + adj;
+		float rectHeight = boxSize.y;
 
-		//Control for undersized words
+		if (init)
+			rectHeight = text.getLocalBounds().height * tightness.y + adj;
+
+		//Control for undersized words		
 		rectLength = std::max(boxSize.x, rectLength);
 		rectHeight = std::max(boxSize.y, rectHeight);
-		boxSize = sf::Vector2f(rectLength, rectHeight);
 
-		sf::Vector2f rectOrigin = sf::Vector2f(boxSize.x / 2.f,
-			(boxSize.y - (adj / 2.f)) / 2.f);
+		if (init)
+			boxSize = sf::Vector2f(rectLength, rectHeight);
+	
+		sf::Vector2f newSize = sf::Vector2f(rectLength, rectHeight);
 
-		box.setSize(boxSize);
+		sf::Vector2f rectOrigin = sf::Vector2f(newSize.x / 2.f,
+			(newSize.y - (adj / 2.f)) / 2.f);
+
+		box.setSize(newSize);
 		box.setOutlineThickness(thickness);
 		box.setOrigin(rectOrigin);
 	}
@@ -259,6 +271,8 @@ namespace MenuObjects {
 
 
 
+
+//Button Class
 namespace MenuObjects {
 
 	/*  Button Class  */
@@ -359,6 +373,10 @@ namespace MenuObjects {
 
 }
 
+
+
+
+//Textbox Class
 namespace MenuObjects {
 
 	/*  Textbox Class  */
@@ -379,6 +397,8 @@ namespace MenuObjects {
 		MenuObject::setTxtColor(zsk::art::lightTertCol);
 
 		rmDefTextOpts = true;
+		interval = 20;
+		counter = 1;
 	}
 
 	void Textbox::setEventsPtr(std::vector<sf::Event>* evs){
@@ -395,7 +415,7 @@ namespace MenuObjects {
 	}
 	
 	/*  Init Functions - Base Class */
-
+	
 	//END INIT FUNCTIONS
 
 
@@ -415,6 +435,11 @@ namespace MenuObjects {
 	//Button Functionality - virtual functions
 	void Textbox::animateOnHover()
 	{
+		/*
+			Set color, button pop and cursor to animate while
+			textbox is selected
+		*/
+
 		box.setFillColor(animateColor);
 		box.scale(animateScale);
 		text.scale(animateScale);
@@ -447,15 +472,20 @@ namespace MenuObjects {
 					char c = e.text.unicode;
 					int n = c;
 					
-					if (n == 8 && input.size() > 0)
-						input.pop_back();
+					if (n == 8 && input.size() > 0) {
+						size_t pos = input.find_last_not_of("|");
+
+						if (pos != input.npos)
+							input.erase(input.begin() + pos);
+					}
+						
 					else if (n < 32 || n == 127) {
 						// do nothing, not valid characters
 					}
 					else
 						input += e.text.unicode;
 					
-					setString(input);
+					animateCursor(input);
 				}
 
 				//escape condition
@@ -464,9 +494,63 @@ namespace MenuObjects {
 			}
 
 		}
+		else {
+			animateCursor(text.getString());
+		}
 
-		lockClick = false;
-		//function exits, can be engaged again upon reclick
+		
+	}
+
+	void Textbox::animateCursor(std::string msg)
+	{
+		std::string c = "|";
+		size_t cursorPos = msg.find_last_of(c);
+
+		//check for switch to no cursor
+		bool isCursor = (counter > 0) && (counter < interval);
+
+		if (isCursor)
+		{
+			//ensure cursor not deleted
+			if (cursorPos == msg.size() - 1) {
+				//do nothing, cursor in corect spot
+			}
+			else if (cursorPos != msg.npos)
+			{
+				//ensure cursor is at the back
+				msg.erase(msg.begin() + cursorPos);
+				msg += c;
+			}
+			else
+				msg += c;
+
+			//increment counter
+			counter += (counter / counter);
+
+			if (counter >= interval)
+				counter = -1;
+		}
+		else
+		{
+			if (msg.size() > 0)
+			{
+				if (cursorPos == msg.size() - 1) {
+					msg.erase(msg.begin() + cursorPos);
+				}
+			}
+			
+			//increment counter
+			counter -= (counter / counter);
+
+			if (counter <= -interval)
+				counter = 1;
+		}
+
+		if (counter % 20 == 0) {
+			cout << "counter: " << counter << endl;
+		}
+			
+		setString(msg);
 	}
 
 	void Textbox::removeDefText()
@@ -496,15 +580,18 @@ namespace MenuObjects {
 			if (isHovered(window)) {
 
 				if (!hovered)
-					animateOnHover();
+					animateOnHover();	
 				hovered = true;
 				//little trick to set the animation only once
 
 				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 					clicked = true;
 
-					if (rmDefTextOpts)
+					if (rmDefTextOpts) {
 						removeDefText();
+						animateCursor(text.getString());
+					}
+						
 				}
 
 			}
@@ -525,8 +612,10 @@ namespace MenuObjects {
 
 
 			//if clicked, check events for text input
-			if (clicked)
+			if (clicked) {
 				checkTextInput(window);
+			}
+				
 		}
 
 	}

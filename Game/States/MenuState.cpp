@@ -153,7 +153,6 @@ void MenuState::animateTitle()
 
 	sf::Vector2f adjVect = sf::Vector2f(0.f, dist*counter);
 	setTitlePos(truePos + adjVect);
-
 }
 
 void MenuState::hoverOptions()
