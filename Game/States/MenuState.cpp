@@ -74,11 +74,11 @@ void MenuState::initMenuOptions()
 	sf::Vector2f quitTightness = sf::Vector2f(3.1f, 1.1);
 
 	//create the buttons
-	play = MenuObjects::Button(posPlay, playText, zsk::ARCDE,
-		textSize, true, playTightness);
+	play = MenuObjects::Button(MAIN_MENU, posPlay, playText, zsk::ARCDE,
+		textSize, true, LOBBY, playTightness);
 
-	quit = MenuObjects::Button(posPlay + spacing, quitText, zsk::ARCDE,
-		textSize, true, quitTightness);
+	quit = MenuObjects::Button(MAIN_MENU, posPlay + spacing, quitText, zsk::ARCDE,
+		textSize, true, QUIT, quitTightness);
 
 	//set Animate color to light gray and border thickness
 	play.setAnimateColor(zsk::art::lightTertCol);

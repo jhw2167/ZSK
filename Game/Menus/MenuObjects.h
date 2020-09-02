@@ -21,6 +21,10 @@ namespace MenuObjects {
 	class MenuObject{
 
 	protected:
+		//State quanities
+		STATE currState;
+		STATE nextState;
+
 		//core quantities
 		sf::RectangleShape box;
 		sf::Text text;
@@ -63,18 +67,23 @@ namespace MenuObjects {
 		//Default constructor - Blank Button
 		MenuObject();
 
-		MenuObject(const sf::Vector2f& pos, const std::string& msg,
+		MenuObject(STATE currentState, const sf::Vector2f& pos, const std::string& msg,
 			const short fontCode = ARIAL, const int textSize = 20,
-			const bool canBeClicked = true,
-			const sf::Vector2f& tghtness = sf::Vector2f(1.1, 1.2));
+			const bool canBeClicked = true, STATE newStateOnClick = MAIN_MENU,
+			const sf::Vector2f& tghtness = sf::Vector2f(1.1, 1.1));
 
 		/*  Init Methods  */
 
 		/*  Accessors  */
 		std::string getString() const;
+		int getTextSize() const;
+
 		bool isHovered(sf::RenderWindow& window) const;
 		bool isClicked() const;
 		bool isClickable() const;
+
+		sf::Vector2f getPosition() const;
+		sf::Vector2f getBoxSize() const;
 
 		//button color
 		sf::Color getPrimColor() const;
@@ -88,13 +97,19 @@ namespace MenuObjects {
 		void setString(const std::string& newString);
 		void setSize(const int textSize, const sf::Vector2f&
 			tightness, const bool init = false);
-
-		void setOutlineThickness(const int thickness);
 		void setPosition(const sf::Vector2f& pos);
+
+		//Set Text Facets
+		void adjTextToBox(const sf::Vector2f& adj);
+		void setOutlineThickness(const int thickness);
+		void setTextStyle(const sf::Text::Style& style);
+		void setTextSpacing(const float spc = 1);
+		
 
 		void setPrimColor(const sf::Color& newPrim);
 		void setSecColor(const sf::Color& newSec);
 		void setTxtColor(const sf::Color& newTxtcolor);
+
 		void setAnimateColor(const sf::Color& newCol);
 		void setAnimateScaler(const sf::Vector2f & newScale);
 
@@ -102,7 +117,7 @@ namespace MenuObjects {
 
 
 		/*  Other Public Methods  */
-		virtual void update(sf::RenderWindow& window) = 0;
+		virtual STATE update(sf::RenderWindow& window) = 0;
 		void bufferClickable();
 		virtual void draw(sf::RenderWindow& window) = 0;
 
@@ -141,14 +156,14 @@ namespace MenuObjects {
 		//Default constructor - Blank Button
 		Button();
 
-		Button(const sf::Vector2f& pos, const std::string& msg,
+		Button(STATE currentState, const sf::Vector2f& pos, const std::string& msg,
 			const short fontCode = ARIAL, const int textSize = 20, 
-			const bool canBeClicked = true,
+			const bool canBeClicked = true, STATE newStateOnClick = MAIN_MENU,
 			const sf::Vector2f& tightness = sf::Vector2f(1.1, 1.1));
 
 
 		/*  Virtual Public Methods  */
-		void update(sf::RenderWindow& window);
+		STATE update(sf::RenderWindow& window);
 		void draw(sf::RenderWindow& window);
 
 
@@ -183,7 +198,6 @@ namespace MenuObjects {
 		int counter;
 
 		std::vector<sf::Event>* events;
-		bool lockClick;
 		//ensures textbox can only be clicked once when engaged
 
 		bool rmDefTextOpts;
@@ -204,17 +218,19 @@ namespace MenuObjects {
 		//Default constructor - Textbox
 		Textbox();
 
-		Textbox(const sf::Vector2f& pos, const std::string& msg,
+		Textbox(STATE currentState, const sf::Vector2f& pos, const std::string& msg,
 			const short fontCode = ARIAL, const int textSize = 20,
-			const bool canBeClicked = true,
+			const bool canBeClicked = true, STATE newStateOnClick = MAIN_MENU,
 			const sf::Vector2f& tghtnss = sf::Vector2f(1.1, 1.1));
 
 		/*  Unique Public methods */
 		void setEventsPtr(std::vector<sf::Event>* evs);
 		void setString(const std::string & newString);
+		void setSize(const int textSize, const sf::Vector2f&
+			tghtness, const bool init);
 
 		/*  Virtual Public Methods  */
-		void update(sf::RenderWindow& window);
+		STATE update(sf::RenderWindow& window);
 		void draw(sf::RenderWindow& window);
 
 		~Textbox();

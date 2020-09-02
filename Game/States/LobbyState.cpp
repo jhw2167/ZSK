@@ -58,78 +58,124 @@ void LobbyState::initGameTitle()
 void LobbyState::initMenuOptions()
 {
 	//set Positions of options relative to window
-	float wLength = window_ptr->getSize().x;
+	float wWidth = window_ptr->getSize().x;
 	float wHeight = window_ptr->getSize().y;
 
 	//init all our interactables
-	initHostJoin(wLength, wHeight);
-	initTextBox(wLength, wHeight);
-	initPlayerList(wLength, wHeight);
-	initBack(wLength, wHeight);
+	initHostJoin(wWidth, wHeight);
+	initTextBox(wWidth, wHeight);
+	initPlayerList(wWidth, wHeight);
+	initBack(wWidth, wHeight);
+
+	addToVector();
+}
+
+void LobbyState::addToVector()
+{
+	//Push back our buttons
+	menuObjects.push_back(&hostGame);
+	menuObjects.push_back(&joinGame);
+	menuObjects.push_back(&back);
+	menuObjects.push_back(&submitCode);
+
+
+	//push back Text Boxes
+	menuObjects.push_back(&enterCode);
+
+	//Push back other objects
 }
 
 void LobbyState::initHostJoin(const float width, const float height)
 {
-	float posX = width / 2.f;
-	float posY = height / 2.f;
+	float posX = width / 5.f;
+	float posY = height / 4.5f;
 
-	sf::Vector2f posPlay = sf::Vector2f(posX, posY);
-	sf::Vector2f spacing = sf::Vector2f(0.f, height / 12.f);
+	//Determine button Positions
+	sf::Vector2f posHost = sf::Vector2f(posX, posY);
+	sf::Vector2f posJoin = sf::Vector2f(width - posX, posY);
 
 	int textSize = (width / 100.f) * (height / 100.f) * (0.25f);
 	float thickness = 8.f;
 
 	//Set Text Aspects Strings
 	std::string playText = "Host Game";
-	std::string quitText = "Quit";
-
-	sf::Vector2f playTightness = sf::Vector2f(1.1f, 1.1);
-	sf::Vector2f quitTightness = sf::Vector2f(3.1f, 1.1);
+	std::string joinText = "Join Game";
 
 	//create the buttons
-	hostGame = MenuObjects::Button(posPlay, playText, zsk::ARCDE,
-		textSize, false, playTightness);
+	hostGame = MenuObjects::Button(LOBBY, posHost, playText, zsk::ARCDE,
+		textSize, false, GAME);
 	hostGame.bufferClickable();
 
-	quit = MenuObjects::Button(posPlay + spacing, quitText, zsk::ARCDE,
-		textSize, false, quitTightness);
-	quit.bufferClickable();
+	joinGame = MenuObjects::Button(LOBBY, posJoin, joinText, zsk::ARCDE,
+		textSize, false, GAME);
+	joinGame.bufferClickable();
 
 	//set Animate color to light gray and border thickness
 	hostGame.setAnimateColor(zsk::art::lightTertCol);
-	quit.setAnimateColor(zsk::art::lightTertCol);
+	joinGame.setAnimateColor(zsk::art::lightTertCol);
 
 	hostGame.setOutlineThickness(thickness);
-	quit.setOutlineThickness(thickness);
-
+	joinGame.setOutlineThickness(thickness);
 }
 
 
 void LobbyState::initTextBox(const float width, const float height)
 {
-	float posX = width / 1.5f;
-	float posY = height / 4.f;
+	/*
+		Calculates all values and variables necesary to initialize
+		the enter code TextBox and submitCode  button 
+	*/
 
-	sf::Vector2f pos = sf::Vector2f(posX, posY);
-	sf::Vector2f spacing = sf::Vector2f(0.f, height / 12.f);
+	sf::Vector2f pos = joinGame.getPosition();
+	sf::Vector2f spacing = sf::Vector2f(0.f, height / 15.f);
 
-	int textSize = (width / 100.f) * (height / 100.f) * (0.25f);
-	float thickness = 8.f;
+	int textSize = joinGame.getTextSize();
+	float thickness = 6.f;
 
 	//Set Text Aspects Strings
 	std::string defaultText = "Enter Code";
-
 	sf::Vector2f tightness = sf::Vector2f(1.1f, 1.1);
 
-	//create the buttons
-	enterCode = MenuObjects::Textbox(pos, defaultText, zsk::ARIAL,
-		textSize, false, tightness);
+	//create the textBox
+	enterCode = MenuObjects::Textbox(LOBBY, pos + spacing, defaultText, zsk::ARIAL,
+		textSize, false, LOBBY, tightness);
 	enterCode.bufferClickable();
 	enterCode.setEventsPtr(events);
 
 	//set animate color and thickness
 	enterCode.setAnimateColor(sf::Color::Yellow);
 	enterCode.setOutlineThickness(thickness);
+
+	/*
+		Create Accomplice button to submit the code
+	*/
+	pos = enterCode.getPosition();
+
+	std::string msg = "->";
+	tightness = sf::Vector2f(1.25f, 1.25f);
+
+	//create button
+	submitCode = MenuObjects::Button(LOBBY, pos, msg, zsk::ARIAL,
+		textSize, false, LOBBY, tightness);
+	submitCode.bufferClickable();
+
+	//reset position
+	float x1 = joinGame.getPosition().x + joinGame.getBoxSize().x / 2.f;
+	float x2 = joinGame.getPosition().x + enterCode.getBoxSize().x / 2.f;
+
+	float dif = submitCode.getBoxSize().x / 2.f;
+	pos = sf::Vector2f(x1 - dif, pos.y);
+	submitCode.setPosition(pos);
+	
+	//set animation facets
+	submitCode.setAnimateColor(zsk::art::lightTertCol);
+	submitCode.setOutlineThickness(thickness + 2.f);
+
+	//setTextFacets
+	submitCode.setTextSpacing(-1);
+	submitCode.setTextStyle(sf::Text::Bold);
+	submitCode.adjTextToBox(sf::Vector2f(0, -8.f));
+
 }
 
 void LobbyState::initPlayerList(const float width, const float height)
@@ -187,17 +233,12 @@ void LobbyState::animateTitle()
 
 void LobbyState::hoverOptions()
 {
-
-	hostGame.update(*window_ptr);
-	quit.update(*window_ptr);
-	enterCode.update(*window_ptr);
-
-	if (hostGame.isClicked()) {
-		updateOption(GAME);
+	//update
+	for (auto menObj : menuObjects) {
+		STATE gs = menObj->update(*window_ptr);
+		updateOption(gs);
 	}
-	else if (quit.isClicked()) {
-		updateOption(MAIN_MENU);
-	}
+
 }
 
 void LobbyState::updateOption(short selection) {
@@ -216,16 +257,17 @@ void LobbyState::render(sf::RenderTarget* rt) {
 		//create Game Lobby;
 		window_ptr->draw(title1);
 
-		hostGame.draw(*window_ptr);
-		quit.draw(*window_ptr);
-		enterCode.draw(*window_ptr);
+		//draw all our menu objects
+		for (auto menObj : menuObjects) {
+			menObj->draw(*window_ptr);
+		}
 
 		break;
 	case GAME:
 		//options
 		break;
 	case QUIT:
-		//quit game
+		//quit to home screen
 		break;
 	}
 }

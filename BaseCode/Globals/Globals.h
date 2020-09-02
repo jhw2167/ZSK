@@ -7,6 +7,10 @@
 	the program to use
 */
 
+//Global Enum Defined in .h for gameState Handling
+enum STATE { MAIN_MENU = 0, LOBBY, GAME, PAUSE, SHOP, QUIT };
+
+
 namespace zsk {
 
 	/* Non art related global constants */ 

@@ -17,10 +17,15 @@ namespace MenuObjects {
 		hovered = false;
 	}
 
-	MenuObject::MenuObject(const sf::Vector2f & pos, const std::string & msg,
-		const short fontCode, const int textSize, const bool canBeClicked,
-		const sf::Vector2f & tghtness)
+	MenuObject::MenuObject(STATE currentState, const sf::Vector2f & pos,
+		const std::string & msg, const short fontCode, const int textSize,
+		const bool canBeClicked, STATE newStateOnClick, const sf::Vector2f & tghtness)
 	{
+		//States
+		currState = currentState;
+		nextState = newStateOnClick;
+
+		//core Fields
 		clickable = canBeClicked;
 		clicked = false;
 		hovered = false;
@@ -81,6 +86,10 @@ namespace MenuObjects {
 		return text.getString();
 	}
 
+	int MenuObject::getTextSize() const {
+		return text.getCharacterSize();
+	}
+
 	bool MenuObject::isHovered(sf::RenderWindow& window) const {
 		sf::Vector2f pos = convert(sf::Mouse::getPosition(window));
 		return box.getGlobalBounds().contains(pos);
@@ -92,6 +101,14 @@ namespace MenuObjects {
 
 	bool MenuObject::isClickable() const {
 		return clickable;
+	}
+
+	sf::Vector2f MenuObject::getPosition() const {
+		return box.getPosition();
+	}
+
+	sf::Vector2f MenuObject::getBoxSize() const {
+		return boxSize;
 	}
 
 	sf::Color MenuObject::getPrimColor() const {
@@ -135,8 +152,7 @@ namespace MenuObjects {
 		float height = text.getLocalBounds().height;
 		float length = text.getLocalBounds().width;
 
-		if (init)
-			textDims = sf::Vector2f(length, height);
+		textDims = sf::Vector2f(length, height);
 
 		//set origin in the middle of th text
 		sf::Vector2f origin = sf::Vector2f(length / 2.f, textDims.y / 2.f);
@@ -145,30 +161,33 @@ namespace MenuObjects {
 		//center the box around the text
 		const float adj = 10.f;
 		float rectLength = text.getLocalBounds().width * tightness.x;
-		float rectHeight = boxSize.y;
+		float rectHeight = text.getLocalBounds().height * tightness.y + adj;
 
-		if (init)
-			rectHeight = text.getLocalBounds().height * tightness.y + adj;
-
-		//Control for undersized words		
-		rectLength = std::max(boxSize.x, rectLength);
-		rectHeight = std::max(boxSize.y, rectHeight);
-
-		if (init)
-			boxSize = sf::Vector2f(rectLength, rectHeight);
+		boxSize = sf::Vector2f(rectLength, rectHeight);
 	
-		sf::Vector2f newSize = sf::Vector2f(rectLength, rectHeight);
 
-		sf::Vector2f rectOrigin = sf::Vector2f(newSize.x / 2.f,
-			(newSize.y - (adj / 2.f)) / 2.f);
+		sf::Vector2f rectOrigin = sf::Vector2f(boxSize.x / 2.f,
+			(boxSize.y - (adj / 2.f)) / 2.f);
 
-		box.setSize(newSize);
+		box.setSize(boxSize);
 		box.setOutlineThickness(thickness);
 		box.setOrigin(rectOrigin);
 	}
 
+	void MenuObject::adjTextToBox(const sf::Vector2f& adj) {
+		text.setPosition(text.getPosition() + adj);
+	}
+
 	void MenuObject::setOutlineThickness(const int thickness) {
 		box.setOutlineThickness(thickness);
+	}
+
+	void MenuObject::setTextStyle(const sf::Text::Style & style) {
+		text.setStyle(style);
+	}
+
+	void MenuObject::setTextSpacing(const float spc){
+		text.setLetterSpacing(spc);
 	}
 
 	void MenuObject::setPosition(const sf::Vector2f & pos) {
@@ -216,39 +235,8 @@ namespace MenuObjects {
 
 
 	/*  Other Public Functions  */
-	void MenuObject::update(sf::RenderWindow& window)
-	{
-		/*
-			The main update function for each MenuObject should
-			be run once per while loop refresh.  If the
-			MenuObject is clickable it tests for hovering,
-			animates the MenuObject, and sets click to
-			true if necessary
-		*/
-		if (clickable)
-		{
-			if (isHovered(window)) {
-
-				if (!hovered)
-					animateOnHover();
-				hovered = true;
-
-				if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-					clicked = true;
-				}
-
-			}
-			else if (hovered) {
-
-				//reset sieze
-				resetSize();
-
-				//reset colors
-				setPrimColor(primColor);
-				hovered = false;
-			}
-		}
-
+	STATE MenuObject::update(sf::RenderWindow& window) {
+		return nextState;
 	}
 
 	void MenuObject::bufferClickable() {
@@ -280,10 +268,11 @@ namespace MenuObjects {
 	//Button Default Constructor
 	Button::Button() : MenuObject() {}
 
-	Button::Button(const sf::Vector2f & pos, const std::string & msg,
+	Button::Button(STATE currentState, const sf::Vector2f & pos, const std::string & msg,
 		const short fontCode, const int textSize, const bool canBeClicked,
-		const sf::Vector2f & tightness) :
-		MenuObject(pos, msg, fontCode, textSize, canBeClicked, tightness) {}
+		STATE newStateOnClick, const sf::Vector2f & tightness) :
+		MenuObject(currentState, pos, msg, fontCode, textSize,
+			canBeClicked, newStateOnClick, tightness) {}
 
 
 	/*  Init Functions - Base Class */
@@ -324,7 +313,7 @@ namespace MenuObjects {
 
 	/*  Other Public Functions  */
 
-	void Button::update(sf::RenderWindow& window)
+	STATE Button::update(sf::RenderWindow& window)
 	{
 		/*
 			The main update function for each button should
@@ -357,6 +346,10 @@ namespace MenuObjects {
 			}
 		}
 
+		if (clicked)
+			return nextState;
+		else 
+			return currState;
 	}
 
 	void Button::draw(sf::RenderWindow & window) {
@@ -384,21 +377,28 @@ namespace MenuObjects {
 //Textbox default Constructor
 	Textbox::Textbox() : MenuObject() { events = nullptr; }
 
-	Textbox::Textbox(const sf::Vector2f & pos, const std::string & msg,
-		const short fontCode, const int textSize,
-		const bool canBeClicked, const sf::Vector2f & tghtness) :
-		MenuObject(pos, msg, fontCode, textSize, canBeClicked, tghtness) 
+	Textbox::Textbox(STATE currentState, const sf::Vector2f & pos,
+		const std::string & msg, const short fontCode,
+		const int textSize, const bool canBeClicked,
+		STATE newStateOnClick, const sf::Vector2f & tghtness) :
+		MenuObject(currentState, pos, msg, fontCode, textSize, canBeClicked,
+			newStateOnClick, tghtness)
 	{
-		lockClick = false;
+		//init Textsize
+		setSize(textSize, tghtness, true);
+
+		//Basic Textbox facilities
 		events = nullptr;
 		maxMsgSize = 18;
 
+		//Animation facilities
 		animateScale = sf::Vector2f(1, 1);
 		MenuObject::setTxtColor(zsk::art::lightTertCol);
 
 		rmDefTextOpts = true;
-		interval = 20;
+		interval = 30;
 		counter = 1;
+
 	}
 
 	void Textbox::setEventsPtr(std::vector<sf::Event>* evs){
@@ -410,8 +410,60 @@ namespace MenuObjects {
 		if (newString.length() <= maxMsgSize)
 		{
 			text.setString(newString);
-			setSize(text.getCharacterSize(), tightness);
+			setSize(text.getCharacterSize(), tightness, false);
 		}
+	}
+
+	void Textbox::setSize(const int textSize, const sf::Vector2f&
+		tghtness, const bool init)
+	{
+		/*
+			Calculate default and standard sizes based on the
+			window for the box and text.
+			The MenuObject size can thereafter be scaled or reset
+			entirely.
+
+			Certain values are set only on initialization
+		*/
+
+		float thickness = textSize / 5.f;
+		tightness = tghtness;
+
+		text.setCharacterSize(textSize);
+
+		float height = text.getLocalBounds().height;
+		float length = text.getLocalBounds().width;
+
+		if (init)
+			textDims = sf::Vector2f(length, height);
+
+		//set origin in the middle of th text
+		sf::Vector2f origin = sf::Vector2f(length / 2.f, textDims.y / 2.f);
+		text.setOrigin(origin);
+
+		//center the box around the text
+		const float adj = 10.f;
+		float rectLength = text.getLocalBounds().width * tightness.x;
+		float rectHeight = boxSize.y;
+
+		if (init)
+			rectHeight = text.getLocalBounds().height * tightness.y + adj;
+
+		//Control for undersized words		
+		rectLength = std::max(boxSize.x, rectLength);
+		rectHeight = std::max(boxSize.y, rectHeight);
+
+		if (init)
+			boxSize = sf::Vector2f(rectLength, rectHeight);
+
+		sf::Vector2f newSize = sf::Vector2f(rectLength, rectHeight);
+
+		sf::Vector2f rectOrigin = sf::Vector2f(newSize.x / 2.f,
+			(newSize.y - (adj / 2.f)) / 2.f);
+
+		box.setSize(newSize);
+		box.setOutlineThickness(thickness);
+		box.setOrigin(rectOrigin);
 	}
 	
 	/*  Init Functions - Base Class */
@@ -545,10 +597,6 @@ namespace MenuObjects {
 			if (counter <= -interval)
 				counter = 1;
 		}
-
-		if (counter % 20 == 0) {
-			cout << "counter: " << counter << endl;
-		}
 			
 		setString(msg);
 	}
@@ -565,7 +613,7 @@ namespace MenuObjects {
 
 	/*  Other Public Functions  */
 
-	void Textbox::update(sf::RenderWindow& window)
+	STATE Textbox::update(sf::RenderWindow& window)
 	{
 		/*
 			The main update function for each textBox should
@@ -618,6 +666,7 @@ namespace MenuObjects {
 				
 		}
 
+		return currState;
 	}
 
 

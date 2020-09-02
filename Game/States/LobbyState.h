@@ -25,15 +25,17 @@ private:
 	sf::Text subtitle1;
 
 	//Option Vars
+	std::vector<MenuObjects::MenuObject*> menuObjects;
 	short numOptions;
 
 	MenuObjects::Button hostGame;
 	MenuObjects::Button joinGame;
 
 	MenuObjects::Textbox enterCode;
+	MenuObjects::Button submitCode;
 
 	//Back Button
-	MenuObjects::Button quit;
+	MenuObjects::Button back;
 
 
 	/*  Private Functions  */
@@ -43,6 +45,7 @@ private:
 	void initGameTitle();
 	void initMenuOptions();
 
+	void addToVector();
 	void initHostJoin(const float width, const float height);
 	void initTextBox(const float width, const float height);
 	void initPlayerList(const float width, const float height);
