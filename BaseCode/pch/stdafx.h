@@ -9,15 +9,18 @@
 #include <SFML/Network.hpp>
 #include <SFML/System.hpp>
 
-//Std lib includes
+/*  Std lib includes  */
+
+//containers
 #include <string>
 #include <array>
 #include <vector>
 #include <list>
 #include <stack>
 #include <map>
-#include <ctime>
-#include <random>
+#include <functional>
+
+//Threads
 #include <thread>
 #include <mutex>
 
@@ -32,10 +35,15 @@
 #include <math.h>
 #include <algorithm>
 #include <cstdlib>
+#include <random>
 
 	//Exception ops
 #include <exception>
 #include <stdexcept>
+
+//Other
+#include <ctime>
+#include <memory>
 
 //Project includes
 

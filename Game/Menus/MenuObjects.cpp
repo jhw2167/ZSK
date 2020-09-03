@@ -17,9 +17,9 @@ namespace MenuObjects {
 		hovered = false;
 	}
 
-	MenuObject::MenuObject(STATE currentState, const sf::Vector2f & pos,
+	MenuObject::MenuObject(const STATE currentState, const sf::Vector2f & pos,
 		const std::string & msg, const short fontCode, const int textSize,
-		const bool canBeClicked, STATE newStateOnClick, const sf::Vector2f & tghtness)
+		const bool canBeClicked, const STATE newStateOnClick, const sf::Vector2f & tghtness)
 	{
 		//States
 		currState = currentState;
@@ -37,6 +37,21 @@ namespace MenuObjects {
 		setSize(textSize, tghtness, true);
 		initColors();
 		setPosition(pos);
+	}
+
+	MenuObject::MenuObject(const STATE currentState,
+		const sf::Vector2f & pos,
+		const sf::Vector2f & size, 
+		const bool canBeClicked, 
+		const STATE newStateOnClick)
+	{
+		currState = currentState;
+		nextState = newStateOnClick;
+
+		setBoxSize(size);
+		setPosition(pos);
+
+		clickable = canBeClicked;
 	}
 
 
@@ -122,6 +137,10 @@ namespace MenuObjects {
 	sf::Color MenuObject::getTxtColor() const {
 		return text.getFillColor();
 	}
+
+	float MenuObject::getOutlineThickness() const {
+		return box.getOutlineThickness();
+	}
 	//end accessors
 
 
@@ -195,6 +214,23 @@ namespace MenuObjects {
 		box.setPosition(pos);
 	}
 
+	void MenuObject::setBoxSize(const sf::Vector2f & size) {
+		boxSize = size;
+		sf::Vector2f rectOrigin = sf::Vector2f(boxSize.x / 2.f,
+			(boxSize.y) / 2.f);
+
+		box.setSize(boxSize);
+		box.setOrigin(rectOrigin);
+	}
+
+	void MenuObject::updateCurrState(const STATE curr) {
+		currState = curr;
+	}
+
+	void MenuObject::updateNextState(const STATE next) {
+		nextState = next;
+	}
+
 	void MenuObject::setPrimColor(const sf::Color & newPrim) {
 		primColor = newPrim;
 		box.setFillColor(newPrim);
@@ -235,10 +271,7 @@ namespace MenuObjects {
 
 
 	/*  Other Public Functions  */
-	STATE MenuObject::update(sf::RenderWindow& window) {
-		return nextState;
-	}
-
+	
 	void MenuObject::bufferClickable() {
 		/*
 			Waits for user to release mouse MenuObject so buttons are
@@ -247,12 +280,6 @@ namespace MenuObjects {
 		std::thread t1{ &MenuObject::waitForUnclick, this };
 		t1.detach();
 	}
-
-	void MenuObject::draw(sf::RenderWindow & window) {
-		window.draw(box);
-		window.draw(text);
-	}
-
 
 	//End Base Menu Object Class
 }
@@ -273,6 +300,13 @@ namespace MenuObjects {
 		STATE newStateOnClick, const sf::Vector2f & tightness) :
 		MenuObject(currentState, pos, msg, fontCode, textSize,
 			canBeClicked, newStateOnClick, tightness) {}
+
+	Button::Button(const STATE currentState, const sf::Vector2f & pos,
+		const sf::Vector2f & boxSize, const bool canBeClicked,
+		const STATE newStateOnClick) 
+		: MenuObject(currentState, pos, boxSize, canBeClicked, newStateOnClick)
+	{
+	}
 
 
 	/*  Init Functions - Base Class */
@@ -307,8 +341,6 @@ namespace MenuObjects {
 		text.setScale(reset);
 		box.setScale(reset);
 	}
-
-
 
 
 	/*  Other Public Functions  */
@@ -346,7 +378,7 @@ namespace MenuObjects {
 			}
 		}
 
-		if (clicked)
+		if (clicked) 
 			return nextState;
 		else 
 			return currState;
@@ -400,6 +432,16 @@ namespace MenuObjects {
 		counter = 1;
 
 	}
+
+	//For tuples
+	Textbox::Textbox(const STATE currentState, const sf::Vector2f & pos,
+		const sf::Vector2f & boxSize, const bool canBeClicked,
+		const STATE newStateOnClick)
+		: MenuObject(currentState, pos, boxSize, canBeClicked, newStateOnClick)
+	{}
+
+	//End Constructors
+
 
 	void Textbox::setEventsPtr(std::vector<sf::Event>* evs){
 		events = evs;
@@ -686,4 +728,83 @@ namespace MenuObjects {
 }
 
 
-	
+
+//Tuple Class - for combination of textboxes and buttons
+namespace MenuObjects {
+
+
+		/*  Unique Private Methods  */
+	void Tuple::addObjs(const std::vector<char>& objs)
+	{
+		for (size_t i = objs.size() - 1; i != -1; i--)
+		{
+			float per = percLengths.at(i);
+			float totalLength = boxSize.x;
+
+			sf::Vector2f objSize = sf::Vector2f(per * boxSize.x, boxSize.y);
+			sf::Vector2f endPos = sf::Vector2f(box.getPosition().x +
+				boxSize.x / 2.f, box.getPosition().y);
+
+			sf::Vector2f pos = endPos;
+
+			//determine position recursively
+			for (auto& obj : internals) {
+				pos.x -= obj->getBoxSize().x;
+			}
+
+			pos.x -= objSize.x / 2.f;
+
+			//potential objects to add
+			Button* newButton = new Button(currState, pos, objSize, !clickable, currState);
+			 Textbox* newTextbox = new Textbox(currState, pos, objSize, !clickable, currState);
+
+			switch (objs.at(i)) {
+
+			case 'b':
+				//Add button to back of vector
+				internals.push_back(newButton);
+				break;
+
+			case 't':
+				//Add textBox to back of vector
+				internals.push_back(newTextbox);
+				break;
+			}
+		}
+	}
+
+
+
+		/*  Constructors  */
+
+	Tuple::Tuple(const STATE currentState, const sf::Vector2f & pos,
+		const std::vector<char>& objs, 
+		std::vector<float>& percentLengths,
+		const sf::Vector2f & boxSize, const bool canBeClicked, 
+		const STATE newStateOnClick) :
+		MenuObject(currentState, pos, boxSize, canBeClicked, newStateOnClick)
+	{
+		percLengths = percentLengths;
+		addObjs(objs);
+	}
+
+	std::vector<MenuObject*>& Tuple::getObjs() {
+		return internals;
+	}
+
+	Tuple::~Tuple()
+	{
+		/*
+			delete all memory that we allocated
+		*/
+		for (auto obj : internals)
+		{
+			delete obj;
+			obj = nullptr;
+		}
+
+		internals.clear();
+	}
+
+	/*  Unique public methods  */
+}

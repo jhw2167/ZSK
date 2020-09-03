@@ -67,10 +67,14 @@ namespace MenuObjects {
 		//Default constructor - Blank Button
 		MenuObject();
 
-		MenuObject(STATE currentState, const sf::Vector2f& pos, const std::string& msg,
+		MenuObject(const STATE currentState, const sf::Vector2f& pos, const std::string& msg,
 			const short fontCode = ARIAL, const int textSize = 20,
-			const bool canBeClicked = true, STATE newStateOnClick = MAIN_MENU,
+			const bool canBeClicked = true, const STATE newStateOnClick = MAIN_MENU,
 			const sf::Vector2f& tghtness = sf::Vector2f(1.1, 1.1));
+
+		MenuObject(const STATE currentState, const sf::Vector2f& pos,
+			const sf::Vector2f& boxSize, const bool canBeClicked,
+			const STATE newStateOnClick);
 
 		/*  Init Methods  */
 
@@ -91,6 +95,7 @@ namespace MenuObjects {
 		//outline color
 		sf::Color getSecColor() const;
 		sf::Color getTxtColor() const;
+		float getOutlineThickness() const;
 
 
 		/*  Modifiers  */
@@ -98,6 +103,9 @@ namespace MenuObjects {
 		void setSize(const int textSize, const sf::Vector2f&
 			tightness, const bool init = false);
 		void setPosition(const sf::Vector2f& pos);
+		void setBoxSize(const sf::Vector2f& size);
+		void updateCurrState(const STATE curr);
+		void updateNextState(const STATE next);
 
 		//Set Text Facets
 		void adjTextToBox(const sf::Vector2f& adj);
@@ -105,7 +113,7 @@ namespace MenuObjects {
 		void setTextStyle(const sf::Text::Style& style);
 		void setTextSpacing(const float spc = 1);
 		
-
+		//set Color Facets
 		void setPrimColor(const sf::Color& newPrim);
 		void setSecColor(const sf::Color& newSec);
 		void setTxtColor(const sf::Color& newTxtcolor);
@@ -122,6 +130,8 @@ namespace MenuObjects {
 		virtual void draw(sf::RenderWindow& window) = 0;
 
 	};
+
+
 
 	/*
 		First class if interest is the "Button" class,
@@ -160,6 +170,11 @@ namespace MenuObjects {
 			const short fontCode = ARIAL, const int textSize = 20, 
 			const bool canBeClicked = true, STATE newStateOnClick = MAIN_MENU,
 			const sf::Vector2f& tightness = sf::Vector2f(1.1, 1.1));
+
+		//For use in tuples
+		Button(const STATE currentState, const sf::Vector2f& pos,
+			const sf::Vector2f& boxSize, const bool canBeClicked,
+			const STATE newStateOnClick);
 
 
 		/*  Virtual Public Methods  */
@@ -223,6 +238,11 @@ namespace MenuObjects {
 			const bool canBeClicked = true, STATE newStateOnClick = MAIN_MENU,
 			const sf::Vector2f& tghtnss = sf::Vector2f(1.1, 1.1));
 
+		//For use in tuples
+		Textbox(const STATE currentState, const sf::Vector2f & pos,
+			const sf::Vector2f & boxSize, const bool canBeClicked,
+			const STATE newStateOnClick);
+
 		/*  Unique Public methods */
 		void setEventsPtr(std::vector<sf::Event>* evs);
 		void setString(const std::string & newString);
@@ -237,6 +257,46 @@ namespace MenuObjects {
 	};
 
 
+
+
+
+	/*
+		Third Class of interest is "tuple" class which
+		will be a combination of n number of text boxes
+		& buttons all kept together, a tuple knows
+
+		- total length and percentage length of all objects
+		- position of midpoint of the object
+		- total standard height of the tuple
+		- how to return a vector pointing to all 
+		the menu objects inside the tuple	
+	*/
+
+	class Tuple :
+		public MenuObject {
+
+	private:
+
+		/* Core entities */
+		std::vector<MenuObject*> internals;
+		std::vector<float> percLengths;
+
+
+		/*  Private Methods  */
+		void addObjs(const std::vector<char>& objs);
+
+	public:
+		Tuple(const STATE currentState, const sf::Vector2f& pos,
+			const std::vector<char>& objs, std::vector<float>&
+			percLengths, const sf::Vector2f& boxSize,
+			const bool canBeClicked, const STATE newStateOnClick);
+
+			/*  Public Methods  */
+		std::vector<MenuObject*>& getObjs();
+
+		/*   Destructor  */
+		~Tuple();
+	};
 }
 
 

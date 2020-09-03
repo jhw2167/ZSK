@@ -24,18 +24,34 @@ private:
 	//Subtitle Vars
 	sf::Text subtitle1;
 
+	//Bounding rect
+	sf::RectangleShape border;
+
 	//Option Vars
 	std::vector<MenuObjects::MenuObject*> menuObjects;
 	short numOptions;
 
+	//host side
 	MenuObjects::Button hostGame;
-	MenuObjects::Button joinGame;
+	MenuObjects::Button codeText;
+	MenuObjects::Button gameCode;
 
+	//Join side
+	MenuObjects::Button joinGame;
 	MenuObjects::Textbox enterCode;
 	MenuObjects::Button submitCode;
 
-	//Back Button
+	//Back & Start Button
 	MenuObjects::Button back;
+	MenuObjects::Button start;
+
+	//Player tuple boxes
+	MenuObjects::Button hostList;
+	MenuObjects::Button joinList;
+
+	//Tuples for players joining
+	std::vector<MenuObjects::Tuple> playerTuples;
+	std::vector<NetworkObjects::ipBundle> playerIps;
 
 
 	/*  Private Functions  */
@@ -44,12 +60,16 @@ private:
 	void initvars();
 	void initGameTitle();
 	void initMenuOptions();
+	void initArt();
 
 	void addToVector();
 	void initHostJoin(const float width, const float height);
-	void initTextBox(const float width, const float height);
+	void initEnterCode(const float width, const float height);
+	void initGenCode(const float width, const float height);
+
 	void initPlayerList(const float width, const float height);
 	void initBack(const float width, const float height);
+	void initStartGame(const float width, const float height);
 	
 
 
@@ -73,6 +93,8 @@ public:
 	short getOptionSelected();
 
 	/*  Other Public Funtions  */
+	void addNewPlayer(const NetworkObjects::ipBundle& bundle);
+
 	virtual short update(sf::Vector2i &mousePos, const float& dt);
 
 	virtual void render(sf::RenderTarget* rt = nullptr);
