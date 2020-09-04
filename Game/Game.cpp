@@ -119,7 +119,7 @@ void Game::initStartMenu() {
 
 
 	/*  Game Update Functions  */
-void Game::updateGameState(short gs)
+void Game::updateGameState(STATE gs)
 {
 	if (gs != gameState)
 	{
@@ -137,6 +137,16 @@ void Game::updateGameState(short gs)
 			updateState<LobbyState>(true);
 			break;
 
+		case HOST_LOBBY:
+			//subcase of lobby, no state update
+			gs = LOBBY;
+			break;
+
+		case JOIN_LOBBY:
+			//subcase of lobby, no state update
+			gs = LOBBY;
+			break;
+
 		case GAME:
 			//Create new gameState and add
 			//it to the stack
@@ -150,6 +160,11 @@ void Game::updateGameState(short gs)
 
 		case QUIT:
 			window_ptr->close();
+			break;
+
+		default:
+			//do nothing
+			//maybe for alternative lobby states, set gs = LOBBY
 			break;
 		}
 		gameState = gs;
@@ -240,7 +255,7 @@ void Game::update()
 	pollEvents();
 	updateDt();
 
-	short gs = MAIN_MENU;
+	STATE gs = MAIN_MENU;
 	if (!states.empty())
 		gs = states.top()->update(mousePos, dt);
 	else

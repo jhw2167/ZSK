@@ -80,11 +80,11 @@ void LobbyState::initArt()
 	const float width = window_ptr->getSize().x;
 	const float height = window_ptr->getSize().y;
 
-	float w = width * 0.96f;
-	float h = height * 0.96f;
+	float w = width * 0.98f;
+	float h = height * 0.98f;
 
 	sf::Vector2f adj(width - w, height - h);
-	adj = adj / 2.f;
+	adj = (adj / 2.f);
 
 	sf::Vector2f size(w, h);
 	int thickness = 25;
@@ -362,7 +362,7 @@ void LobbyState::initStartGame(const float width, const float height)
 //End Modifiers
 
 /*  Accessors  */
-short LobbyState::getOptionSelected() {
+STATE LobbyState::getOptionSelected() {
 	return gameState;
 }
 
@@ -380,7 +380,7 @@ void LobbyState::addNewPlayer(const NetworkObjects::ipBundle & bundle)
 
 }
 
-short LobbyState::update(sf::Vector2i &mousePos, const float& dt)
+STATE LobbyState::update(sf::Vector2i &mousePos, const float& dt)
 {
 	//Update and animate title screen
 	animateTitle();
@@ -427,7 +427,7 @@ void LobbyState::hoverOptions()
 
 }
 
-void LobbyState::updateOption(short selection) {
+void LobbyState::updateOption(STATE selection) {
 	gameState = selection;
 }
 

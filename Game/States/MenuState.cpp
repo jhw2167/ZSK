@@ -125,7 +125,7 @@ short MenuState::getOptionSelected() {
 
 /*  Other Public Funtions  */
 
-short MenuState::update(sf::Vector2i &mousePos, const float& dt)
+STATE MenuState::update(sf::Vector2i &mousePos, const float& dt)
 {
 	//Update and animate title screen
 	animateTitle();
@@ -169,7 +169,7 @@ void MenuState::hoverOptions()
 	}
 }
 
-void MenuState::updateOption(short selection) {
+void MenuState::updateOption(STATE selection) {
 	gameState = selection;
 }
 

@@ -20,9 +20,6 @@ class MenuState :
 {
 private:
 
-	short gameState;
-	//0 is main menu state
-
 	//Title Vars
 	sf::Text title1;
 	sf::Text title2;
@@ -50,7 +47,7 @@ private:
 	void initMenuOptions();
 
 	/*  Other Functions  */
-	void updateOption(short selection);
+	void updateOption(STATE selection);
 	void animateTitle();
 	void hoverOptions();
 
@@ -70,7 +67,7 @@ public:
 	short getOptionSelected();
 
 		/*  Other Public Funtions  */
-	virtual short update(sf::Vector2i &mousePos, const float& dt);
+	virtual STATE update(sf::Vector2i &mousePos, const float& dt);
 
 	virtual void render(sf::RenderTarget* rt = nullptr);
 

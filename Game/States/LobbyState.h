@@ -1,6 +1,6 @@
 #include "../../BaseCode/pch/stdafx.h"
-#include "../../BaseCode/Globals/Globals.h"
 #include "State.h"
+
 #include "../NetworkFiles/NetworkObjects.h"
 #include "../Menus/MenuObjects.h"
 
@@ -14,9 +14,6 @@ class LobbyState :
 	public State
 {
 private:
-
-	short gameState;
-	//0 is main menu state
 
 	//Title Vars
 	sf::Text title1;
@@ -72,10 +69,12 @@ private:
 	void initStartGame(const float width, const float height);
 	
 
+	/*  Configure Lobby methods  */
+	void configLobby(STATE selection);
 
 
 	/*  Other Functions  */
-	void updateOption(short selection);
+	void updateOption(STATE selection);
 	void animateTitle();
 	void hoverOptions();
 
@@ -90,12 +89,12 @@ public:
 	/*  Modifiers  */
 
 	/*  Accessors  */
-	short getOptionSelected();
+	STATE getOptionSelected();
 
 	/*  Other Public Funtions  */
 	void addNewPlayer(const NetworkObjects::ipBundle& bundle);
 
-	virtual short update(sf::Vector2i &mousePos, const float& dt);
+	virtual STATE update(sf::Vector2i &mousePos, const float& dt);
 
 	virtual void render(sf::RenderTarget* rt = nullptr);
 

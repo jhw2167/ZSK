@@ -11,11 +11,6 @@
 
 namespace MenuObjects {
 	
-	enum fontCode {
-		ARIAL = 0,
-		ARCDE
-	};
-
 	/*  Menu Object Base Class - for buttons, text boxes and others  */
 
 	class MenuObject{
@@ -50,7 +45,7 @@ namespace MenuObjects {
 
 		//For hidden resizing methods
 		void initText(const std::string& msg,
-			const short font);
+			const zsk::FONT_CODE font);
 		void initColors(const sf::Color& prim = zsk::art::primColor,
 			const sf::Color& sec = zsk::art::secColor,
 			const sf::Color& txt = zsk::art::secColor);
@@ -68,7 +63,7 @@ namespace MenuObjects {
 		MenuObject();
 
 		MenuObject(const STATE currentState, const sf::Vector2f& pos, const std::string& msg,
-			const short fontCode = ARIAL, const int textSize = 20,
+			const zsk::FONT_CODE fontCode = zsk::ARIAL, const int textSize = 20,
 			const bool canBeClicked = true, const STATE newStateOnClick = MAIN_MENU,
 			const sf::Vector2f& tghtness = sf::Vector2f(1.1, 1.1));
 
@@ -167,7 +162,7 @@ namespace MenuObjects {
 		Button();
 
 		Button(STATE currentState, const sf::Vector2f& pos, const std::string& msg,
-			const short fontCode = ARIAL, const int textSize = 20, 
+			const zsk::FONT_CODE fontCode = zsk::ARIAL, const int textSize = 20,
 			const bool canBeClicked = true, STATE newStateOnClick = MAIN_MENU,
 			const sf::Vector2f& tightness = sf::Vector2f(1.1, 1.1));
 
@@ -234,7 +229,7 @@ namespace MenuObjects {
 		Textbox();
 
 		Textbox(STATE currentState, const sf::Vector2f& pos, const std::string& msg,
-			const short fontCode = ARIAL, const int textSize = 20,
+			const zsk::FONT_CODE fontCode = zsk::ARIAL, const int textSize = 20,
 			const bool canBeClicked = true, STATE newStateOnClick = MAIN_MENU,
 			const sf::Vector2f& tghtnss = sf::Vector2f(1.1, 1.1));
 

@@ -318,7 +318,7 @@ void GameState::quitState()
 
 }
 
-short GameState::update(sf::Vector2i &mPos, const float& dt)
+STATE GameState::update(sf::Vector2i &mPos, const float& dt)
 {
 	/*
 		Update Function calls all game update 

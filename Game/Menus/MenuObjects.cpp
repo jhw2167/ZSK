@@ -18,7 +18,7 @@ namespace MenuObjects {
 	}
 
 	MenuObject::MenuObject(const STATE currentState, const sf::Vector2f & pos,
-		const std::string & msg, const short fontCode, const int textSize,
+		const std::string & msg, const zsk::FONT_CODE fontCode, const int textSize,
 		const bool canBeClicked, const STATE newStateOnClick, const sf::Vector2f & tghtness)
 	{
 		//States
@@ -58,7 +58,7 @@ namespace MenuObjects {
 	/*  Init Functions  */
 
 	void MenuObject::initText(const std::string& msg,
-		const short font)
+		const zsk::FONT_CODE font)
 	{
 		/*
 			Initialize our MenuObject text with a font, textSize
@@ -67,11 +67,11 @@ namespace MenuObjects {
 
 		switch (font)
 		{
-		case ARIAL:
+		case zsk::ARIAL:
 			text.setFont(zsk::art::arial);
 			break;
 
-		case ARCDE:
+		case zsk::ARCDE:
 			text.setFont(zsk::art::arcade);
 			break;
 
@@ -296,7 +296,7 @@ namespace MenuObjects {
 	Button::Button() : MenuObject() {}
 
 	Button::Button(STATE currentState, const sf::Vector2f & pos, const std::string & msg,
-		const short fontCode, const int textSize, const bool canBeClicked,
+		const zsk::FONT_CODE fontCode, const int textSize, const bool canBeClicked,
 		STATE newStateOnClick, const sf::Vector2f & tightness) :
 		MenuObject(currentState, pos, msg, fontCode, textSize,
 			canBeClicked, newStateOnClick, tightness) {}
@@ -410,7 +410,7 @@ namespace MenuObjects {
 	Textbox::Textbox() : MenuObject() { events = nullptr; }
 
 	Textbox::Textbox(STATE currentState, const sf::Vector2f & pos,
-		const std::string & msg, const short fontCode,
+		const std::string & msg, const zsk::FONT_CODE fontCode,
 		const int textSize, const bool canBeClicked,
 		STATE newStateOnClick, const sf::Vector2f & tghtness) :
 		MenuObject(currentState, pos, msg, fontCode, textSize, canBeClicked,

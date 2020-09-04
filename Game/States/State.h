@@ -8,6 +8,7 @@
 
 //Include Exceptions class
 #include "../../BaseCode/Exceptions/Exceptions.h"
+#include "../../BaseCode/Globals/Globals.h"
 
 class State
 {
@@ -16,6 +17,8 @@ protected:
 				Base Classes			*/
 	sf::RenderWindow* window_ptr;
 	std::vector<sf::Event>* events;
+
+	STATE gameState;
 
 private:
 	//Private Variables
@@ -31,7 +34,7 @@ public:
 		MUST define, else compile error
 	*/
 
-	virtual short update(sf::Vector2i &mousePos, const float& dt) = 0;
+	virtual STATE update(sf::Vector2i &mousePos, const float& dt) = 0;
 	virtual void render(sf::RenderTarget* rt = nullptr) = 0;
 	virtual void quitState() = 0;
 

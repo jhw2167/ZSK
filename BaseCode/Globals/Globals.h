@@ -8,7 +8,13 @@
 */
 
 //Global Enum Defined in .h for gameState Handling
-enum STATE { MAIN_MENU = 0, LOBBY, GAME, PAUSE, SHOP, QUIT };
+enum STATE { MAIN_MENU = 0, 
+	LOBBY, 
+	HOST_LOBBY, 
+	JOIN_LOBBY,
+	GAME, PAUSE, 
+	SHOP, 
+	QUIT};
 
 
 namespace zsk {
@@ -16,7 +22,7 @@ namespace zsk {
 	/* Non art related global constants */ 
 
 	const static double pi = 3.141592628;
-	enum FONT_CODES {ARIAL = 0, ARCDE};
+	enum FONT_CODE {ARIAL = 0, ARCDE};
 
 	namespace art {
 

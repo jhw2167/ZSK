@@ -102,7 +102,7 @@ public:
 
 	//Virtual Functions
 	virtual void quitState();
-	virtual short update(sf::Vector2i &mousePos, const float& dt);
+	virtual STATE update(sf::Vector2i &mousePos, const float& dt);
 	virtual void render(sf::RenderTarget* rt = nullptr);
 
 		/*  Destructor  */

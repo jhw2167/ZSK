@@ -50,9 +50,9 @@ private:
 	short numPlayers;
 	const static short maxPlayers;
 
-	short gameState;
-	//0 - Startmenu, 1 - in game, 2 - pauseMenu
-	//3 - quit
+	STATE gameState;
+	//0 - Startmenu, 1 - Lobby, 2 - pauseMenu
+	//Peek enum definition in Globals H
 
 
 	/******************/
@@ -65,7 +65,7 @@ private:
 	void initStartMenu();
 
 		/*  Game Update Function  */
-	void updateGameState(short gs);
+	void updateGameState(STATE gs);
 
 	template<class stateType>
 	void updateState(bool pop);
