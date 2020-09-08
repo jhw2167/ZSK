@@ -1,0 +1,6 @@
+dlls/
+BaseCode/
+Debug/
+.vcxproj.filters
+.vcxproj.user
+.vcxproj

@@ -29,3 +29,31 @@ sf::Packet& operator<<(sf::Packet& pkt, const sf::Vector2f& obj) {
 	pkt << obj.x << obj.y;
 	return pkt;
 }
+
+
+	/*  IP Bundle  */
+sf::Packet & operator>>(sf::Packet & pkt, ipBundle & obj) 
+{
+	/*	Extraction operator for ipbundle  */
+
+	pkt >> obj.ip;
+	pkt >> obj.playerNum;
+	pkt >> obj.user;
+	pkt >> obj.ping;
+
+	return pkt;
+}
+
+sf::Packet & operator<<(sf::Packet & pkt, const ipBundle obj)
+{
+	/*	Insertion operator for ipbundle  */
+
+	pkt << obj.ip;
+	pkt << obj.playerNum;
+	pkt << obj.user;
+	pkt << obj.ping;
+
+	return pkt;
+}
+
+//End Vector overloads

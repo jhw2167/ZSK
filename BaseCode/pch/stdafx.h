@@ -29,6 +29,7 @@
 #include <sstream>
 #include <iostream>
 #include <iomanip>
+#include <ostream>
 
 	//Math ops
 #include <cmath>
@@ -51,3 +52,4 @@
 //Usings
 using std::cout;
 using std::endl;
+using std::cin;

@@ -20,6 +20,7 @@ namespace NetworkObjects {
 		std::string ip;
 		short playerNum;
 		std::string user;
+
 		int ping;
 
 		ipBundle(std::string ip1 = "192.168.1.1", short pNum = 0,
@@ -213,5 +214,13 @@ namespace NetworkObjects {
 sf::Packet& operator>>(sf::Packet& pkt, sf::Vector2f& obj);
 
 sf::Packet& operator<<(sf::Packet& pkt, const sf::Vector2f& obj);
+
+
+	/*  IP Bundle  */
+using NetworkObjects::ipBundle;
+sf::Packet& operator>>(sf::Packet& pkt, ipBundle& obj);
+
+sf::Packet& operator<<(sf::Packet& pkt, const ipBundle obj);
+
 
 //End Vector Overloads
