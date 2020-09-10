@@ -13,6 +13,7 @@ LobbyState::LobbyState(sf::RenderWindow* w_ptr,
 	
 	initvars();
 	initArt();
+	//initIP();
 	initGameTitle();
 	initMenuOptions();
 }
@@ -24,13 +25,6 @@ void LobbyState::initvars()
 	gameState = LOBBY;
 	numOptions = 2;
 	//default, user remains at startmenu
-
-	sf::Packet pkt;
-	const sf::Vector2f start(1, 2);
-	sf::Vector2f end;
-
-	pkt << start;
-	pkt >> end;
 }
 
 void LobbyState::initGameTitle()
@@ -98,25 +92,12 @@ void LobbyState::initArt()
 	border.setOutlineThickness(thickness);
 }
 
-void LobbyState::addToVector()
+void LobbyState::initIP()
 {
-	//Push back our buttons
-	menuObjects.push_back(&hostGame);
-	menuObjects.push_back(&joinGame);
-	menuObjects.push_back(&back);
-	menuObjects.push_back(&start);
-	menuObjects.push_back(&submitCode);
-
-	//Push back raw text
-	menuObjects.push_back(&codeText);
-	menuObjects.push_back(&gameCode);
-
-	//push back Text Boxes
-	menuObjects.push_back(&enterCode);
-
-	//Push back other objects
-	menuObjects.push_back(&hostList);
-	menuObjects.push_back(&joinList);
+	/*
+		Initialize our serverContact object
+		- for now initialized by default constructor
+	*/
 }
 
 void LobbyState::initHostJoin(const float width, const float height)
@@ -137,11 +118,11 @@ void LobbyState::initHostJoin(const float width, const float height)
 
 	//create the buttons
 	hostGame = MenuObjects::Button(LOBBY, posHost, playText, zsk::ARCDE,
-		textSize, false, GAME);
+		textSize, false, HOST_LOBBY);
 	hostGame.bufferClickable();
 
 	joinGame = MenuObjects::Button(LOBBY, posJoin, joinText, zsk::ARCDE,
-		textSize, false, GAME);
+		textSize, false, JOIN_LOBBY);
 	joinGame.bufferClickable();
 
 	//set Animate color to light gray and border thickness
@@ -180,6 +161,8 @@ void LobbyState::initEnterCode(const float width, const float height)
 	//set animate color and thickness
 	enterCode.setAnimateColor(sf::Color::Yellow);
 	enterCode.setOutlineThickness(thickness);
+	enterCode.setMaxMsgSize(5);
+	enterCode.forceUpperCase(true);
 
 	/*
 		Create Accomplice button to submit the code
@@ -335,7 +318,6 @@ void LobbyState::initStartGame(const float width, const float height)
 	//create button
 	start = MenuObjects::Button(LOBBY, pos, msg, zsk::ARCDE,
 		textSize, false, GAME, tightness);
-	//start.bufferClickable();
 
 	//reset pos
 	pos.x -= start.getBoxSize().x / 2.f;
@@ -354,6 +336,32 @@ void LobbyState::initStartGame(const float width, const float height)
 	//start.adjTextToBox(sf::Vector2f(0, -6.f));
 }
 
+
+//add all menuObjects to our vectors
+void LobbyState::addToVector()
+{
+	//Push back our buttons
+	menuObjects.push_back(&hostGame);
+	menuObjects.push_back(&joinGame);
+	menuObjects.push_back(&back);
+	menuObjects.push_back(&start);
+	menuObjects.push_back(&submitCode);
+
+	//Push back raw text
+	menuObjects.push_back(&codeText);
+	menuObjects.push_back(&gameCode);
+
+	//push back Text Boxes
+	menuObjects.push_back(&enterCode);
+
+	//Push back other vacant objects
+	menuObjects.push_back(&hostList);
+	menuObjects.push_back(&joinList);
+
+	
+}
+
+
 //End Init Methods
 
 
@@ -364,6 +372,154 @@ void LobbyState::initStartGame(const float width, const float height)
 /*  Accessors  */
 STATE LobbyState::getOptionSelected() {
 	return gameState;
+}
+
+//End accessors
+
+
+/*  Other Private Functions  */
+void LobbyState::configLobby(STATE selection)
+{
+	/*
+		Sets up the lobby for multiplayer play
+		- must distinguish between a HOST and
+		a lobby member by gamestate and send
+		the packets to the main server
+	*/
+
+	switch (selection)
+	{
+	case LOBBY:
+		//resets lobby
+		initvars();
+		initArt();
+		//initIP();
+		initGameTitle();
+		initMenuOptions();
+		break;
+
+	case HOST_LOBBY:
+		//configs host screen
+		configHost();
+		break;
+
+	case JOIN_LOBBY:
+		//configs join screen
+		configJoin();
+		break;
+
+	default:
+		break;
+	}
+}
+
+void LobbyState::configHost()
+{
+	/*
+		Sets up screen for host capabilities
+		and view screen
+	*/
+
+	//send message to server to create game
+	bool isHost = true;
+	serverContact.sendBundle(isHost);
+
+	//refactor certain buttons - host and join
+	joinGame.setClickable(true);
+	hostGame.setClickable(false);
+	playerList.clear();
+
+	//Back & start
+	back.updateNextState(LOBBY);
+	start.setClickable(true);
+	start.setPrimColor(zsk::art::primColor);
+
+	//create new visible player tuple
+	addPlayerTuple(serverContact.getBundle());
+}
+
+void LobbyState::configJoin()
+{
+	/*
+		Sets up screen for join lobby view
+	*/
+
+	//send message to server to join game
+	bool isHost = false;
+	serverContact.sendBundle(isHost);
+
+	joinGame.setClickable(false);
+	hostGame.setClickable(true);
+	playerList.clear();
+
+	//refactor certain buttons
+	back.updateNextState(LOBBY);
+}
+
+void LobbyState::addPlayerTuple(const NetworkObjects::ipBundle & bndl)
+{
+	//Define objects in tuple
+	std::vector<char> vals = { 'b', 't', 'b' };
+
+	//Sizes
+	float w = hostList.getBoxSize().x;
+	float h = hostGame.getBoxSize().y * 1.5;
+	sf::Vector2f size(w, h);
+	std::vector<float> lengths = { 0.15, 0.7, 0.15 };
+
+	// Position - push tuple position furth down the
+	// list for each tuple added
+	sf::Vector2f pos(0,0);
+
+	if (gameState == HOST_LOBBY)
+		pos = hostList.getPosition();
+	else
+		pos = joinList.getPosition();
+
+	pos.y -= hostList.getBoxSize().y / 2.f;
+	pos.y += size.y / 2.f;
+
+	for (auto& tuple : playerList) {
+		pos.y += tuple.getBoxSize().y;
+	}
+
+	//Create tuple members
+	MenuObjects::Tuple member(gameState, pos, vals, lengths,
+			size, false, gameState);
+
+	//add to list of players to be visible
+	playerList.push_back(std::move(member));
+
+
+	//Modify individual entities
+	std::vector<MenuObjects::MenuObject*>* objs = playerList.back().getObjs();
+
+	float thickness = enterCode.getOutlineThickness() / 2.f;
+	playerList.back().setOutlineThickness(thickness);
+	for (auto& obj : *objs)
+	{
+		//Primary Colors
+		obj->setPrimColor(zsk::art::primColor);
+		obj->setSecColor(zsk::art::secColor);
+		obj->setTxtColor(zsk::art::secColor);
+
+		//Animation facets
+		obj->setAnimateColor(zsk::art::primColor);
+		obj->setAnimateColor2(sf::Color::Yellow);
+		obj->setAnimateScaler(sf::Vector2f(1, 1));
+		
+	}
+
+	//set Special details for textbox
+	dynamic_cast<MenuObjects::Textbox*>(objs->at(1))->setEventsPtr(events);
+
+	//Text facets
+	dynamic_cast<MenuObjects::Textbox*>(objs->at(1))->setMaxMsgSize(12);
+	dynamic_cast<MenuObjects::Textbox*>(objs->at(1))->setFont(zsk::ARIAL);
+	dynamic_cast<MenuObjects::Textbox*>(objs->at(1))->setString(bndl.user);
+	dynamic_cast<MenuObjects::Textbox*>(objs->at(1))
+		->fitTextToBox(sf::Vector2f(1.2, 1.4), MenuObjects::LEFT);
+	
 }
 
 
@@ -414,7 +570,8 @@ void LobbyState::hoverOptions()
 {
 	//update
 	static int i = 0;
-	for (auto menObj : menuObjects) {
+
+	for (auto& menObj : menuObjects) {
 
 		STATE gs = menObj->update(*window_ptr);
 		
@@ -425,10 +582,23 @@ void LobbyState::hoverOptions()
 		
 	}
 
+	//update all tuples in playerlist
+	for (auto& tuple : playerList) {
+		STATE gs = tuple.update(*window_ptr);
+		//tuples cannot change gamestate
+	}
 }
 
 void LobbyState::updateOption(STATE selection) {
+
 	gameState = selection;
+	configLobby(selection);
+
+	//Update option for all buttons
+	for (auto& obj : menuObjects) {
+		obj->updateCurrState(selection);
+	}
+
 }
 
 
@@ -439,32 +609,55 @@ void LobbyState::render(sf::RenderTarget* rt) {
 	case MAIN_MENU:
 		//title screen
 		break;
-	case LOBBY:
-		//create Game Lobby;
-		window_ptr->draw(border);
-		window_ptr->draw(title1);
 
-		//draw all our menu objects
-		for (auto menObj : menuObjects) {
-			menObj->draw(*window_ptr);
-		}
-
+	case HOST_LOBBY:
+		//renders Lobby
+		renderLobby();
 		break;
+
+	case JOIN_LOBBY:
+		//renders Lobby
+		renderLobby();
+		break;
+
+	case LOBBY:
+		//renders Lobby
+		renderLobby();
+		break;
+
 	case GAME:
 		//options
 		break;
+
 	case QUIT:
 		//quit to home screen
 		break;
 	}
+
+}
+
+void LobbyState::renderLobby() {
+	//create Game Lobby;
+	window_ptr->draw(border);
+	window_ptr->draw(title1);
+
+	//draw all our menu objects
+	for (auto& menObj : menuObjects) {
+		menObj->draw(*window_ptr);
+	}
+
+
+	for (auto& tuple : playerList) {
+		tuple.draw(*window_ptr);
+		//tuples cannot change gamestate
+	}
+	
 }
 
 void LobbyState::quitState()
 {
 }
 
-
-/*  Other Private Functions  */
 
 
 	/*  Destructor  */

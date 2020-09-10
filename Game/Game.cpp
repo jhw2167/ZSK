@@ -73,6 +73,7 @@ void Game::initWindow()
 
 		w_config >> skip;
 		w_config >> frameLimit;
+		frameLimit = 5;
 
 		w_config >> skip;
 		w_config >> vertical_syn_enabled;

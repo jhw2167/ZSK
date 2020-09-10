@@ -7,6 +7,8 @@
 	the lobby state
 */
 
+enum PKT_TYPE {NO_DATA_REC = 0, BNDL, LOBBY_DATA, CLIENT, GAME_INFO};
+
 namespace NetworkObjects {
 
 	/*  Fundamental Networking items  */
@@ -17,16 +19,15 @@ namespace NetworkObjects {
 	*/
 
 	struct ipBundle {
+		bool isHost;
 		std::string ip;
 		short playerNum;
 		std::string user;
-
 		int ping;
 
-		ipBundle(std::string ip1 = "192.168.1.1", short pNum = 0,
-			std::string user1 = "Player",
-			int ping1 = -1) :
-			ip(ip1), playerNum(pNum), user(user1),
+		ipBundle(bool isGameHost = false, std::string ip1 = "192.168.1.1",
+			short pNum = 0, std::string user1 = "Player", int ping1 = -1)
+			: isHost(isGameHost), ip(ip1), playerNum(pNum), user(user1),
 			ping(ping1) {};
 
 	};
@@ -206,6 +207,62 @@ namespace NetworkObjects {
 	};
 
 }
+
+//Overloads for PKT_TYPE must come before Class "Contact"
+sf::Packet& operator>>(sf::Packet& pkt, PKT_TYPE& type);
+
+sf::Packet& operator<<(sf::Packet& pkt, const PKT_TYPE& type);
+
+
+
+
+//Class Contact - for server/member communication
+class Contact {
+private:
+
+	//Core Vars
+	NetworkObjects::ipBundle core;
+	
+	//Static Vars
+	static sf::IpAddress serverIP;
+
+	static unsigned short serverPort;
+	static unsigned short recPort;
+
+	//Sockets
+	sf::UdpSocket sendSocket;
+	sf::UdpSocket recSocket;
+
+	/*  Private Functions  */
+	void initBundle();
+
+
+public:
+	/*  Constructors  */
+	Contact();
+
+
+	/*  Modifiers  */
+	void setIP(const NetworkObjects::ipBundle& myIP);
+
+
+	//End Modifiers
+
+
+
+	/*  Accessors  */
+	NetworkObjects::ipBundle getBundle() const;
+
+	//End Accessors
+
+
+	/*  Other Methods  */
+	void send(sf::Packet& toSend);
+	void sendBundle(bool isHost);
+
+	PKT_TYPE receive(sf::Packet& toRec);
+
+};
 
 /*  Operator Overloads for Packet loading/unloading */
 

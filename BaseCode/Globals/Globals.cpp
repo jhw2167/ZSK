@@ -59,5 +59,17 @@ namespace zsk {
 		std::vector<sf::Color> playerColors;
 
 	}
+
+
+	/*  Functions  */
+	void print(const std::string& msg, int& counter, int tmp) {
+	
+		if (counter >= tmp)
+		{
+			cout << msg << endl;
+			counter = 0;
+		}
+		counter++;
+	}
 }
 

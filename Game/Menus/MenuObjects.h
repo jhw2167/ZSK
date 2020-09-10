@@ -13,6 +13,12 @@ namespace MenuObjects {
 	
 	/*  Menu Object Base Class - for buttons, text boxes and others  */
 
+	//For general alignment
+	 enum ALIGN {
+		LEFT = -1,
+		CNTR = 0, RGHT = 1
+	};
+
 	class MenuObject{
 
 	protected:
@@ -25,12 +31,17 @@ namespace MenuObjects {
 		sf::Text text;
 		sf::Vector2f tightness;
 		sf::Color primColor;
+		sf::Color secColor;
 
 		sf::Vector2f boxSize;
 		sf::Vector2f textDims;
+		ALIGN txtAlign;
+		const static float adj;
+		//text-box adjustment = 10.f
 
 		//Animation quantities
 		sf::Color animateColor;
+		sf::Color animateColor2;
 		sf::Vector2f animateScale;
 		bool clickable;
 		bool hovered;
@@ -52,8 +63,8 @@ namespace MenuObjects {
 
 
 		//For Button functionality and animation
-		virtual void animateOnHover() = 0;
-		virtual void resetSize() = 0;
+		//virtual void animateOnHover();
+		//virtual void resetSize();
 		void waitForUnclick();
 
 	public:
@@ -71,9 +82,16 @@ namespace MenuObjects {
 			const sf::Vector2f& boxSize, const bool canBeClicked,
 			const STATE newStateOnClick);
 
+
+		//Copy Constructor
+		MenuObject(const MenuObject& rhs);
+
+		//End Constructors
+
 		/*  Init Methods  */
 
 		/*  Accessors  */
+		virtual char getType() const = 0;
 		std::string getString() const;
 		int getTextSize() const;
 
@@ -86,9 +104,11 @@ namespace MenuObjects {
 
 		//button color
 		sf::Color getPrimColor() const;
+		sf::Color getAnimateColor() const;
 
 		//outline color
 		sf::Color getSecColor() const;
+		sf::Color getAnimateColor2() const;
 		sf::Color getTxtColor() const;
 		float getOutlineThickness() const;
 
@@ -98,6 +118,7 @@ namespace MenuObjects {
 		void setSize(const int textSize, const sf::Vector2f&
 			tightness, const bool init = false);
 		void setPosition(const sf::Vector2f& pos);
+		void setBoxOrigin(const sf::Vector2f& org);
 		void setBoxSize(const sf::Vector2f& size);
 		void updateCurrState(const STATE curr);
 		void updateNextState(const STATE next);
@@ -107,6 +128,8 @@ namespace MenuObjects {
 		void setOutlineThickness(const int thickness);
 		void setTextStyle(const sf::Text::Style& style);
 		void setTextSpacing(const float spc = 1);
+		void setFont(const zsk::FONT_CODE font);
+		void alignText(const ALIGN);
 		
 		//set Color Facets
 		void setPrimColor(const sf::Color& newPrim);
@@ -114,6 +137,7 @@ namespace MenuObjects {
 		void setTxtColor(const sf::Color& newTxtcolor);
 
 		void setAnimateColor(const sf::Color& newCol);
+		void setAnimateColor2(const sf::Color& newCol);
 		void setAnimateScaler(const sf::Vector2f & newScale);
 
 		void setClickable(const bool canBeClicked);
@@ -173,6 +197,7 @@ namespace MenuObjects {
 
 
 		/*  Virtual Public Methods  */
+		char getType() const;
 		STATE update(sf::RenderWindow& window);
 		void draw(sf::RenderWindow& window);
 
@@ -201,8 +226,8 @@ namespace MenuObjects {
 	class Textbox : public MenuObject
 	{
 	private:
-		sf::Text entry;
 		short maxMsgSize;
+		bool forceUpperLetters;
 
 		int interval;
 		int counter;
@@ -243,8 +268,19 @@ namespace MenuObjects {
 		void setString(const std::string & newString);
 		void setSize(const int textSize, const sf::Vector2f&
 			tghtness, const bool init);
+		void fitTextToBox(const sf::Vector2f& tightness,
+			const ALIGN aln = CNTR);
+
+		//Setters
+		void setMaxMsgSize(short newSize);
+		void forceUpperCase(bool force);
+
+		//Accessors
+
+
 
 		/*  Virtual Public Methods  */
+		char getType() const;
 		STATE update(sf::RenderWindow& window);
 		void draw(sf::RenderWindow& window);
 
@@ -275,6 +311,7 @@ namespace MenuObjects {
 		/* Core entities */
 		std::vector<MenuObject*> internals;
 		std::vector<float> percLengths;
+		std::vector<char> objTypes;
 
 
 		/*  Private Methods  */
@@ -286,8 +323,25 @@ namespace MenuObjects {
 			percLengths, const sf::Vector2f& boxSize,
 			const bool canBeClicked, const STATE newStateOnClick);
 
+		//Copy Constructor - DELETED, use std::move(TupleObj)
+		Tuple(Tuple&& rhs);
+
 			/*  Public Methods  */
-		std::vector<MenuObject*>& getObjs();
+
+		/*  Unique Public Methods */
+		void setOutlineThickness(float thickness);
+
+		//Accessors
+		std::vector<MenuObject*>* getObjs();
+		char getType() const;
+
+		
+		//Virtual Functions
+		STATE update(sf::RenderWindow& window);
+		void updateCurrState(const STATE curr);
+		void updateNextState(const STATE next);
+
+		void draw(sf::RenderWindow& window);
 
 		/*   Destructor  */
 		~Tuple();

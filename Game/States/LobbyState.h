@@ -47,8 +47,11 @@ private:
 	MenuObjects::Button joinList;
 
 	//Tuples for players joining
-	std::vector<MenuObjects::Tuple> playerTuples;
+	std::vector<MenuObjects::Tuple> playerList;
 	std::vector<NetworkObjects::ipBundle> playerIps;
+
+	//networkObjects
+	Contact serverContact;
 
 
 	/*  Private Functions  */
@@ -58,6 +61,7 @@ private:
 	void initGameTitle();
 	void initMenuOptions();
 	void initArt();
+	void initIP();
 
 	void addToVector();
 	void initHostJoin(const float width, const float height);
@@ -71,12 +75,18 @@ private:
 
 	/*  Configure Lobby methods  */
 	void configLobby(STATE selection);
+	void configHost();
+	void configJoin();
+
+	void addPlayerTuple(const NetworkObjects::ipBundle& newBundle);
 
 
-	/*  Other Functions  */
+	/*  Other Private Functions  */
 	void updateOption(STATE selection);
 	void animateTitle();
 	void hoverOptions();
+
+	void renderLobby();
 
 
 public:

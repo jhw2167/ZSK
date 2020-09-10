@@ -497,7 +497,6 @@ bool Follower::towerCollision(Tower &tower)
 	if (redirectCount > 5 ){
 		fixCenterVelocity();
 		redirectCount++;
-		//cout << "Fixing " << endl;
 	}
 
 	if (redirectCount > 25){

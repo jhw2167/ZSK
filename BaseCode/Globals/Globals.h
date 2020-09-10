@@ -46,4 +46,8 @@ namespace zsk {
 		extern sf::Color winClearColor;
 
 	}
+
+
+	/*  Functions  */
+	void print(const std::string& msg, int& counter, int tmp = 200);
 }
