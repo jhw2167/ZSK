@@ -829,6 +829,7 @@ namespace MenuObjects {
 
 	char Textbox::getType() const {
 		return 't';
+		//textBox type designated as char 't'
 	}
 
 	STATE Textbox::update(sf::RenderWindow& window)
@@ -1041,6 +1042,7 @@ namespace MenuObjects {
 
 	char Tuple::getType() const {
 		return 'u';
+		//tuple type designated as char 'u'
 	}
 
 

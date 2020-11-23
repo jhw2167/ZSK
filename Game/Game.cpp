@@ -50,12 +50,12 @@ void Game::initWindow()
 	//we want to skip certain elements in
 	//our config file and just get the data
 
+	//Declares and opens file simultaneously
+	std::string configFile = "Game/window/config.ini";
+	std::ifstream w_config(configFile);
+
 	try
 	{
-		//Declares and opens file simultaneously
-		std::string configFile = "Game/window/config.ini";
-		std::ifstream w_config(configFile);
-
 		if (!w_config)
 		{
 			//Throw exception if file not open
@@ -73,7 +73,7 @@ void Game::initWindow()
 
 		w_config >> skip;
 		w_config >> frameLimit;
-		frameLimit = 5;
+		frameLimit = 60;
 
 		w_config >> skip;
 		w_config >> vertical_syn_enabled;
@@ -88,6 +88,7 @@ void Game::initWindow()
 			<< std::endl;
 
 		std::cout << foe1.what() << std::endl;
+		w_config.close();
 	}
 	//End catch: establish window with default values
 

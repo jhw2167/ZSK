@@ -513,7 +513,7 @@ void LobbyState::addPlayerTuple(const NetworkObjects::ipBundle & bndl)
 	//set Special details for textbox
 	dynamic_cast<MenuObjects::Textbox*>(objs->at(1))->setEventsPtr(events);
 
-	//Text facets
+	//Set Text box details
 	dynamic_cast<MenuObjects::Textbox*>(objs->at(1))->setMaxMsgSize(12);
 	dynamic_cast<MenuObjects::Textbox*>(objs->at(1))->setFont(zsk::ARIAL);
 	dynamic_cast<MenuObjects::Textbox*>(objs->at(1))->setString(bndl.user);
