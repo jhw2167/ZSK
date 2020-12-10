@@ -323,7 +323,8 @@ namespace MenuObjects {
 			percLengths, const sf::Vector2f& boxSize,
 			const bool canBeClicked, const STATE newStateOnClick);
 
-		//Copy Constructor - DELETED, use std::move(TupleObj)
+		//Copy Constructor - DELETED, use move constructor
+			//instead: std::move(TupleObj)
 		Tuple(Tuple&& rhs);
 
 			/*  Public Methods  */

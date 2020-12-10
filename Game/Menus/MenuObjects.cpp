@@ -997,43 +997,10 @@ namespace MenuObjects {
 	
 
 	//Copy Constructor - DELETED, use MOVE constructor 
+	//Tuple::Tuple(Tuple& rhs)
+		//: MenuObject(rhs)
 
 	//End constructors
-
-	void Tuple::setOutlineThickness(float thickness) 
-	{
-		/*
-			Outline thickness increase the size of our tuple
-			objects so it must be dealth with specially
-		*/
-
-		for (size_t i = 0; i != internals.size(); i++)
-		{
-			float per = percLengths.at(i);
-			float totalLength = boxSize.x;
-			float outline = 2 * thickness;
-
-			sf::Vector2f objSize = sf::Vector2f((per * boxSize.x) - outline, boxSize.y);
-			sf::Vector2f startPos = sf::Vector2f(box.getPosition().x -
-				boxSize.x / 2.f, box.getPosition().y);
-
-			//adj pos for outline and box origin at center
-			sf::Vector2f pos = startPos;
-			pos.x += thickness;
-			pos.x += (objSize.x / 2.f);
-
-			
-				//determine position recursively
-			for (size_t j = 0; j != i; j++) {
-				pos.x += (internals.at(j)->getBoxSize().x + outline);
-			}
-
-			//set values
-			internals.at(i)->setBoxSize(objSize);
-			internals.at(i)->setPosition(pos);
-			internals.at(i)->setOutlineThickness(thickness);
-		}
-	}
 
 	//Accessors
 	std::vector<MenuObject*>* Tuple::getObjs() {
@@ -1074,8 +1041,6 @@ namespace MenuObjects {
 		}
 	}
 
-	
-
 	void Tuple::draw(sf::RenderWindow & window)
 	{
 		for (auto& menObj : internals) {
@@ -1099,4 +1064,40 @@ namespace MenuObjects {
 	}
 
 	/*  Unique public methods  */
+	// Public Methods
+	void Tuple::setOutlineThickness(float thickness)
+	{
+		/*
+			Outline thickness increase the size of our tuple
+			objects so it must be dealth with specially
+		*/
+
+		for (size_t i = 0; i != internals.size(); i++)
+		{
+			float per = percLengths.at(i);
+			float totalLength = boxSize.x;
+			float outline = 2 * thickness;
+
+			sf::Vector2f objSize = sf::Vector2f((per * boxSize.x) - outline, boxSize.y);
+			sf::Vector2f startPos = sf::Vector2f(box.getPosition().x -
+				boxSize.x / 2.f, box.getPosition().y);
+
+			//adj pos for outline and box origin at center
+			sf::Vector2f pos = startPos;
+			pos.x += thickness;
+			pos.x += (objSize.x / 2.f);
+
+
+			//determine position recursively
+			for (size_t j = 0; j != i; j++) {
+				pos.x += (internals.at(j)->getBoxSize().x + outline);
+			}
+
+			//set values
+			internals.at(i)->setBoxSize(objSize);
+			internals.at(i)->setPosition(pos);
+			internals.at(i)->setOutlineThickness(thickness);
+		}
+	}
+
 }

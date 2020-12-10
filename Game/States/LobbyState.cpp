@@ -490,7 +490,6 @@ void LobbyState::addPlayerTuple(const NetworkObjects::ipBundle & bndl)
 	//add to list of players to be visible
 	playerList.push_back(std::move(member));
 
-
 	//Modify individual entities
 	std::vector<MenuObjects::MenuObject*>* objs = playerList.back().getObjs();
 
@@ -503,7 +502,7 @@ void LobbyState::addPlayerTuple(const NetworkObjects::ipBundle & bndl)
 		obj->setSecColor(zsk::art::secColor);
 		obj->setTxtColor(zsk::art::secColor);
 
-		//Animation facets
+		//Animation details
 		obj->setAnimateColor(zsk::art::primColor);
 		obj->setAnimateColor2(sf::Color::Yellow);
 		obj->setAnimateScaler(sf::Vector2f(1, 1));
