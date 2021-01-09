@@ -123,6 +123,16 @@ void Game::initStartMenu() {
 	/*  Game Update Functions  */
 void Game::updateGameState(STATE gs)
 {
+	/*
+		Update the game's "state" by pushing the most 
+		recently called state onto the stack.
+
+		**Please note, for unimplemented states, attempting 
+		to call a "new state" will simply push a new instance
+		of the current state onto the stack; useful, but be
+		wary.
+	*/
+
 	if (gs != gameState)
 	{
 		//cout << "gs is: " << gs << endl;
@@ -234,9 +244,9 @@ void Game::pollEvents()
 
 		events.push_back(event);
 	}
-	//End window.pollEvent
+	//End WHILE window.pollEvent
 
-}
+} //End func
 
 void Game::updateMousePosition() {
 	mousePos = sf::Mouse::getPosition(*window_ptr);
@@ -273,7 +283,6 @@ void Game::update()
 	c++;
 
 	//cout << "Calling Game::update with gs = "<< gs << endl;
-
 	updateGameState(gs);
 }
 

@@ -70,6 +70,7 @@ namespace MenuObjects {
 			variables between two objs
 		*/
 		animateColor = rhs.animateColor;
+		animateColor2 = rhs.animateColor2;
 		animateScale = rhs.animateScale;
 		box = rhs.box;
 		boxSize = rhs.boxSize;
@@ -745,7 +746,7 @@ namespace MenuObjects {
 					animateCursor(input);
 				}
 
-				//escape condition
+				//exit text box condition
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
 					clicked = false;
 			}
@@ -821,8 +822,6 @@ namespace MenuObjects {
 		text.setString("");
 		rmDefTextOpts = false;
 	}
-
-
 
 
 	/*  Other Public Functions  */
@@ -917,7 +916,7 @@ namespace MenuObjects {
 namespace MenuObjects {
 
 
-		/*  Unique Private Methods  */
+	/*  Unique Private Methods  */
 	void Tuple::addObjs(const std::vector<char>& objs)
 	{
 		for (size_t i = 0; i != objs.size(); i++)
@@ -940,7 +939,7 @@ namespace MenuObjects {
 
 			//potential objects to add
 			Button* newButton = new Button(currState, pos, objSize, !clickable, currState);
-			 Textbox* newTextbox = new Textbox(currState, pos, objSize, !clickable, currState);
+			Textbox* newTextbox = new Textbox(currState, pos, objSize, !clickable, currState);
 
 			switch (objs.at(i)) {
 
@@ -962,12 +961,12 @@ namespace MenuObjects {
 
 
 
-		/*  Constructors  */
+	/*  Constructors  */
 
 	Tuple::Tuple(const STATE currentState, const sf::Vector2f & pos,
-		const std::vector<char>& objs, 
+		const std::vector<char>& objs,
 		std::vector<float>& percentLengths,
-		const sf::Vector2f & boxSize, const bool canBeClicked, 
+		const sf::Vector2f & boxSize, const bool canBeClicked,
 		const STATE newStateOnClick) :
 		MenuObject(currentState, pos, boxSize, canBeClicked, newStateOnClick)
 	{
@@ -976,9 +975,9 @@ namespace MenuObjects {
 		addObjs(objs);
 	}
 
-	
+
 	//Move Constructor
-	Tuple::Tuple(Tuple&& rhs) 
+	Tuple::Tuple(Tuple&& rhs)
 		: MenuObject(rhs)
 	{
 		/*
@@ -990,15 +989,47 @@ namespace MenuObjects {
 			internals.push_back(ptr);
 			ptr = nullptr;
 		}
-	
+
 		percLengths = rhs.percLengths;
 		objTypes = rhs.objTypes;
 	}
-	
+
 
 	//Copy Constructor - DELETED, use MOVE constructor 
-	//Tuple::Tuple(Tuple& rhs)
-		//: MenuObject(rhs)
+	Tuple::Tuple(const Tuple& rhs)
+		: MenuObject(rhs) 
+	{
+		/*
+			Create deeo copy all the objects from one tuple to another
+			so we dont lose information
+		*/
+
+		for (auto& ptr : rhs.internals) 
+		{
+			//create new button and tbox
+			Button* b = new Button();
+			Textbox* t = new Textbox();
+
+			switch (ptr->getType())
+			{
+			case 'b':
+				//init button with rhs values
+				*b = Button(*dynamic_cast<Button*>(ptr));
+				internals.push_back(b);
+				delete t;
+				break;
+
+			case 't':
+				*t = Textbox(*dynamic_cast<Textbox*>(ptr));
+				internals.push_back(t);
+				delete b;
+				break;
+			}
+		}
+
+		percLengths = rhs.percLengths;
+		objTypes = rhs.objTypes;
+	}
 
 	//End constructors
 

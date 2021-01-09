@@ -62,8 +62,8 @@ namespace zsk {
 
 
 	/*  Functions  */
-	void print(const std::string& msg, int& counter, int tmp) {
-	
+	void print(const std::string& msg, int& counter, int tmp) 
+	{
 		if (counter >= tmp)
 		{
 			cout << msg << endl;

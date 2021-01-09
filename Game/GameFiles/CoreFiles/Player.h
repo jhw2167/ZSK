@@ -110,11 +110,12 @@ class Follower;
 class Tower;				//forward declaration of class tower so player has access
 
 
-class Player
+class Player : GameObj
 {
 
 private:
 
+	/* Basics */
 	int playerNumber;
 	int score;
 
@@ -133,6 +134,7 @@ private:
 	int invulnerability;		
 	//units: #frames of invln
 
+	/* HUD */
 	sf::Vector2f healthBarSize;
 	//standard value, does NOT change with damage taken
 	//changes with window size
@@ -150,10 +152,10 @@ private:
 	sf::Text scoreText;
 	static FollowerShape scoreFigure;
 
+	/* Movement */
 	enum direction {STILL, UP, LEFT, DOWN, RIGHT};				//declares enum direction to handle player movement
 	float playerSpeed;
 	direction playerDirection;
-	sf::Vector2f playerPosition;
 	sf::Vector2f moveVect;
 	
 	PlayerShape playerShape;

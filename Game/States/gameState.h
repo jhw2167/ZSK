@@ -11,7 +11,6 @@
 //Other Includes
 /*
 	#include "../GameFiles/CoreFiles/Bullet.h"
-	#include "../GameFiles/CoreFiles/Bullet.h"
 	#include "../GameFiles/CoreFiles/FollowerShape.h"
 	#include "../GameFiles/CoreFiles/Player.h"
 	#include "../GameFiles/CoreFiles/FollowerShape.h"
@@ -30,6 +29,9 @@ private:
 	std::list<Follower> followers;
 	std::vector<Tower> towers;
 	sf::Vector2i mousePos;
+
+	//Game objs
+	std::unordered_map<int, GameObj*> objs;
 
 	//Simple Game Values
 	static int numPlayers;
@@ -61,6 +63,7 @@ private:
 	void otherPlayerMechs();
 	void shootingMechanics();
 	void followerMechanics();
+	void towerMechanics();
 	bool isGameOver();
 
 	/* LEVEL 2  -  Followers*/

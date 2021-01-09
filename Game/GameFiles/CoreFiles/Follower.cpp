@@ -16,6 +16,7 @@ const int Follower::dmgBN = 5;
 	/*  Constructor  */
 Follower::Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor, int startHealth, 
 	int startDmg, short retrgtRate, short redirRate, float scale, bool showBoxes)
+	: GameObj(ObjType::FOL)
 {
 	id = f_id++;
 
@@ -159,7 +160,7 @@ void Follower::setFollowerColor(const sf::Color &color) {
 
 void Follower::setPosition(const sf::Vector2f& newPos)
 {
-	fPosition = newPos;
+	pos = newPos;
 
 	fShape.setPosition(newPos);
 	fBox.setPosition(newPos);
@@ -190,7 +191,7 @@ void Follower::setHealth(int newHealth) {
 	}
 
 	healthText.setOrigin(l , h);
-	healthText.setPosition(fPosition);
+	healthText.setPosition(pos);
 }
 
 void Follower::setDamage(int newDmg) {
@@ -205,7 +206,7 @@ void Follower::setBounce(const sf::Vector2f& bnc) {
 
 	/*  Accessor Methods  */
 sf::Vector2f Follower::getFollowerPosition() {
-	return fPosition;
+	return pos;
 }
 
 sf::Vector2f Follower::getFollowerVelocity() {
@@ -312,7 +313,7 @@ void Follower::moveFollower(sf::Vector2f const &vel) {
 
 	healthText.move(vel);
 
-	fPosition = fShape.getPosition();
+	pos = fShape.getPosition();
 	dot.setPosition(fBox.getPosition());
 }
 
@@ -422,10 +423,10 @@ bool Follower::isFollowingPlayer(Player &player)
 	bool wasFollowing = followingPlayer;
 
 	if (!followingPlayer)
-		followingPlayer = zsk::distanceFrom(this->fPosition, player.getPosition()) 
+		followingPlayer = zsk::distanceFrom(this->pos, player.getPosition()) 
 		<= player.getSmallFollowAreaRadius() + 2 * fShape.getHeadRadius();
 	else
-		followingPlayer = zsk::distanceFrom(this->fPosition, player.getPosition()) 
+		followingPlayer = zsk::distanceFrom(this->pos, player.getPosition()) 
 		<= player.getLargeFollowAreaRadius() + 2 * fShape.getHeadRadius();
 
 	if (!wasFollowing && followingPlayer && !breakNeck){
@@ -480,7 +481,7 @@ void Follower::outOfBounds(sf::Vector2f &pos, bool col)
 bool Follower::towerCollision(Tower &tower)
 {
 	//if there is a tower collision, redirect follower's velocity
-	bool towerCollision = zsk::distanceFrom(this->fPosition,
+	bool towerCollision = zsk::distanceFrom(this->pos,
 		tower.getPosition()) <= tower.getTowerRadius() +
 		fShape.getHeadRadius();
 

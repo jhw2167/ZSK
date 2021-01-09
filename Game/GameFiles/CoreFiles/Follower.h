@@ -6,7 +6,7 @@
 #include "Tower.h"
 #include "../../../BaseCode/pch/stdafx.h"
 
-class Follower
+class Follower : GameObj
 {
 private:
 
@@ -28,13 +28,13 @@ private:
 	static int maxMerge;
 
 	/*  Position and Velocity  */
-	sf::Vector2f fPosition;
+	sf::Vector2f pos;
 	bool followingPlayer;
 	const static float speedBN;
 	bool breakNeck;
 	const static int dmgBN;
-	/*  breakNeck speed gives followers heightened dmg,
-	and locks their */
+	/*  breakNeck(BN) speed gives followers heightened dmg,
+	and locks their targeting*/
 
 
 	sf::Vector2f fVelocity;									//speed and direction vector for moving followers
@@ -181,7 +181,7 @@ Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor = sf::Color::
 		healthText.setFont(arial);
 
 
-		fPosition = f2.fPosition;
+		pos = f2.pos;
 		followingPlayer = f2.followingPlayer;
 
 		fVelocity = f2.fVelocity;

@@ -4,7 +4,9 @@
 #include "../../../BaseCode/pch/stdafx.h"
 #include "Player.h"
 
-class Tower {
+class Tower:
+	GameObj
+{
 
 private:
 
@@ -20,7 +22,6 @@ private:
 	enum towerOwned {NOTOWNED = 0, PLAYER1, PLAYER2, PLAYER3, PLAYER4};
 	int towerOwnedBy;
 	
-	sf::Vector2f towerPosition;
 	sf::CircleShape towerShape;
 	sf::CircleShape towerOutline;
 

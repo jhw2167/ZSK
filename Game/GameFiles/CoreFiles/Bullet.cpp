@@ -7,10 +7,11 @@
 Bullet::Bullet(const sf::Vector2f& startPos,
 	const sf::Vector2i& cursorPos, const int bStrip,
 	const int bPen, const float scale, const float speed,
-	const sf::Color& color)
+	const sf::Color& color) : GameObj(ObjType::BUL)
 	//Bullet constructor initializes size, shape and position 
 	//of bullet object
 {
+	cout << "bullet constructor\n";
 	setBulletPosition(startPos);
 	setBulletVelocity(startPos, cursorPos, speed);
 
@@ -22,6 +23,7 @@ Bullet::Bullet(const sf::Vector2f& startPos,
 }
 
 //END CONSTRUCTOR
+
 
 /*  Bullet Initialize Functions  */
 void Bullet::initBullet(const float scale,
@@ -165,6 +167,16 @@ void Bullet::drawBullet(sf::RenderWindow &window)
 {
 	window.draw(bBody);
 	window.draw(bTop);
+}
+
+Bullet::Bullet(const Bullet & rhs) :
+	GameObj(rhs)
+{
+	this->bBody = rhs.bBody;
+	this->bTop = rhs.bTop;
+	this->velocity = rhs.velocity;
+	this->strip = rhs.strip;
+	this->pen = rhs.pen;
 }
 
 //End Bullet Class

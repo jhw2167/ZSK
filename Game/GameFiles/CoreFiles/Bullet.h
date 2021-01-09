@@ -3,9 +3,16 @@
 
 //Precompiled header
 #include "../../../BaseCode/pch/stdafx.h"
+
+//General functions
 #include "../Other/functions.h"
 
-class Bullet {
+//Game object
+#include "../GameObj.h"
+
+class Bullet :
+	GameObj 
+{
 
 private:
 
@@ -13,7 +20,6 @@ private:
 	sf::CircleShape bTop;
 
 	sf::Vector2f velocity;		//bullets speed and direction
-	sf::Vector2f pos;
 	int strip;					//how many zoms layers bullet strips
 	int pen;			//How many zoms bullet punches through
 
@@ -69,5 +75,11 @@ public:
 
 	//DRAW FUNCTIONS
 	void drawBullet(sf::RenderWindow &window);
+
+
+	//copy constructor
+	Bullet(const Bullet& rhs);
+
+	//destructor (not implemented)
 
 };

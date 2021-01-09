@@ -5,7 +5,7 @@
 /*  CNTRL + M + O to collapse all */
 
 /*  Initializing static variables  */
-int GameState::maxFollowers = 5;
+int GameState::maxFollowers = 0;
 
 int GameState::numPlayers = 0;
 int GameState::maxPlayers_this = 0;
@@ -15,10 +15,15 @@ int GameState::maxPlayers_this = 0;
 
 GameState::GameState(sf::RenderWindow* w_ptr, std::vector<sf::Event>* evs) : State(w_ptr, evs)
 {
-	players.push_back(Player(*w_ptr));
 	initVars();
+	cout << "about to add player\n";
+	players.push_back(Player(*w_ptr));
+	cout << "Player added and copied\n\n";
+
 	initArt();
+	cout << "about to add tower\n";
 	initTowers();
+	cout << "tower added and copied\n\n";
 }
 
 /*  Public Static Functions  */
@@ -76,6 +81,7 @@ void GameState::initVars()
 	*/
 
 	numberOfTowers = std::max(maxPlayers_this, 4);
+	GameObj::setObjs(&objs);
 }
 
 //Game Update Functions
@@ -156,6 +162,16 @@ void GameState::followerMechanics()
 	attackPlayer();
 }
 
+void GameState::towerMechanics()
+{
+	/*
+		Three main objects in tower mechanics section;
+			- check and update tower ownership
+			- toggle towers on and off based on internal timer
+			- check for laser collisions
+	*/
+}
+
 bool GameState::isGameOver() {
 	return players.at(0).isGameOver();
 }
@@ -197,11 +213,17 @@ void GameState::moveFollowers()
 
 void GameState::shootFollowers()
 {
+	/*
+		For each player, checks if each follower intersects
+		any of the player's bullets calling the "shoot follower" 
+		method
+	*/
 
-	for (size_t i = 0; i < players.size(); i++) {
+	for (size_t i = 0; i < players.size(); i++) 
+	{
 		for (auto fol_it = followers.begin(); fol_it != followers.end();)
 		{
-
+			//Determines dmg done by player to zombie
 			int dmg = players.at(i).shootFollower(
 				fol_it->getFollowerGlobalBounds());
 
@@ -243,7 +265,7 @@ void GameState::attackPlayer()
 }
 
 
-/*LEVEL 2  -  Towers*/
+/*LEVEL 2  -  Tower Collisions */
 int GameState::checkTowerCollision()
 {
 	int collidingTower = 0;		//tower num (1-4) of colliding tower, or 0 for none
@@ -332,6 +354,13 @@ STATE GameState::update(sf::Vector2i &mPos, const float& dt)
 	otherPlayerMechs();
 	shootingMechanics();
 	followerMechanics();
+
+	std::string msg = "Size of objs: ";
+	msg += std::to_string(objs.size());
+
+	static int i = 0;
+	zsk::print(msg, i);
+
 
 	if (!isGameOver()) {
 		return GAME;

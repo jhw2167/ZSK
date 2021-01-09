@@ -213,7 +213,8 @@ PlayerShape Player::lifeFigure = PlayerShape(2.5f);
 
 /*  Forward Declarations  */
 class Follower;
-class Tower;				//forward declaration of class tower so player has access
+class Tower;				
+//forward declaration of class tower so player has access
 
 /*  Private Members  */
 
@@ -224,7 +225,7 @@ class Tower;				//forward declaration of class tower so player has access
 
 Player::Player(sf::RenderWindow &window, int pNumber, int startLives, float scale, float startHealth,
 		float startMaxHealth, float startShield, float startMaxShield, float mSpeed, int startScore, float smallRadius,
-		float maxLargeRadius, int laserL, int laserW, bool showBox)
+		float maxLargeRadius, int laserL, int laserW, bool showBox) : GameObj(ObjType::PLR)
 	{
 		//Init Window Dims
 		setWindowDims(window);
@@ -372,7 +373,7 @@ void Player::initSmallFollowerRadius(float newRadius)
 {
 		setSmallFollowerRadius(newRadius);
 		smallFollowArea.setOrigin(newRadius, newRadius);
-		smallFollowArea.setPosition(playerPosition);
+		smallFollowArea.setPosition(pos);
 
 		smallFollowArea.setOutlineThickness(areaOutline);
 		smallFollowArea.setOutlineColor(sf::Color::Blue);
@@ -383,7 +384,7 @@ void Player::initLargeFollowerRadius(float newRadius)
 {
 		largeFollowArea.setRadius(newRadius);
 		largeFollowArea.setOrigin(newRadius, newRadius);
-		largeFollowArea.setPosition(playerPosition);
+		largeFollowArea.setPosition(pos);
 
 		largeFollowArea.setOutlineThickness(areaOutline);
 		largeFollowArea.setOutlineColor(sf::Color::Green);
@@ -488,7 +489,7 @@ void Player::setplayerSpeed(float newSpeed) {
 
 void Player::setPosition(sf::Vector2f newPos)
 	{
-		playerPosition = newPos;
+		pos = newPos;
 		playerShape.setPosition(newPos);
 		pBox.setPosition(newPos);
 
@@ -580,7 +581,7 @@ float Player::getplayerSpeed() {
 }
 
 sf::Vector2f Player::getPosition() {
-	return playerPosition;
+	return pos;
 }
 
 sf::Vector2f Player::getGunPosition() {
@@ -639,7 +640,7 @@ void Player::movePlayer(sf::Vector2f &mVect)
 {
 	playerShape.movePlayershape(mVect);		//function in playershape has default argument move set to 5
 	pBox.move(mVect);
-	playerPosition += mVect;
+	pos += mVect;
 
 	largeFollowArea.setPosition(playerShape.getPosition());			//Follow circles stay around players
 	smallFollowArea.setPosition(playerShape.getPosition());
@@ -776,12 +777,12 @@ sf::Vector2f Player::towerCollisions(int dir, int towerNum, sf::Vector2f const &
 	}
 
 	sf::Vector2f pBoxAdj = sf::Vector2f(pushX, pushY);
-	sf::Vector2f destination = sf::Vector2f(playerPosition + moveVect + pBoxAdj);
+	sf::Vector2f destination = sf::Vector2f(pos + moveVect + pBoxAdj);
 	bool movingIntoTower = zsk::distanceFrom(destination, towerPos) <= towerRadius;
 
 	sf::Vector2f safeSpeed = moveVect;
 	if (movingIntoTower) {
-		sf::Vector2f relCoords = abs(towerPos - playerPosition);
+		sf::Vector2f relCoords = abs(towerPos - pos);
 		safeSpeed = avoidTower(dirVect, relCoords, towerNum);
 	}
 
@@ -842,6 +843,7 @@ void Player::moveBullets()
 }
 
 void Player::deleteBullet(int i) {
+	cout << "erasing buller: \n" << endl;
 	activeBullets.erase(activeBullets.begin() + i);
 }
 

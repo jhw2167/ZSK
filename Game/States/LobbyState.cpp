@@ -487,14 +487,12 @@ void LobbyState::addPlayerTuple(const NetworkObjects::ipBundle & bndl)
 	MenuObjects::Tuple member(gameState, pos, vals, lengths,
 			size, false, gameState);
 
-	//add to list of players to be visible
-	playerList.push_back(std::move(member));
-
 	//Modify individual entities
-	std::vector<MenuObjects::MenuObject*>* objs = playerList.back().getObjs();
+	std::vector<MenuObjects::MenuObject*>* objs = member.getObjs();
 
 	float thickness = enterCode.getOutlineThickness() / 2.f;
-	playerList.back().setOutlineThickness(thickness);
+	//playerList.back().setOutlineThickness(thickness);
+	member.setOutlineThickness(thickness);
 	for (auto& obj : *objs)
 	{
 		//Primary Colors
@@ -509,7 +507,7 @@ void LobbyState::addPlayerTuple(const NetworkObjects::ipBundle & bndl)
 		
 	}
 
-	//set Special details for textbox
+	//set Special details for textbox - at pos(1)
 	dynamic_cast<MenuObjects::Textbox*>(objs->at(1))->setEventsPtr(events);
 
 	//Set Text box details
@@ -518,7 +516,11 @@ void LobbyState::addPlayerTuple(const NetworkObjects::ipBundle & bndl)
 	dynamic_cast<MenuObjects::Textbox*>(objs->at(1))->setString(bndl.user);
 	dynamic_cast<MenuObjects::Textbox*>(objs->at(1))
 		->fitTextToBox(sf::Vector2f(1.2, 1.4), MenuObjects::LEFT);
-	
+
+	//add to list of players to be visible
+	playerList.push_back(std::move(member));
+	//playerList.push_back(member);
+
 }
 
 
@@ -567,8 +569,8 @@ void LobbyState::animateTitle()
 
 void LobbyState::hoverOptions()
 {
-	//update
-	static int i = 0;
+	//detecs updates in all buttons onscreen and 
+	//propogates updated state once selected
 
 	for (auto& menObj : menuObjects) {
 

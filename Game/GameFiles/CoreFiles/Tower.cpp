@@ -9,6 +9,7 @@
 
 	/*  Constructors  */
 Tower::Tower(sf::RenderWindow const &window, const int tNumber)
+	: GameObj(ObjType::TOW)
 //Constructs minimal tower objcet
 {
 	initVars(tNumber, window);
@@ -149,8 +150,8 @@ void Tower::setPosition(sf::RenderWindow const &window, int tNumber)
 	towerOutline.setPosition(newPos);
 	laser.setPosition(laserPos + newPos);
 
-	towerPosition = newPos;
-	//sets towerPosition var equal to placement of circle shape for easy access
+	pos = newPos;
+	//sets pos var equal to placement of circle shape for easy access
 }
 //End setters
 
@@ -161,7 +162,7 @@ sf::FloatRect Tower::getTowerGlobalBounds() {
 }
 
 sf::Vector2f Tower::getPosition() {
-	return towerPosition;
+	return pos;
 }
 
 float Tower::getTowerRadius() {
@@ -258,8 +259,11 @@ Tower::~Tower() {
 
 /*  Copy Constructor  */
 
-Tower::Tower(const Tower & rhs)
+Tower::Tower(const Tower & rhs) 
+	: GameObj(rhs)
 {
+	//cout << "Tower copy constr\n";
+
 	this->isFiring = rhs.isFiring;
 	this->lTexture.loadFromImage(rhs.lTexture.copyToImage());
 	//copy texture by building a new one from an image
@@ -271,7 +275,7 @@ Tower::Tower(const Tower & rhs)
 	this->towerRadius = rhs.towerRadius;
 	this->towerOutline = rhs.towerOutline;
 	this->towerOwnedBy = rhs.towerOwnedBy;
-	this->towerPosition = rhs.towerPosition;
+	this->pos = rhs.pos;
 	this->towerShape = rhs.towerShape;
 }
 
