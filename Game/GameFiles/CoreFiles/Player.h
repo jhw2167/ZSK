@@ -68,7 +68,7 @@ public:
 	sf::Vector2f getGunPosition();
 	//Returns position of gun for shooting
 	
-	sf::FloatRect getHeartBounds();
+	const sf::FloatRect& getHeartBounds() const;
 	
 	float getLeftBounds();
 	//returns player's upper, lower, left and right bounds for boundry checking
@@ -161,8 +161,7 @@ private:
 	PlayerShape playerShape;
 	sf::RectangleShape pBox;
 
-	Bullet bullet;											//declares bullet object to be used to fill vector of active bullets
-	std::vector<Bullet> activeBullets;
+	std::list<Bullet> activeBullets;
 
 	static float areaOutline;				//outline thickness of large and small follower circles
 	sf::CircleShape largeFollowArea;				//Furthest distance away which followers will follow you after gaining interest
@@ -175,8 +174,8 @@ private:
 	int laserLength;			//Max distance tower projectiles travel for player
 	int laserWidth;				//Max width of player projectiles, levels 1->2->3
 	
-	sf::CircleShape dot = sf::CircleShape(4.f);
-	sf::RectangleShape box;
+	//sf::CircleShape dot = sf::CircleShape(4.f);
+	//sf::RectangleShape box;
 
 	float wLength;
 	float wHeight;
@@ -282,6 +281,8 @@ public:
 
 	bool isGameOver();
 
+	const sf::FloatRect& getGlobalBounds() const;
+
 	//METHODS OF CLASS PLAYER MANAGING SCORE
 	void adjScore(int adj); 
 
@@ -319,7 +320,7 @@ public:
 
 	void moveBullets();
 
-	void deleteBullet(int i);
+	void deleteBullet(std::list<Bullet>::iterator& b);
 
 	void checkBulletInBounds(sf::RenderWindow &window);
 
@@ -340,6 +341,10 @@ public:
 	void drawBullets(sf::RenderWindow &window);
 
 	void drawScore(sf::RenderWindow &window); 
+
+
+	//COPY CONSTRUCTOR
+	Player(const Player& rhs);
 };
 
 

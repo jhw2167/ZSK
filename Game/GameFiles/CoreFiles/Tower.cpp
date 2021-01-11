@@ -157,7 +157,7 @@ void Tower::setPosition(sf::RenderWindow const &window, int tNumber)
 
 
 	/*  Accessor Methods  */
-sf::FloatRect Tower::getTowerGlobalBounds() {
+const sf::FloatRect& Tower::getGlobalBounds() const  {
 	return towerShape.getGlobalBounds();
 }
 
@@ -275,7 +275,6 @@ Tower::Tower(const Tower & rhs)
 	this->towerRadius = rhs.towerRadius;
 	this->towerOutline = rhs.towerOutline;
 	this->towerOwnedBy = rhs.towerOwnedBy;
-	this->pos = rhs.pos;
 	this->towerShape = rhs.towerShape;
 }
 

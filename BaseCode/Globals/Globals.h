@@ -24,6 +24,10 @@ namespace zsk {
 	const static double pi = 3.141592628;
 	enum FONT_CODE {ARIAL = 0, ARCDE};
 
+	const int smallContSz = 32;	//32
+	const int medContSz = 128;	//128
+	const int lrgContSz = 512;	//512
+
 	namespace art {
 
 		/*	Art related global constants	*/

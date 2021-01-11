@@ -60,7 +60,7 @@ public:
 	sf::Vector2f getBulletPosition() const;
 	//get bullets position function used for collisions 
 
-	sf::FloatRect getBulletGlobalBounds() const;
+	const sf::FloatRect& getGlobalBounds() const;
 	//taken as global bounds of of bullets circlceShape top
 	
 	int getStrip() const;

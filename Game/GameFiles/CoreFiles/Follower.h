@@ -10,9 +10,6 @@ class Follower : GameObj
 {
 private:
 
-	static int f_id;			//all followers have same f_id value that increments
-	int id;						//each follower has unique id
-
 	/*  Shape related  */
 	FollowerShape fShape;
 	sf::RectangleShape fBox;		
@@ -28,7 +25,6 @@ private:
 	static int maxMerge;
 
 	/*  Position and Velocity  */
-	sf::Vector2f pos;
 	bool followingPlayer;
 	const static float speedBN;
 	bool breakNeck;
@@ -36,23 +32,25 @@ private:
 	/*  breakNeck(BN) speed gives followers heightened dmg,
 	and locks their targeting*/
 
-
 	sf::Vector2f fVelocity;									//speed and direction vector for moving followers
 	float momentum;											//followers will gain speed as they follower a player
 	int aUp, aLeft, aDown, aRight = 0;						//static ints will track how many times a follower has been accelerating in a given direction
 	enum direction {STILL = 0, UP, LEFT, DOWN, RIGHT};		//declares enum direction to handle player movement
 
+
+	/* Player targeting  */
 	short retargetRate;
 	short retargetCount;
 
 	short redirectRate;
 	short redirectCount;
-	short towerColNum;;
 
 	float playersOldX;
 	float playersOldY;
 
 
+	/* Collision Info */
+	short towerColNum;;
 	sf::Vector2f bounce;
 	static const sf::Vector2f globBounce;
 	//vector with random x y coordinates for collisions
@@ -113,9 +111,7 @@ Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor = sf::Color::
 
 	sf::Vector2f getFollowerVelocity();
 
-	sf::FloatRect getFollowerGlobalBounds();
-
-	int get_id();
+	const sf::FloatRect& getGlobalBounds() const;
 
 	int getHealth();
 
@@ -160,55 +156,8 @@ Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor = sf::Color::
 	//DRAW FOLLWER ASPECTS
 	void drawFollower(sf::RenderWindow &window);
 
-
-
-
-	/*
-	
-	Follower(const Follower &f2)
-	{
-		f_id = f2.f_id;
-		int id = f2.id;
-
-		fShape = FollowerShape(f2.fShape);
-		fBox = f2.fBox;
-
-		health = f2.health;
-		dmgDone = f2.dmgDone;
-		//arial = f2.arial;
-		//arial.loadFromFile("arial.ttf");
-		healthText = f2.healthText;
-		healthText.setFont(arial);
-
-
-		pos = f2.pos;
-		followingPlayer = f2.followingPlayer;
-
-		fVelocity = f2.fVelocity;
-		momentum = f2.momentum;
-		aUp, aLeft, aDown, aRight = 0;
-		//enum direction { STILL = 0, UP, LEFT, DOWN, RIGHT };
-
-		retargetRate = f2.retargetRate;
-		retargetCount = f2.retargetCount;
-
-		playersOldX = f2.playersOldX;
-		playersOldY = f2.playersOldY;
-
-		bounce = f2.bounce;
-
-		windowLength = f2.windowLength;
-		windowHeight = f2.windowHeight;
-
-		towerRadius = f2.towerRadius;
-	}
-
-
-
-	
-	*/
 	//COPY CONSTRUCTOR
-
+	Follower(const Follower &rhs);
 };
 	
 

@@ -57,7 +57,7 @@ public:
 
 
 		/*  Accessor Methods  */
-	sf::FloatRect getTowerGlobalBounds();
+	const sf::FloatRect& getGlobalBounds() const;
 
 	sf::Vector2f getPosition();
 

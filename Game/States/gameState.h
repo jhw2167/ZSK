@@ -53,12 +53,16 @@ private:
 	void initArt();
 	void initTowers();
 	void initVars();
-	
 
 
 	//Game Update functions
 
 	/* LEVEL 1  -  Call From Update*/
+	void checkCollisions();
+	void binSep(std::list<GameObj*>& actObjs, 
+		std::vector<std::list<GameObj*>>& quads, sf::FloatRect area, int lvl);
+	void determineCollisions(const std::vector<std::list<GameObj*>>& quads);
+
 	void movePlayerLogic();
 	void otherPlayerMechs();
 	void shootingMechanics();

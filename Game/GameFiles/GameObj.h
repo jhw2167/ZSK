@@ -27,7 +27,8 @@ private:
 	static std::unordered_map<int, GameObj*>* objs;
 
 	//functions
-	void addObj();
+	void addObj(int obj_id);
+	void remObj(int obj_id);
 
 protected:
 	//Obj properties
@@ -46,6 +47,7 @@ public:
 	unsigned int getID() const;
 	ObjType getType() const;
 	sf::Vector2f getPos() const;
+	virtual const sf::FloatRect& getGlobalBounds() const = 0;
 
 	//Modifiers
 	static void setObjs(std::unordered_map<int,

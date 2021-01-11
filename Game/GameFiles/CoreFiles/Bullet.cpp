@@ -11,7 +11,7 @@ Bullet::Bullet(const sf::Vector2f& startPos,
 	//Bullet constructor initializes size, shape and position 
 	//of bullet object
 {
-	cout << "bullet constructor\n";
+	//cout << "Calling bullet constr, id: " << id << endl;
 	setBulletPosition(startPos);
 	setBulletVelocity(startPos, cursorPos, speed);
 
@@ -90,7 +90,7 @@ sf::Vector2f Bullet::getBulletPosition() const  {
 }
 //get bullets position function used for collisions 
 
-sf::FloatRect Bullet::getBulletGlobalBounds() const {
+const sf::FloatRect& Bullet::getGlobalBounds() const {
 	return bTop.getGlobalBounds();
 }
 //taken as global bounds of of bullets circlceShape top
@@ -169,7 +169,9 @@ void Bullet::drawBullet(sf::RenderWindow &window)
 	window.draw(bTop);
 }
 
-Bullet::Bullet(const Bullet & rhs) :
+
+//COPY CONSTRUCTOR
+Bullet::Bullet(const Bullet& rhs) :
 	GameObj(rhs)
 {
 	this->bBody = rhs.bBody;

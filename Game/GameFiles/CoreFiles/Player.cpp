@@ -122,8 +122,7 @@ sf::Vector2f PlayerShape::getGunPosition()						//Returns position of gun for sh
 		return playerBody[GUN2].getPosition();
 	}
 
-sf::FloatRect PlayerShape::getHeartBounds()
-	{
+const sf::FloatRect& PlayerShape::getHeartBounds() const {
 		return heart.getGlobalBounds();
 	}
 
@@ -225,7 +224,8 @@ class Tower;
 
 Player::Player(sf::RenderWindow &window, int pNumber, int startLives, float scale, float startHealth,
 		float startMaxHealth, float startShield, float startMaxShield, float mSpeed, int startScore, float smallRadius,
-		float maxLargeRadius, int laserL, int laserW, bool showBox) : GameObj(ObjType::PLR)
+		float maxLargeRadius, int laserL, int laserW, bool showBox) 
+			: GameObj(ObjType::PLR)
 	{
 		//Init Window Dims
 		setWindowDims(window);
@@ -268,7 +268,6 @@ Player::Player(sf::RenderWindow &window, int pNumber, int startLives, float scal
 		//laser color = playercolor
 
 		initScore();
-
 	}
 
 
@@ -629,6 +628,11 @@ bool Player::isGameOver() {
 }
 
 
+const sf::FloatRect & Player::getGlobalBounds() const {
+	return playerShape.getHeartBounds();
+}
+
+
 	//METHODS OF CLASS PLAYER MANAGING SCORE
 void Player::adjScore(int adj) {
 	setScore(score + adj);
@@ -832,26 +836,26 @@ void Player::shoot(sf::Vector2i const &cursorPos)
 }
 
 void Player::addBullet(sf::Vector2i const &cursorPos) {
-	activeBullets.push_back(Bullet(getGunPosition(), cursorPos));
+	activeBullets.push_front(Bullet(getGunPosition(), cursorPos));
 }
 
-void Player::moveBullets()
-{
-	for (size_t i = 0; i < activeBullets.size(); i++) {
-		activeBullets[i].moveBullet();
+void Player::moveBullets() {
+	for (auto& bullet: activeBullets) {
+		bullet.moveBullet();
 	}
 }
 
-void Player::deleteBullet(int i) {
-	cout << "erasing buller: \n" << endl;
-	activeBullets.erase(activeBullets.begin() + i);
+void Player::deleteBullet(std::list<Bullet>::iterator& b) {
+	printf("delete bullet: %d, at mem loc: %p\n", b._Ptr);
+	activeBullets.erase(b);
 }
 
 void Player::checkBulletInBounds(sf::RenderWindow &window)
 {
-	for (size_t i = 0; i < activeBullets.size(); i++) {
-		if (activeBullets[i].isOutOBounds(window)) {
-			deleteBullet(i);
+	for (auto b = activeBullets.begin(); b != activeBullets.end()) {
+		if (b->isOutOBounds(window)) {
+			cout << "Bullet OOB\n";
+			deleteBullet(b);
 		}
 	}
 }
@@ -861,8 +865,9 @@ void Player::checkBulletInBounds(sf::RenderWindow &window)
 int Player::shootFollower(sf::FloatRect const &followerBounds)
 {
 	for (size_t i = 0; i < activeBullets.size(); i++) {
-		if (activeBullets.at(i).getBulletGlobalBounds().intersects(			//checks to see if bullet intersects each follower
+		if (activeBullets.at(i).getBulletGlobalBounds().intersects(
 			followerBounds)) {
+			//checks to see if bullet intersects each follower
 
 			int dmg = dmgFollower(i);
 			adjScore(dmg);
@@ -986,6 +991,50 @@ void Player::drawScore(sf::RenderWindow &window) {
 
 	window.draw(lifeText);
 	lifeFigure.drawPlayer(window);
+}
+
+
+//COPY CONSTRUCTOR
+Player::Player(const Player& rhs)
+	: GameObj(rhs)
+{
+	this->playerNumber = rhs.playerNumber;
+	this->score = rhs.score;
+	this->playerColor = rhs.playerColor;
+	this->health = rhs.health;
+	this->maxHealth = rhs.maxHealth;
+	this->lives = rhs.lives;
+	this->gameOver = rhs.gameOver;
+	this->shield = rhs.shield;
+	this->maxShield = rhs.maxShield;
+	this->shieldRegen = rhs.shieldRegen;
+	this->invulnerability = rhs.invulnerability;
+	this->healthBarSize = rhs.healthBarSize;
+	this->healthBarPosition = rhs.healthBarPosition;
+	this->healthBarOrigin = rhs.healthBarOrigin;
+	this->healthBarRed = rhs.healthBarRed;
+	this->healthBarGreen = rhs.healthBarGreen;
+	this->shieldBar = rhs.shieldBar;
+	this->healthText = rhs.healthText;
+	this->lifeText = rhs.lifeText;
+	this->scoreText = rhs.scoreText;
+	this->playerSpeed = rhs.playerSpeed;
+	this->playerDirection = rhs.playerDirection;
+	this->moveVect = rhs.moveVect;
+	this->playerShape = rhs.playerShape;
+	this->pBox = rhs.pBox;
+	this->activeBullets = rhs.activeBullets;
+		this->activeBullets.reserve(rhs.activeBullets.capacity());
+	this->largeFollowArea = rhs.largeFollowArea;
+	this->smallFollowArea = rhs.smallFollowArea;
+	this->smallFolRad = rhs.smallFolRad;
+	this->minLargeFolRad = rhs.minLargeFolRad;
+	this->maxLargeFolRad = rhs.maxLargeFolRad;
+	this->snap = rhs.snap;
+	this->laserLength = rhs.laserLength;
+	this->laserWidth = rhs.laserWidth;
+	this->wLength = rhs.wLength;
+	this->wHeight = rhs.wHeight;
 }
 
 

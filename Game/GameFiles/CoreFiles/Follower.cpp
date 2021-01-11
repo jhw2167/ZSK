@@ -4,7 +4,6 @@
 
 	/*  Static Initializations  */
 
-int Follower::f_id = 0;
 int Follower::maxMerge = 3;
 const sf::Vector2f Follower::globBounce
 	= sf::Vector2f(5.f, 5.f);
@@ -18,8 +17,6 @@ Follower::Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor, in
 	int startDmg, short retrgtRate, short redirRate, float scale, bool showBoxes)
 	: GameObj(ObjType::FOL)
 {
-	id = f_id++;
-
 	//showBoxes = true;
 	fShape = FollowerShape(fColor, scale);
 	initFollowerBox(fShape, showBoxes);
@@ -213,12 +210,9 @@ sf::Vector2f Follower::getFollowerVelocity() {
 	return fVelocity;
 }
 
-sf::FloatRect Follower::getFollowerGlobalBounds() {			//taken as global bounds of follower's circleShape head
+const sf::FloatRect& Follower::getGlobalBounds() const {			
+	//taken as global bounds of follower's circleShape head
 	return fBox.getGlobalBounds();
-}
-
-int Follower::get_id() {
-	return id;
 }
 
 int Follower::getHealth() {
@@ -628,4 +622,46 @@ void Follower::drawFollower(sf::RenderWindow &window)
 	window.draw(fBox);
 	window.draw(healthText);
 	window.draw(dot);
+}
+
+
+//COPY CONSTRUCTOR
+Follower::Follower(const Follower &rhs) : GameObj(rhs)
+{
+	//Basics
+	this->fShape = rhs.fShape;
+	this->fBox = rhs.fBox;
+
+	this->health = rhs.health;
+	this->dmgDone = rhs.dmgDone;
+	this->healthText = rhs.healthText;
+
+	//Merging
+	this->mergeCount = rhs.mergeCount;
+
+	//Position and velocity
+	this->followingPlayer = rhs.followingPlayer;
+	this->fVelocity = rhs.fVelocity;
+	this->breakNeck = rhs.breakNeck;
+	this->momentum = rhs.momentum;
+	aUp, aLeft, aDown, aRight = 0;
+	//enum direction { STILL = 0, UP, LEFT, DOWN, RIGHT };
+
+	//Player targeting
+	this->retargetRate = rhs.retargetRate;
+	this->retargetCount = rhs.retargetCount;
+	this->redirectRate = rhs.redirectRate;
+	this->redirectCount = rhs.redirectCount;
+
+	this->playersOldX = rhs.playersOldX;
+	this->playersOldY = rhs.playersOldY;
+
+	//Follower bounds
+	this->bounce = rhs.bounce;
+	this->towerColNum = rhs.towerColNum;
+
+	this->windowLength = rhs.windowLength;
+	this->windowHeight = rhs.windowHeight;
+
+	this->towerRadius = rhs.towerRadius;
 }

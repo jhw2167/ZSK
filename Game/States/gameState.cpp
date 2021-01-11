@@ -5,7 +5,7 @@
 /*  CNTRL + M + O to collapse all */
 
 /*  Initializing static variables  */
-int GameState::maxFollowers = 0;
+int GameState::maxFollowers = 1;
 
 int GameState::numPlayers = 0;
 int GameState::maxPlayers_this = 0;
@@ -13,17 +13,13 @@ int GameState::maxPlayers_this = 0;
 
 	/*  Constructors  */
 
-GameState::GameState(sf::RenderWindow* w_ptr, std::vector<sf::Event>* evs) : State(w_ptr, evs)
+GameState::GameState(sf::RenderWindow* w_ptr, std::vector<sf::Event>* evs)
+	: State(w_ptr, evs)
 {
 	initVars();
-	cout << "about to add player\n";
-	players.push_back(Player(*w_ptr));
-	cout << "Player added and copied\n\n";
-
+	players.emplace_back(*w_ptr);
 	initArt();
-	cout << "about to add tower\n";
 	initTowers();
-	cout << "tower added and copied\n\n";
 }
 
 /*  Public Static Functions  */
@@ -38,7 +34,6 @@ void GameState::setNumPlayerVars(const int maxPlayersThisGame) {
 	maxPlayers_this = maxPlayersThisGame;
 	//establish our max players for *this* gamestate instance
 }
-
 
 void GameState::addPlayer() {
 	/*
@@ -70,7 +65,8 @@ void GameState::initTowers()
 {
 	//adds an additional tower out of play that assists with mechanics
 	for (size_t i = 0; i < numberOfTowers + 1; i++) {
-		towers.push_back(Tower(*window_ptr, i));
+		//towers.push_back(Tower(*window_ptr, i));
+		towers.emplace_back(*window_ptr, i);
 	}
 }
 
@@ -79,12 +75,119 @@ void GameState::initVars()
 	/*
 		Initiate fundamental non-static vars
 	*/
-
+	
+	//set number of towers and reserve vector space
 	numberOfTowers = std::max(maxPlayers_this, 4);
-	GameObj::setObjs(&objs);
+	towers.reserve(zsk::smallContSz);
+	players.reserve(zsk::smallContSz);
+
+	objs.reserve(zsk::lrgContSz);	//reserve 512 * 4 bytes for game Objs
+	GameObj::setObjs(&objs);		//set ptr to objs in GameObjs class
 }
 
 //Game Update Functions
+
+/*  Collission functions  */
+void GameState::checkCollisions()
+{
+	std::list<GameObj*> activeObjs;
+	for (auto& obj : objs) {
+		activeObjs.push_back(obj.second);
+	}
+
+	std::vector<std::list<GameObj*>> quads;
+	sf::FloatRect area(sf::Vector2f(0.0,0.0), 
+		sf::Vector2f(window_ptr->getSize()));
+	int numQuads = 4;
+
+	//seperate objs into 16 quadrants for collision detection
+	binSep(activeObjs, quads, area, numQuads);
+
+	//determine collisions
+	determineCollisions(quads);
+
+}
+
+void GameState::binSep(std::list<GameObj*>& actObjs, 
+	std::vector<std::list<GameObj*>>& quads, sf::FloatRect side, int lvl)
+{
+	/*
+		Seperate each level of objs unordered map into 
+		2 "quadrants" repeatedly until lvl = 0;
+	*/
+
+	//create actObjs2 - vector of GameObj*'s NOT in float rect area
+	std::list<GameObj*> actObjs2;
+
+	//Determine upper/left area
+	sf::FloatRect otherSide(side);
+	if ((lvl % 2) == 0) {
+		side.height /= 2;
+		otherSide.height /= 2;
+		otherSide.top += otherSide.height;
+	}
+	else {
+		side.width /= 2;
+		otherSide.width /= 2;
+		otherSide.left += otherSide.width;
+	}
+
+	//test if floatRect contains
+		//push back into appropriate vector
+	for (const auto& obj : actObjs) 
+	{
+		if (side.contains(obj->getPos)) {
+			//do nothing, obj belongs in this vect
+		}
+		else {
+			actObjs2.push_back(obj);
+			actObjs.remove(obj);
+		}
+	}
+
+	//Call binSep recursively OR push vect onto quads
+	if (lvl > 0) {
+		binSep(actObjs, quads, side, --lvl);
+		binSep(actObjs2, quads, otherSide, lvl);
+	}
+	else {
+		quads.push_back(actObjs);
+		quads.push_back(actObjs2);
+	}
+
+}
+
+void GameState::determineCollisions(const 
+	std::vector<std::list<GameObj*>>& quads)
+{
+	/*
+		For all objs in quadrant 
+	*/
+
+	for (const auto& ls : quads)
+	{
+		//get iterator from list
+		auto it1 = ls.begin() ;
+
+		for (auto it2 = ++it1; it2 != ls.end();)
+		{
+			GameObj* obj1 = it1._Ptr->_Myval;
+			GameObj* obj2 = it2._Ptr->_Myval;
+			if (obj1->getGlobalBounds().intersects(
+				obj2->getGlobalBounds()))
+				//compare all objects to each other
+			{
+				obj1->collisions
+			}
+			else {
+				fol_it2++;
+			}
+		}
+	}
+
+}
+
+
 
 /* LEVEL 1  -  Call From Update*/
 void GameState::movePlayerLogic()
