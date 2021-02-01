@@ -162,6 +162,14 @@ bool Bullet::isOutOBounds(sf::RenderWindow &window)
 }
 
 
+/*		UPDATE		*/
+STATE Bullet::update() const {
+	return GAME;
+}
+/***************/
+
+
+
 //DRAW FUNCTIONS
 void Bullet::drawBullet(sf::RenderWindow &window)
 {

@@ -85,6 +85,11 @@ public:
 	//Laser Based Methods
 	void changeLaserColor(const int newOwner);
 
+	/*		UPDATE		*/
+	STATE update() const;
+	/***************/
+
+
 	//TOWER DRAW METHODS
 	void drawTowers(sf::RenderWindow &window);
 

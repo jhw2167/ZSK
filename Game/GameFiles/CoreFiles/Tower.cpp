@@ -236,6 +236,13 @@ void Tower::changeLaserColor(const int newOwner)
 }
 
 
+/*		UPDATE		*/
+STATE Tower::update() const {
+	return GAME;
+}
+/***************/
+
+
 //TOWER DRAW METHODS
 void Tower::drawTowers(sf::RenderWindow &window) 
 {

@@ -136,7 +136,7 @@ void GameState::binSep(std::list<GameObj*>& actObjs,
 		//push back into appropriate vector
 	for (const auto& obj : actObjs) 
 	{
-		if (side.contains(obj->getPos)) {
+		if (side.contains(obj->getPos())) {
 			//do nothing, obj belongs in this vect
 		}
 		else {
@@ -161,30 +161,35 @@ void GameState::determineCollisions(const
 	std::vector<std::list<GameObj*>>& quads)
 {
 	/*
-		For all objs in quadrant 
+		- We determine if 2 given objs within a given
+		quad (vector of Obj vectors) intersect
+		- If so, we push the obj ptr onto the collisions vector
+		- Collisions is class variable of obj 
 	*/
 
 	for (const auto& ls : quads)
 	{
 		//get iterator from list
 		auto it1 = ls.begin() ;
-
-		for (auto it2 = ++it1; it2 != ls.end();)
+		while (it1 != ls.end())
 		{
-			GameObj* obj1 = it1._Ptr->_Myval;
-			GameObj* obj2 = it2._Ptr->_Myval;
-			if (obj1->getGlobalBounds().intersects(
-				obj2->getGlobalBounds()))
-				//compare all objects to each other
+			for (auto it2 = it1; ++it2 != ls.end();)
 			{
-				obj1->collisions
-			}
-			else {
-				fol_it2++;
-			}
-		}
-	}
+				GameObj* obj1 = it1._Ptr->_Myval;
+				GameObj* obj2 = it2._Ptr->_Myval;
+				if (obj1->getGlobalBounds().intersects(
+					obj2->getGlobalBounds())) {
+					//compare all objects to each other
+					obj1->collisions.push_back(obj2);
+				}
 
+			}
+			//End OBJ FOR
+			++it1;
+		}
+		//END LST FOR
+	}
+	//END vector for
 }
 
 
@@ -328,7 +333,7 @@ void GameState::shootFollowers()
 		{
 			//Determines dmg done by player to zombie
 			int dmg = players.at(i).shootFollower(
-				fol_it->getFollowerGlobalBounds());
+				fol_it->getGlobalBounds());
 
 			if (dmg > 0)
 			{
@@ -355,7 +360,7 @@ void GameState::attackPlayer()
 	{
 		for (auto& fol : followers)
 		{
-			if (fol.getFollowerGlobalBounds().intersects(
+			if (fol.getGlobalBounds().intersects(
 				players.at(i).getHeartBounds())) {	
 				//if a follwer insects the player's global bounds
 
@@ -440,7 +445,8 @@ void GameState::setMousePos(sf::Vector2i &mPos) {
 
 void GameState::quitState()
 {
-
+	//Removes the gamestate from the gameApp stack by
+	//changing the 
 }
 
 STATE GameState::update(sf::Vector2i &mPos, const float& dt)

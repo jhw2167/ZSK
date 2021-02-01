@@ -852,11 +852,12 @@ void Player::deleteBullet(std::list<Bullet>::iterator& b) {
 
 void Player::checkBulletInBounds(sf::RenderWindow &window)
 {
-	for (auto b = activeBullets.begin(); b != activeBullets.end()) {
+	for (auto b = activeBullets.begin(); b != activeBullets.end();) {
 		if (b->isOutOBounds(window)) {
 			cout << "Bullet OOB\n";
 			deleteBullet(b);
 		}
+		++b;
 	}
 }
 
@@ -864,8 +865,16 @@ void Player::checkBulletInBounds(sf::RenderWindow &window)
 //METHODS RELATING TO FOLLOWERS
 int Player::shootFollower(sf::FloatRect const &followerBounds)
 {
-	for (size_t i = 0; i < activeBullets.size(); i++) {
-		if (activeBullets.at(i).getBulletGlobalBounds().intersects(
+	/*
+		Shoot follower is currently obselete, collisions are 
+		handled generally in gamestate class.  Provided numerics may be
+		calculated here.
+	*/
+
+	/*
+		
+		for (size_t i = 0; i < activeBullets.size(); i++) {
+		if ( .getGlobalBounds().intersects(
 			followerBounds)) {
 			//checks to see if bullet intersects each follower
 
@@ -875,11 +884,24 @@ int Player::shootFollower(sf::FloatRect const &followerBounds)
 			return dmg;
 		}
 	}
+	*/
+
 	return 0;
 }
 
 int Player::dmgFollower(int i)
 {
+	/*
+		Use player's bullet list to deal damage 
+		to followers.
+
+		Recall List does not allow access operations
+		in constant time, pass a ptr to the bullet
+		obj instead of the index.
+	*/
+
+	/*
+
 	//bullet needs to know its strip
 	int dmg = activeBullets[i].getStrip();
 	int pen = activeBullets[i].getPen();
@@ -890,6 +912,8 @@ int Player::dmgFollower(int i)
 	else
 		activeBullets[i].setPen(pen);
 
+	*/
+	int dmg = 0;
 	return dmg;
 
 	//if the follower has health = 1, the follower is deleted
@@ -951,6 +975,11 @@ void Player::growLargeFollowArea(bool grow, float growRate)
 
 }
 
+/*		UPDATE		*/
+STATE Player::update() const {
+	return GAME;
+}
+/***************/
 
 //DRAWING METHODS OF CLASS PLAYER
 void Player::drawPlayer(sf::RenderWindow &window)
@@ -980,8 +1009,9 @@ void Player::drawHealthBar(sf::RenderWindow &window)
 
 void Player::drawBullets(sf::RenderWindow &window)
 {
-	for (size_t i = 0; i < activeBullets.size(); i++) {
-		activeBullets[i].drawBullet(window);
+	for (auto b = activeBullets.begin(); b != activeBullets.end();) {
+		b->drawBullet(window);
+		++b;
 	}
 }
 
@@ -1024,7 +1054,6 @@ Player::Player(const Player& rhs)
 	this->playerShape = rhs.playerShape;
 	this->pBox = rhs.pBox;
 	this->activeBullets = rhs.activeBullets;
-		this->activeBullets.reserve(rhs.activeBullets.capacity());
 	this->largeFollowArea = rhs.largeFollowArea;
 	this->smallFollowArea = rhs.smallFollowArea;
 	this->smallFolRad = rhs.smallFolRad;

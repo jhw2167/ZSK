@@ -73,6 +73,11 @@ public:
 
 	bool isOutOBounds(sf::RenderWindow &window);
 
+	/*		UPDATE		*/
+	STATE update() const;
+	/***************/
+
+
 	//DRAW FUNCTIONS
 	void drawBullet(sf::RenderWindow &window);
 

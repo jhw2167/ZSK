@@ -510,8 +510,8 @@ bool Follower::followerCollision(std::list<Follower> &fols,
 
 	for (auto fol_it2 = ++fol_it; fol_it2 != fols.end();)
 	{
-		if (this->getFollowerGlobalBounds().intersects(			
-			fol_it2->getFollowerGlobalBounds()))
+		if (this->getGlobalBounds().intersects(			
+			fol_it2->getGlobalBounds()))
 			//compare the followers at different indexes
 		{
 			if (mergeCount + fol_it2->getMergeCount() < maxMerge) {
@@ -520,8 +520,8 @@ bool Follower::followerCollision(std::list<Follower> &fols,
 			else {
 				fol_it2->setMinusBounce();
 
-				if (this->getFollowerGlobalBounds().contains(
-					fol_it2->getFollowerPosition() + fol_it2->getBounce() )){
+				if (this->getGlobalBounds().contains(
+					fol_it2->getPos() + fol_it2->getBounce() )){
 					this->setMinusBounce();
 				}
 				fol_it2++;
@@ -614,6 +614,12 @@ const int Follower::takeDamage(int dmg)
 		return newHealth;
 	}
 }
+
+/*		UPDATE		*/
+STATE Player::update() const {
+	return GAME;
+}
+/***************/
 
 //DRAW FOLLWER ASPECTS
 void Follower::drawFollower(sf::RenderWindow &window)

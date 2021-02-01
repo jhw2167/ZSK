@@ -153,6 +153,9 @@ Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor = sf::Color::
 	//DAMAGE DEALING AND GIVING
 	const int takeDamage(int dmg);
 
+	/*		UPDATE		*/
+	STATE update() const;
+
 	//DRAW FOLLWER ASPECTS
 	void drawFollower(sf::RenderWindow &window);
 

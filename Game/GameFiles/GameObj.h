@@ -48,6 +48,7 @@ public:
 	ObjType getType() const;
 	sf::Vector2f getPos() const;
 	virtual const sf::FloatRect& getGlobalBounds() const = 0;
+	virtual STATE update() const = 0;
 
 	//Modifiers
 	static void setObjs(std::unordered_map<int,

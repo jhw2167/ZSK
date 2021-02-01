@@ -342,6 +342,9 @@ public:
 
 	void drawScore(sf::RenderWindow &window); 
 
+	/* UPDATE FUNCTION */
+	STATE update() const;
+
 
 	//COPY CONSTRUCTOR
 	Player(const Player& rhs);
