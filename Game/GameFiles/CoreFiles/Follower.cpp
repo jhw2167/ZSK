@@ -616,7 +616,7 @@ const int Follower::takeDamage(int dmg)
 }
 
 /*		UPDATE		*/
-STATE Player::update() const {
+STATE Follower::update() const {
 	return GAME;
 }
 /***************/

@@ -61,6 +61,9 @@ void GameObj::setObjs(std::unordered_map<int, GameObj*>* vect) {
 	objs = vect;
 }
 
+
+/* Utility Constructors */
+
 //Copy constructor
 GameObj::GameObj(const GameObj& rhs) 
 {

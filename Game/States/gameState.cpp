@@ -164,7 +164,7 @@ void GameState::determineCollisions(const
 		- We determine if 2 given objs within a given
 		quad (vector of Obj vectors) intersect
 		- If so, we push the obj ptr onto the collisions vector
-		- Collisions is class variable of obj 
+		- Collisions is vector<GameObj*> class variable of obj 
 	*/
 
 	for (const auto& ls : quads)
@@ -178,11 +178,12 @@ void GameState::determineCollisions(const
 				GameObj* obj1 = it1._Ptr->_Myval;
 				GameObj* obj2 = it2._Ptr->_Myval;
 				if (obj1->getGlobalBounds().intersects(
-					obj2->getGlobalBounds())) {
+					obj2->getGlobalBounds())) 
+				{
 					//compare all objects to each other
 					obj1->collisions.push_back(obj2);
+					obj2->collisions.push_back(obj1);
 				}
-
 			}
 			//End OBJ FOR
 			++it1;
@@ -197,7 +198,20 @@ void GameState::determineCollisions(const
 /* LEVEL 1  -  Call From Update*/
 void GameState::movePlayerLogic()
 {
-	int towerNum = checkTowerCollision();		//towerNum is initialized to element number  of tower player is colliding with
+	/*
+		SOLUTION:
+		- move entire method into player class
+		- call player::update from gamestate::update and then
+		make this function call inside it
+		- check tower collision may be handled by scanning
+		player::collisions for a tower collision and getting
+		that tower num
+		- "move logic" will have to be called internally in player
+		- for loop will be abandoned
+	*/
+
+	//towerNum is initialized to element number  of tower player is colliding with
+	int towerNum = checkTowerCollision();
 	enum dir { UP = 1, LEFT, DOWN, RIGHT };
 
 	for (size_t i = 0; i < players.size(); i++)
@@ -239,6 +253,11 @@ void GameState::movePlayerLogic()
 void GameState::otherPlayerMechs()
 {
 	/*
+		SOLUTUON
+		- just move these methods to player::update function
+	*/
+
+	/*
 		Other player mechanics to call include shield and 
 		managing follower area behavior 
 	*/
@@ -253,6 +272,15 @@ void GameState::otherPlayerMechs()
 
 void GameState::shootingMechanics()
 {
+	/*
+		SOLUTION
+		- move into player class
+		- get rid of for loop
+		- mousePos should be a static variable in objs class
+		- window ptr should also be static objs var
+		- update these two items in each gs::update function call
+	*/
+
 	for (size_t i = 0; i < players.size(); i++)
 	{
 		players.at(i).shoot(mousePos);
@@ -263,6 +291,13 @@ void GameState::shootingMechanics()
 
 void GameState::followerMechanics()
 {
+	/*
+		SOLUTION
+		- This can be main updaet function inside
+		followers class
+		- methods called will have to be accompanying
+	*/
+
 	spawnFollowers();
 	moveFollowers();
 
@@ -281,6 +316,9 @@ void GameState::towerMechanics()
 }
 
 bool GameState::isGameOver() {
+	
+	//Leave this for now, will consider what to do here
+
 	return players.at(0).isGameOver();
 }
 
@@ -288,6 +326,15 @@ bool GameState::isGameOver() {
 /* LEVEL 2  -  Followers*/
 void GameState::spawnFollowers()
 {
+	/*
+		SOLUTION
+		- move into follower class
+		- perhaps Follower class will have a static
+		ptr to follower List in order to load folls
+		from inside the class
+		- Vars may become static vars of the class 
+	*/
+
 	static int temperSpawnRate = 0; temperSpawnRate++;				//moderates spawn rate
 	static int tmperRate = 50;
 
@@ -304,6 +351,16 @@ void GameState::spawnFollowers()
 
 void GameState::moveFollowers()
 {
+	/*
+		SOLUTION
+		- for loop will be moved to gs::update function so
+		all follower->update methods will be called independently
+		- remove outer for loop for players
+		- move logic will be called internally
+		- utilize collisions vector shared by all objects
+		- major redesigning necessary for follower->moveLogic
+	*/
+
 	for (size_t i = 0; i < players.size(); i++) {
 
 		for (auto fol_it = followers.begin(); fol_it != followers.end();)
@@ -321,6 +378,22 @@ void GameState::moveFollowers()
 
 void GameState::shootFollowers()
 {
+	/*
+		SOLUTION
+		- general object collisions method will hand collisions
+		- follower->takeDamage method will have to be called from
+		player class, somehow
+		- It would be wise to double commit on the collisions
+		vector so each object knows precisely what its colliding
+		into
+		- follower->tk Damage will be called automatically
+		from follower class if it intersects a bullet
+		- We must be cautious of disconnect and double counting here -
+		part of this work will be done in player class (score counting)
+		and part will be done in follower movement (pen, strip, deletion)
+	
+	*/
+
 	/*
 		For each player, checks if each follower intersects
 		any of the player's bullets calling the "shoot follower" 
@@ -356,6 +429,17 @@ void GameState::shootFollowers()
 
 void GameState::attackPlayer()
 {
+	/*
+		SOLUTION
+		- We have collision information from the general case again
+		- It may be best for player just to take his own 
+		damage here 
+		- However, we may also want to do something to a folower
+		knowing that it has just dealt damage so I should touch
+		on this in the fol class even if nothing is done yet
+
+	*/
+
 	for (size_t i = 0; i < players.size(); i++)
 	{
 		for (auto& fol : followers)
@@ -376,6 +460,14 @@ void GameState::attackPlayer()
 /*LEVEL 2  -  Tower Collisions */
 int GameState::checkTowerCollision()
 {
+	/*
+		SOLUTION
+		- collisions are handled by general case
+		- This method is only relevant to players and 
+		player move logic, will be handled accordingly
+
+	*/
+
 	int collidingTower = 0;		//tower num (1-4) of colliding tower, or 0 for none
 	//We can make this better, only check for collision if close to tower
 
@@ -397,8 +489,7 @@ int GameState::checkTowerCollision()
 /* LEVEL 3  -  Draw Functions*/
 void GameState::drawPlayers()
 {
-	for (size_t i = 0; i < players.size(); i++)
-	{
+	for (size_t i = 0; i < players.size(); i++) {
 		players.at(i).drawPlayer(*window_ptr);
 	}
 }
