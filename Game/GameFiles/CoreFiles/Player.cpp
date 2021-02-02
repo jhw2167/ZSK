@@ -112,12 +112,12 @@ void PlayerShape::setColor(sf::Color &pColor, sf::Color bColor)
 	}
 
 	/*	PlayerShape Accessors	*/
-sf::Vector2f PlayerShape::getPosition()	{
+sf::Vector2f PlayerShape::getPosition() const	{
 		return heart.getPosition();
 		//Function returns players position at his heart for collisions
 	}
 
-sf::Vector2f PlayerShape::getGunPosition()						//Returns position of gun for shooting
+sf::Vector2f PlayerShape::getGunPosition() const						//Returns position of gun for shooting
 	{
 		return playerBody[GUN2].getPosition();
 	}
@@ -127,37 +127,37 @@ const sf::FloatRect& PlayerShape::getHeartBounds() const {
 	}
 
 	//returns player's upper, lower, left and right bounds for boundry checking
-float PlayerShape::getLeftBounds()
+float PlayerShape::getLeftBounds() const
 	{
 		return playerBody[ARMS].getPosition().x - armLength / 2;		
 		//left and right bounds with respect to the players arms
 	}
 
-float PlayerShape::getUpperBounds()						
+float PlayerShape::getUpperBounds() const						
 {
 		return head.getPosition().y - head.getRadius();			
 		//the head is the highest point on the character, 
 		//and its position is retrieved at its center
 }
 
-float PlayerShape::getRightBounds()
+float PlayerShape::getRightBounds() const
 	{
 		return playerBody[ARMS].getPosition().x + armLength / 2;		
 		//left and right bounds with respect to the players arms
 	}
 
-float PlayerShape::getLowerBounds()
+float PlayerShape::getLowerBounds() const
 	{
 		return playerBody[LEG1].getPosition().y + legLength;			
 		//players lowerBounds with respect 
 	}
 
-sf::Color PlayerShape::getPlayerColor()
+sf::Color PlayerShape::getPlayerColor() const
 	{
 		return playerColor;
 	}
 
-sf::Color PlayerShape::getBodyColor() {
+sf::Color PlayerShape::getBodyColor() const {
 		return bodyColor;
 	}
 
@@ -212,12 +212,8 @@ PlayerShape Player::lifeFigure = PlayerShape(2.5f);
 
 /*  Forward Declarations  */
 class Follower;
-class Tower;				
+//class Tower;				
 //forward declaration of class tower so player has access
-
-/*  Private Members  */
-
-//End Private
 
 	
 /* Public Members  */
@@ -650,12 +646,26 @@ void Player::movePlayer(sf::Vector2f &mVect)
 	smallFollowArea.setPosition(playerShape.getPosition());
 }
 
-void Player::moveLogic(int dir, int towerCollision, sf::Vector2f const &towerPos,
-	float towerRadius)
+void Player::moveLogic(int dir)
 {
-	moveVect = sf::Vector2f(STILL, STILL);			//switch statement gives moveVect direction
-	bool movingIntoTower = false;
+	/* Check for tower collisions */
+	int towerCollision = 0;
+	sf::Vector2f towerPos;
+	float towerRadius;
 
+	for (const auto& col : collisions) {
+		if (col->getType() == ObjType::TOW) {
+			Tower* t = dynamic_cast<Tower*>(col);
+			towerCollision = t->getTowerNum();
+			towerPos = t->getPosition();
+			towerRadius = t->getTowerRadius();
+		}
+	}
+
+	
+	moveVect = sf::Vector2f(STILL, STILL);
+
+	//switch statement gives moveVect direction
 	switch (dir)
 	{
 	case UP:
@@ -674,7 +684,7 @@ void Player::moveLogic(int dir, int towerCollision, sf::Vector2f const &towerPos
 		break;
 	}
 
-	moveVect *= playerSpeed;							//gives moveVect its magnitude
+	moveVect *= playerSpeed;		//gives moveVect its magnitude
 	if (towerCollision > 0) {
 		moveVect = towerCollisions(dir, towerCollision, towerPos, towerRadius);
 	}
@@ -682,7 +692,6 @@ void Player::moveLogic(int dir, int towerCollision, sf::Vector2f const &towerPos
 	movePlayer(moveVect);
 
 }
-
 
 
 float Player::circle(float x, float radius) {				//formula for a circle!
@@ -975,11 +984,87 @@ void Player::growLargeFollowArea(bool grow, float growRate)
 
 }
 
-/*		UPDATE		*/
-STATE Player::update() const {
+
+/*****************************/
+/*			UPDATE			*/
+STATE Player::update()
+{
+	//move player and handle collisions
+	movePlayerLogic();
+
+	//shooting mechanics
+	shootingMechanics();
+
+	//Misc Mechanics
+		// - growing LFA
+		// - regen Shield
+	miscMechanics();
+
 	return GAME;
 }
-/***************/
+
+//Move PLayer Logic
+void Player::movePlayerLogic()
+{
+	/*
+		- Determines player direction via keypressed event 
+		- Considers if the player is in bounds and can move in
+		that direction
+		- passes the direction of travel to moveLogic if
+		the player is not "still"
+	*/
+
+	Direction dir = STILL;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || 
+			sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+		if (playerShape.getUpperBounds() > 0)
+			dir = UP;
+	}
+	//move player left if not at left bounds
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) ||
+			sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+		if (playerShape.getLeftBounds() > 0)
+			dir = LEFT;
+	}
+	//down
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) ||
+			sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+		if (playerShape.getLowerBounds() < window->getSize().y)
+			dir = DOWN;
+	}
+	//and right
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) ||
+			sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+		if (playerShape.getRightBounds() < window->getSize().x)
+			dir = RIGHT;
+	}
+
+	//move player given direction
+	if (dir != STILL)
+		moveLogic(dir);
+}
+
+//Shooting Mechanics
+void Player::shootingMechanics()
+{
+	shoot(mousePos);
+	moveBullets();
+	checkBulletInBounds(*window);
+}
+
+//Miscellaneous Mechanics
+void Player::miscMechanics()
+{
+	//Grow follow area
+	growLargeFollowArea(sf::Mouse::isButtonPressed(sf::Mouse::Right));
+
+	//regen shield
+	regenShield();
+}
+
+
+
+/***************************/
 
 //DRAWING METHODS OF CLASS PLAYER
 void Player::drawPlayer(sf::RenderWindow &window)

@@ -615,11 +615,27 @@ const int Follower::takeDamage(int dmg)
 	}
 }
 
-/*		UPDATE		*/
-STATE Follower::update() const {
+/***************************/
+/***		UPDATE		***/
+
+STATE Follower::update() 
+{
+	//move yourself "indivual" follower
+	moveFollowers();
+
+	//Check if you've been attacked
+	shootFollowers();
+
+	//check if you're dealing damage
+	attackPlayer();
+
 	return GAME;
 }
-/***************/
+
+/*		Private Update Functions	*/
+
+
+/******************/
 
 //DRAW FOLLWER ASPECTS
 void Follower::drawFollower(sf::RenderWindow &window)

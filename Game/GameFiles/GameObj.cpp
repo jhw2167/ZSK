@@ -56,6 +56,14 @@ sf::Vector2f GameObj::getPos() const  {
 	return pos;
 }
 
+void GameObj::setWindow(sf::RenderWindow * win_ptr) {
+	window = win_ptr;
+}
+
+void GameObj::setMousePos(sf::Vector2i & mousePosition) {
+	mousePos = mousePosition;
+}
+
 //One time per game SET Objs game vector pointer
 void GameObj::setObjs(std::unordered_map<int, GameObj*>* vect) {
 	objs = vect;

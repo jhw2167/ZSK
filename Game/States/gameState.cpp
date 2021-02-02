@@ -46,6 +46,7 @@ void GameState::addPlayer() {
 	}
 }
 
+
 /*  Private Functions  */
 void GameState::initArt()
 {
@@ -75,7 +76,8 @@ void GameState::initVars()
 	/*
 		Initiate fundamental non-static vars
 	*/
-	
+	GameObj::setWindow(window_ptr);
+
 	//set number of towers and reserve vector space
 	numberOfTowers = std::max(maxPlayers_this, 4);
 	towers.reserve(zsk::smallContSz);
@@ -148,7 +150,7 @@ void GameState::binSep(std::list<GameObj*>& actObjs,
 	//Call binSep recursively OR push vect onto quads
 	if (lvl > 0) {
 		binSep(actObjs, quads, side, --lvl);
-		binSep(actObjs2, quads, otherSide, lvl);
+		binSep(actObjs2, quads, otherSide, --lvl);
 	}
 	else {
 		quads.push_back(actObjs);
@@ -195,100 +197,9 @@ void GameState::determineCollisions(const
 
 
 
+
+
 /* LEVEL 1  -  Call From Update*/
-void GameState::movePlayerLogic()
-{
-	/*
-		SOLUTION:
-		- move entire method into player class
-		- call player::update from gamestate::update and then
-		make this function call inside it
-		- check tower collision may be handled by scanning
-		player::collisions for a tower collision and getting
-		that tower num
-		- "move logic" will have to be called internally in player
-		- for loop will be abandoned
-	*/
-
-	//towerNum is initialized to element number  of tower player is colliding with
-	int towerNum = checkTowerCollision();
-	enum dir { UP = 1, LEFT, DOWN, RIGHT };
-
-	for (size_t i = 0; i < players.size(); i++)
-	{
-		//moves player up if not at upwardbounds
-	//Yes there needs to be a function call after each if to support directional travel
-	//no, you cannot pass the key pressed event.
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-			if (players.at(i).getPlayerShape().getUpperBounds() > 0)
-				players.at(i).moveLogic(UP, towerNum, towers.at(towerNum).getPosition(),
-					towers.at(towerNum).getTowerRadius());
-		}
-		//move player left if not at left bounds
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-			if (players.at(i).getPlayerShape().getLeftBounds() > 0)
-				players.at(i).moveLogic(LEFT, towerNum, towers.at(towerNum).getPosition(),
-					towers.at(towerNum).getTowerRadius());
-		}
-		//down
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-			if (players.at(i).getPlayerShape().getLowerBounds() < window_ptr->getSize().y)
-				players.at(i).moveLogic(DOWN, towerNum, towers.at(towerNum).getPosition(),
-					towers.at(towerNum).getTowerRadius());
-		}
-		//and right
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-			if (players.at(i).getPlayerShape().getRightBounds() < window_ptr->getSize().x)
-				players.at(i).moveLogic(RIGHT, towerNum, towers.at(towerNum).getPosition(),
-					towers.at(towerNum).getTowerRadius());
-		}
-
-		/*Second parameter in function call accepts bool type, integer type is passed because any int > 0, (i.e. tower num 1,2,3 or 4)
-		is interpreted as bool TRUE, if checkTowerColliion() fails to
-		find colliding tower, it passes tower at elem 0 which is out of bounds*/
-	}
-
-}
-
-void GameState::otherPlayerMechs()
-{
-	/*
-		SOLUTUON
-		- just move these methods to player::update function
-	*/
-
-	/*
-		Other player mechanics to call include shield and 
-		managing follower area behavior 
-	*/
-
-	//Grow follow area
-	players.at(0).growLargeFollowArea(sf::Mouse::isButtonPressed(sf::Mouse::Right));
-
-	//regenShield
-	players.at(0).regenShield();
-
-}
-
-void GameState::shootingMechanics()
-{
-	/*
-		SOLUTION
-		- move into player class
-		- get rid of for loop
-		- mousePos should be a static variable in objs class
-		- window ptr should also be static objs var
-		- update these two items in each gs::update function call
-	*/
-
-	for (size_t i = 0; i < players.size(); i++)
-	{
-		players.at(i).shoot(mousePos);
-		players.at(i).moveBullets();
-		players.at(i).checkBulletInBounds(*window_ptr);
-	}
-}
-
 void GameState::followerMechanics()
 {
 	/*
@@ -529,6 +440,7 @@ void GameState::updateDt()
 	/*  Modifiers  */
 void GameState::setMousePos(sf::Vector2i &mPos) {
 	mousePos = mPos;
+	GameObj::setMousePos(mPos);
 }
 
 
@@ -549,7 +461,18 @@ STATE GameState::update(sf::Vector2i &mPos, const float& dt)
 		- Followers
 		- Towers
 	*/
+
+	//Utility
 	setMousePos(mPos);
+
+	//Determine all obj Collisions
+	checkCollisions();
+
+	//Game Obj Update for each object
+	for (auto& obj : objs) {
+		obj.second->update();
+	}
+
 	movePlayerLogic();
 	otherPlayerMechs();
 	shootingMechanics();
@@ -560,7 +483,6 @@ STATE GameState::update(sf::Vector2i &mPos, const float& dt)
 
 	static int i = 0;
 	zsk::print(msg, i);
-
 
 	if (!isGameOver()) {
 		return GAME;

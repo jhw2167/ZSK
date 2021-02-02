@@ -74,7 +74,7 @@ public:
 	bool isOutOBounds(sf::RenderWindow &window);
 
 	/*		UPDATE		*/
-	STATE update() const;
+	STATE update();
 	/***************/
 
 

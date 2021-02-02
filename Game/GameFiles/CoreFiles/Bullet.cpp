@@ -163,7 +163,7 @@ bool Bullet::isOutOBounds(sf::RenderWindow &window)
 
 
 /*		UPDATE		*/
-STATE Bullet::update() const {
+STATE Bullet::update() {
 	return GAME;
 }
 /***************/

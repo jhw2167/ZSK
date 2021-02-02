@@ -5,6 +5,7 @@
 #include "../../../BaseCode/pch/stdafx.h"
 #include "Bullet.h"
 #include "FollowerShape.h"
+#include "Tower.h"
 
 
 
@@ -62,29 +63,29 @@ public:
 
 
 	/*  Getter Functions  */
-	sf::Vector2f getPosition();
+	sf::Vector2f getPosition() const;
 	//Function returns players position at his heart for collisions
 
-	sf::Vector2f getGunPosition();
+	sf::Vector2f getGunPosition() const;
 	//Returns position of gun for shooting
 	
 	const sf::FloatRect& getHeartBounds() const;
 	
-	float getLeftBounds();
+	float getLeftBounds() const;
 	//returns player's upper, lower, left and right bounds for boundry checking
 
-	float getUpperBounds();
+	float getUpperBounds() const;
 	//player's head is highest point on their body
 
-	float getRightBounds();
+	float getRightBounds() const;
 	//left and right bounds with respect to the players arms
 
-	float getLowerBounds();
+	float getLowerBounds() const;
 	//players lowerBounds with respect 
 
-	sf::Color getPlayerColor();
+	sf::Color getPlayerColor() const;
 
-	sf::Color getBodyColor();
+	sf::Color getBodyColor() const;
 
 
 	//MOVE
@@ -153,9 +154,9 @@ private:
 	static FollowerShape scoreFigure;
 
 	/* Movement */
-	enum direction {STILL, UP, LEFT, DOWN, RIGHT};				//declares enum direction to handle player movement
+	enum Direction {STILL, UP, LEFT, DOWN, RIGHT};				//declares enum direction to handle player movement
 	float playerSpeed;
-	direction playerDirection;
+	Direction playerDirection;
 	sf::Vector2f moveVect;
 	
 	PlayerShape playerShape;
@@ -180,20 +181,14 @@ private:
 	float wLength;
 	float wHeight;
 
-public: 
-
-		//CONSTRUCTOR 
-	Player(sf::RenderWindow &window, int pNumber = 1, int startLives = 3, float scale = 2.5f, float startHealth = 300.f,
-		float startMaxHealth = 300.f, float startShield = 100.f, float startMaxShield = 100.f, 
-		float mSpeed = 6.f, int startScore = 0, float smallRadius = 70.f,
-		float maxLargeRadius = 240.f, int laserL = 100.f, int laserW = 1, bool showBox = false);
+	/*** PRIVATE FUNCTIONS ***/
 
 
 	//INITIALIZE METHODS FOR CLASS PLAYER
 	void initHealthBar(sf::RenderWindow &window, float sHealth, float sMaxHealth);
 
 	void initShieldBar(sf::RenderWindow &window, float sShield, float sMaxShield);
-	
+
 	void initHealthText();
 
 	void initScore();
@@ -204,6 +199,33 @@ public:
 
 	void initLargeFollowerRadius(float newRadius);
 	//End init methods
+
+
+
+	/*   Private Update Functions  */
+
+	//related to moving our player
+	void movePlayerLogic();
+		void movePlayer(sf::Vector2f &mVect);
+		void moveLogic(int dir);
+
+
+	//Related to shooting
+		void shootingMechanics();
+
+	//Related to taking damage
+
+
+	//miscellaneous Mechanics
+		void miscMechanics();
+
+public: 
+
+		//CONSTRUCTOR 
+	Player(sf::RenderWindow &window, int pNumber = 1, int startLives = 3, float scale = 2.5f, float startHealth = 300.f,
+		float startMaxHealth = 300.f, float startShield = 100.f, float startMaxShield = 100.f, 
+		float mSpeed = 6.f, int startScore = 0, float smallRadius = 70.f,
+		float maxLargeRadius = 240.f, int laserL = 100.f, int laserW = 1, bool showBox = false);
 
 
 	//ALL SET METHODS OF CLASS PLAYER
@@ -286,12 +308,6 @@ public:
 	//METHODS OF CLASS PLAYER MANAGING SCORE
 	void adjScore(int adj); 
 
-	//METHODS RELATED TO MOVING PLAYER DIRECTLY
-	void movePlayer(sf::Vector2f &mVect);
-
-	void moveLogic(int dir, int towerCollision, sf::Vector2f const &towerPos,
-		float towerRadius);
-
 	//calculates vector distance from player or tower object	
 	float circle(float x, float radius); 
 
@@ -302,6 +318,7 @@ public:
 	void regenShield();
 
 	void loseLife();
+
 
 	//METHODS RELATING TO PLAYERS INERACTION WITH TOWERS
 	sf::Vector2f towerCollisions(int dir, int towerNum, sf::Vector2f const &towerPos,
@@ -343,8 +360,7 @@ public:
 	void drawScore(sf::RenderWindow &window); 
 
 	/* UPDATE FUNCTION */
-	STATE update() const;
-
+	STATE update();
 
 	//COPY CONSTRUCTOR
 	Player(const Player& rhs);

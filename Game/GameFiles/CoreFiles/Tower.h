@@ -2,16 +2,14 @@
 
 //project includes
 #include "../../../BaseCode/pch/stdafx.h"
-#include "Player.h"
+#include "../GameObj.h"
+//#include "Player.h"
 
 class Tower:
 	GameObj
 {
 
 private:
-
-	/*  Fundamentals  */
-	const sf::RenderWindow *win_ptr;
 
 	/*  Basic Properties  */
 	float towerRadius;		
@@ -57,16 +55,12 @@ public:
 
 
 		/*  Accessor Methods  */
+	int getTowerNum() const;
 	const sf::FloatRect& getGlobalBounds() const;
-
-	sf::Vector2f getPosition();
-
-	float getTowerRadius();
-
-	sf::CircleShape getTowerShape();
-
-	int getTowerOwnership();
-
+	sf::Vector2f getPosition() const;
+	float getTowerRadius() const ;
+	sf::CircleShape getTowerShape() const;
+	int getTowerOwnership() const ;
 	bool isLaserFiring() const;
 
 	//TOWER OWNERSHIP METHODS
@@ -76,8 +70,6 @@ public:
 	/*  Functions  */
 
 	//TOWER COLLISIONS
-	bool checkTowerCollision(Player &player);
-
 
 	//TOWER MECHANICS
 
@@ -86,7 +78,7 @@ public:
 	void changeLaserColor(const int newOwner);
 
 	/*		UPDATE		*/
-	STATE update() const;
+	STATE update();
 	/***************/
 
 

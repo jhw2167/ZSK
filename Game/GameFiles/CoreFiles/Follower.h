@@ -3,7 +3,7 @@
 
 //Project includes
 #include "FollowerShape.h"
-#include "Tower.h"
+#include "Player.h"
 #include "../../../BaseCode/pch/stdafx.h"
 
 class Follower : GameObj
@@ -154,7 +154,7 @@ Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor = sf::Color::
 	const int takeDamage(int dmg);
 
 	/*		UPDATE		*/
-	STATE update() const;
+	STATE update();
 
 	//DRAW FOLLWER ASPECTS
 	void drawFollower(sf::RenderWindow &window);

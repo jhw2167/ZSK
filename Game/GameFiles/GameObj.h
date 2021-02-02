@@ -17,6 +17,16 @@
 //Global enum
 enum class ObjType {PLR = 0, BUL, FOL, TOW, LSR, DROP};
 
+//Forward delcaration of all coming classes:
+class Tower;
+class Bullet;
+class PlayerShape;
+class Player;
+class FollowerShape;
+class Follower;
+
+
+
 class GameObj
 {
 private:
@@ -31,6 +41,10 @@ private:
 	void remObj(int obj_id);
 
 protected:
+	//static properties
+	static sf::RenderWindow *window;
+	static sf::Vector2i mousePos;
+
 	//Obj properties
 	sf::Vector2f pos;
 	ObjType type;
@@ -48,9 +62,12 @@ public:
 	ObjType getType() const;
 	sf::Vector2f getPos() const;
 	virtual const sf::FloatRect& getGlobalBounds() const = 0;
-	virtual STATE update() const = 0;
+	virtual STATE update() = 0;
 
 	//Modifiers
+	static void setWindow(sf::RenderWindow *win_ptr);
+	static void setMousePos(sf::Vector2i& mousePos);
+
 	static void setObjs(std::unordered_map<int,
 		GameObj*>* vect);
 	

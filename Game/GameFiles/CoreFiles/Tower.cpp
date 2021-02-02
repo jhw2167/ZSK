@@ -156,24 +156,28 @@ void Tower::setPosition(sf::RenderWindow const &window, int tNumber)
 //End setters
 
 
-	/*  Accessor Methods  */
+int Tower::getTowerNum() const {
+	return towerNumber;
+}
+
+/*  Accessor Methods  */
 const sf::FloatRect& Tower::getGlobalBounds() const  {
 	return towerShape.getGlobalBounds();
 }
 
-sf::Vector2f Tower::getPosition() {
+sf::Vector2f Tower::getPosition() const {
 	return pos;
 }
 
-float Tower::getTowerRadius() {
+float Tower::getTowerRadius() const  {
 	return towerRadius;
 }
 
-sf::CircleShape Tower::getTowerShape() {
+sf::CircleShape Tower::getTowerShape() const {
 	return towerShape;
 }
 
-int Tower::getTowerOwnership() {
+int Tower::getTowerOwnership() const {
 	return towerOwnedBy;
 }
 
@@ -197,17 +201,7 @@ void Tower::changeOwner(int newOwner)
 
 	/*  Functions  */
 
-//TOWER COLLISIONS
-bool Tower::checkTowerCollision(Player &player)
-{
-	bool collision = player.getPlayerBounds().intersects(
-		towerShape.getGlobalBounds());
-
-	return collision;
-}
-
-//if (distanceFrom(playerPos) <= towerRadius)
-	//return true;
+//TOWER COLLISIONS -- deprecated
 
 
 //TOWER MECHANICS
@@ -237,7 +231,7 @@ void Tower::changeLaserColor(const int newOwner)
 
 
 /*		UPDATE		*/
-STATE Tower::update() const {
+STATE Tower::update() {
 	return GAME;
 }
 /***************/
