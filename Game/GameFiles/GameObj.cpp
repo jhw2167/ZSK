@@ -21,7 +21,7 @@ void GameObj::addObj(int obj_id) {
 	*/
 	id = obj_id;
 	objs->push_back(this);
-	self = objs->back;
+	self = objs->end();
 }
 
 void GameObj::remObj() {
