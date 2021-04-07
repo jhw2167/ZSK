@@ -32,18 +32,24 @@ class GameObj
 private:
 	static int objID;
 	int id;
+	std::list<GameObj*>::const_iterator self;
 
 	//maps
-	static std::unordered_map<int, GameObj*>* objs;
+	static std::list<GameObj*>* objs;
 
 	//functions
 	void addObj(int obj_id);
-	void remObj(int obj_id);
+	void remObj();
 
 protected:
 	//static properties
 	static sf::RenderWindow *window;
 	static sf::Vector2i mousePos;
+
+	//static object list properties
+	//		tower ptr
+	//		players ptr
+	//		Everything else ptr
 
 	//Obj properties
 	sf::Vector2f pos;
@@ -68,11 +74,13 @@ public:
 	static void setWindow(sf::RenderWindow *win_ptr);
 	static void setMousePos(sf::Vector2i& mousePos);
 
-	static void setObjs(std::unordered_map<int,
-		GameObj*>* vect);
+	static void setObjs(std::list<GameObj*>* list);
 	
 	//copy constructor
 	GameObj(const GameObj& rhs);
+
+	//move constructor
+	GameObj(GameObj&& rhs);
 
 	//destructor
 	~GameObj();

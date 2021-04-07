@@ -250,10 +250,33 @@ void Follower::centerHeathText()
 //MOVE FOLLOWER LOGIC
 void Follower::moveLogic(bool collision, Player &player, std::vector<Tower> &towers)
 {
+	//**NEED TO UPDATE HERE** - these vars dont need to be passed, all info can
+	// be acquired from the gameObjs vector
+	//collision - check "cols" vector for colisions of type FOL
+	//player	-	add for loop to check all players
+	//towers	- parse through LL @ towers section given by 
+	//				static object point
+
+
+	/*
+		Function: moveLogic()
+		-	We check to see if our follower currently IS following a player
+		-	if YES
+				- We accelerate/decellerate follower as appropriate
+
+		-	We check for potential collission with tower and assign a tower number
+		in order to carry this iformation
+
+		-	If there is a collision with another follower, that information
+		is passed and we "bounce" in a random direction.
+	*/
+
 	isFollowingPlayer(player);			//checks to see if following player
 
-	if (followingPlayer)				//if not following player it does not need to reset its velocity
+
+	if (followingPlayer)				
 	{
+		
 		bool decelerate = fShape.getGlobalBounds().intersects(player.getHeartBounds());
 
 		accelerate(player, decelerate);
@@ -290,7 +313,8 @@ void Follower::moveLogic(bool collision, Player &player, std::vector<Tower> &tow
 
 
 	sf::Vector2f newPos = fShape.getPosition() + fVelocity;
-	if (collision) {
+	if (collision) 
+	{
 		newPos += bounce;
 		outOfBounds(newPos, collision);
 		moveFollower(fVelocity + bounce);
@@ -621,6 +645,7 @@ const int Follower::takeDamage(int dmg)
 STATE Follower::update() 
 {
 	//move yourself "indivual" follower
+	//		- We must inspect follower's collisions then move
 	moveFollowers();
 
 	//Check if you've been attacked

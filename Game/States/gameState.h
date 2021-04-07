@@ -30,8 +30,8 @@ private:
 	std::vector<Tower> towers;
 	sf::Vector2i mousePos;
 
-	//Game objs
-	std::unordered_map<int, GameObj*> objs;
+	//Game objs - ALL GAME ENTITIES: Players, towers, followers etc..
+	std::list<GameObj*> objs;
 
 	//Simple Game Values
 	static int numPlayers;
@@ -59,9 +59,10 @@ private:
 
 	/* LEVEL 1  -  Call From Update*/
 	void checkCollisions();
-	void binSep(std::list<GameObj*>& actObjs, 
-		std::vector<std::list<GameObj*>>& quads, sf::FloatRect area, int lvl);
-	void determineCollisions(const std::vector<std::list<GameObj*>>& quads);
+	void binSep(const std::list<GameObj*>* actObjs, 
+		std::vector<std::list<GameObj*>*>& quads, sf::FloatRect area, int lvl);
+	void determineCollisions(const std::vector<std::list<GameObj*>*>& quads);
+	void deleteBins(std::vector<std::list<GameObj*>*>& quads);
 
 	void movePlayerLogic();
 	void otherPlayerMechs();

@@ -6,7 +6,7 @@
 */
 
 //static initilization
-std::unordered_map<int, GameObj*>* 
+std::list<GameObj*>* 
 	GameObj::objs = nullptr;
 
 int GameObj::objID = 0;
@@ -17,14 +17,15 @@ int GameObj::objID = 0;
 //ADD object when created
 void GameObj::addObj(int obj_id) {
 	/*
-		Create a new pair and insert it into the map
-		also, update the collision map
+		GameObject puts itself onto the linked list
 	*/
-	(*objs)[obj_id] = this;
+	id = obj_id;
+	objs->push_back(this);
+	self = objs->back;
 }
 
-void GameObj::remObj(int obj_id) {
-	objs->erase(objID);
+void GameObj::remObj() {
+	objs->erase(self);
 }
 
 
@@ -65,8 +66,8 @@ void GameObj::setMousePos(sf::Vector2i & mousePosition) {
 }
 
 //One time per game SET Objs game vector pointer
-void GameObj::setObjs(std::unordered_map<int, GameObj*>* vect) {
-	objs = vect;
+void GameObj::setObjs(std::list<GameObj*>* list) {
+	objs = list;
 }
 
 
@@ -80,9 +81,25 @@ GameObj::GameObj(const GameObj& rhs)
 	this->type = rhs.type;
 	this->id = rhs.id;
 
-	(*objs)[rhs.id] = this;
+	remObj();
+	addObj(this->id);
 	printf("2. {%d} New id for this: %p\n", rhs.id, this);
 }
+
+//move constructor
+GameObj::GameObj(GameObj&& rhs)
+{
+	//printf("Calling copy constr: this id: %d, rhs id %d\n",id, rhs.id);
+	this->pos = rhs.pos;
+	this->type = rhs.type;
+	this->id = rhs.id;
+
+	remObj();
+	addObj(this->id);
+	printf("2. {%d} New id for this: %p\n", rhs.id, this);
+}
+
+
 
 //Destructor
 GameObj::~GameObj() 
@@ -96,21 +113,29 @@ GameObj::~GameObj()
 
 	printf("About to delete {%d}, visualizing data... size %d\n",
 		id, objs->size());
+	bool shouldRemove = 0;
 
 	try
 	{
+		//Print all items remaining in list for reference
 		for (auto data : *objs) {
-			printf("{%d} {%p}\n\n", data.first, data.second);
+			printf("{%d} {%p}\n\n", data->id, data);
+
+			//check for *this* item
+			if (data->id == this->id)
+				shouldRemove = 1;
+
 		}
 
-		GameObj* inObjs = objs->find(id)._Ptr->_Myval.second;
-		printf("3. {%d} ---DESTRUCTOR--- This ptr: %p, in objs: %p\n",
-			id, this, inObjs);
+		if (shouldRemove)
+			printf("3. {%d} ---DESTRUCTOR--- This ptr: %p, in objs\n",
+				id, this);
+		else
+			printf("Object did not exist, no deletio\n\n");
 
-		if (inObjs == this) {
-			cout << "Erasing obj at id: " << id << endl;
-			objs->erase(id);
-		}
+		
+		//Remember to actually remove the object here!!
+		//REMOVE_OBJ
 	}
 	catch (...) {
 		//destructor continues as normal

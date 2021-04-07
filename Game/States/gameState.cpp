@@ -83,35 +83,43 @@ void GameState::initVars()
 	towers.reserve(zsk::smallContSz);
 	players.reserve(zsk::smallContSz);
 
-	objs.reserve(zsk::lrgContSz);	//reserve 512 * 4 bytes for game Objs
 	GameObj::setObjs(&objs);		//set ptr to objs in GameObjs class
 }
 
+
 //Game Update Functions
+
 
 /*  Collission functions  */
 void GameState::checkCollisions()
 {
-	std::list<GameObj*> activeObjs;
-	for (auto& obj : objs) {
-		activeObjs.push_back(obj.second);
-	}
+	/*
+		Outer level "check collisions" function initiates
+		recursive function call on binSep and calls 
+		determine collisions function
+	*/
 
-	std::vector<std::list<GameObj*>> quads;
+	std::vector<std::list<GameObj*>*> quads;
 	sf::FloatRect area(sf::Vector2f(0.0,0.0), 
 		sf::Vector2f(window_ptr->getSize()));
 	int numQuads = 4;
 
 	//seperate objs into 16 quadrants for collision detection
-	binSep(activeObjs, quads, area, numQuads);
+	binSep(&objs, quads, area, numQuads);
 
 	//determine collisions
 	determineCollisions(quads);
 
-}
+	//delete allocated data in quads
 
-void GameState::binSep(std::list<GameObj*>& actObjs, 
-	std::vector<std::list<GameObj*>>& quads, sf::FloatRect side, int lvl)
+	deleteBins(quads);
+
+}
+//END
+
+
+void GameState::binSep(const std::list<GameObj*>* actObjs, 
+	std::vector<std::list<GameObj*>*>& quads, sf::FloatRect side, int lvl)
 {
 	/*
 		Seperate each level of objs unordered map into 
@@ -119,7 +127,8 @@ void GameState::binSep(std::list<GameObj*>& actObjs,
 	*/
 
 	//create actObjs2 - vector of GameObj*'s NOT in float rect area
-	std::list<GameObj*> actObjs2;
+	std::list<GameObj*>* actObjs1 = new std::list<GameObj*>();
+	std::list<GameObj*>* actObjs2 = new std::list<GameObj*>();
 
 	//Determine upper/left area
 	sf::FloatRect otherSide(side);
@@ -136,31 +145,30 @@ void GameState::binSep(std::list<GameObj*>& actObjs,
 
 	//test if floatRect contains
 		//push back into appropriate vector
-	for (const auto& obj : actObjs) 
+	for (const auto& obj : *actObjs) 
 	{
-		if (side.contains(obj->getPos())) {
-			//do nothing, obj belongs in this vect
-		}
-		else {
-			actObjs2.push_back(obj);
-			actObjs.remove(obj);
-		}
+		if (side.contains(obj->getPos())) 
+			actObjs1->push_back(obj);
+		else
+			actObjs2->push_back(obj);
 	}
 
 	//Call binSep recursively OR push vect onto quads
 	if (lvl > 0) {
-		binSep(actObjs, quads, side, --lvl);
+		binSep(actObjs1, quads, side, --lvl);
 		binSep(actObjs2, quads, otherSide, --lvl);
 	}
 	else {
-		quads.push_back(actObjs);
+		quads.push_back(actObjs1);
 		quads.push_back(actObjs2);
 	}
 
 }
+//END
+
 
 void GameState::determineCollisions(const 
-	std::vector<std::list<GameObj*>>& quads)
+	std::vector<std::list<GameObj*>*>& quads)
 {
 	/*
 		- We determine if 2 given objs within a given
@@ -172,10 +180,10 @@ void GameState::determineCollisions(const
 	for (const auto& ls : quads)
 	{
 		//get iterator from list
-		auto it1 = ls.begin() ;
-		while (it1 != ls.end())
+		auto it1 = ls->begin() ;
+		while (it1 != ls->end())
 		{
-			for (auto it2 = it1; ++it2 != ls.end();)
+			for (auto it2 = it1; ++it2 != ls->end();)
 			{
 				GameObj* obj1 = it1._Ptr->_Myval;
 				GameObj* obj2 = it2._Ptr->_Myval;
@@ -195,6 +203,18 @@ void GameState::determineCollisions(const
 	//END vector for
 }
 
+void GameState::deleteBins(std::vector<std::list<GameObj*>*>& quads)
+{
+	/*
+		We delete memory allocated to storing lists
+		of game objs belonging in quadrants.
+	*/
+
+	for (const auto& list : quads) {
+		list->clear();
+		delete list;
+	}
+}
 
 
 
@@ -208,12 +228,6 @@ void GameState::followerMechanics()
 		followers class
 		- methods called will have to be accompanying
 	*/
-
-	spawnFollowers();
-	moveFollowers();
-
-	shootFollowers();
-	attackPlayer();
 }
 
 void GameState::towerMechanics()
@@ -468,9 +482,9 @@ STATE GameState::update(sf::Vector2i &mPos, const float& dt)
 	//Determine all obj Collisions
 	checkCollisions();
 
-	//Game Obj Update for each object
+	//Game_Obj Update for each object
 	for (auto& obj : objs) {
-		obj.second->update();
+		obj->update();
 	}
 
 	movePlayerLogic();
