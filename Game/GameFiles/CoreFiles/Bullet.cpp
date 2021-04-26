@@ -67,7 +67,7 @@ void Bullet::setBulletVelocity(const sf::Vector2f& playerPos,
 	float yCoord = cursorPos.y - playerPos.y;
 	float xCoord = cursorPos.x - playerPos.x;
 
-	float mag = sqrt(pow(xCoord, 2) + pow(yCoord, 2));
+	float mag = static_cast<float>(sqrt(pow(xCoord, 2) + pow(yCoord, 2)));
 
 	velocity = sf::Vector2f((xCoord / mag) * speed, (yCoord / mag) * speed);
 	//creates bullet velocity vector as function of direction vector and speed												
@@ -117,13 +117,13 @@ void Bullet::orient(const sf::Vector2i& cursorPos)
 	float yDif = pos.y - cursorPos.y;
 
 	float radAngle = std::atan(yDif / xDif);
-	float angle = zsk::radsToDegs(radAngle);
+	float angle = static_cast<float>(zsk::radsToDegs(radAngle));
 
 	float circleX = pos.x;
 	float circleY = pos.y;
 
 	if (xDif < 0) {
-		radAngle += zsk::pi;
+		radAngle += static_cast<float>(zsk::pi);
 		circleX += (std::cos(radAngle)) * bBody.getSize().x;
 		circleY -= std::sin(radAngle) * bBody.getSize().x;
 	}

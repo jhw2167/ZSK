@@ -73,11 +73,13 @@ namespace MenuObjects {
 		//Default constructor - Blank Button
 		MenuObject();
 
+		//Fully Descriptive Constructor
 		MenuObject(const STATE currentState, const sf::Vector2f& pos, const std::string& msg,
 			const zsk::FONT_CODE fontCode = zsk::ARIAL, const int textSize = 20,
 			const bool canBeClicked = true, const STATE newStateOnClick = MAIN_MENU,
-			const sf::Vector2f& tghtness = sf::Vector2f(1.1, 1.1));
+			const sf::Vector2f& tghtness = sf::Vector2f(1.1f, 1.1f));
 
+		//Constructor important for tuple class
 		MenuObject(const STATE currentState, const sf::Vector2f& pos,
 			const sf::Vector2f& boxSize, const bool canBeClicked,
 			const STATE newStateOnClick);
@@ -165,7 +167,8 @@ namespace MenuObjects {
 
 
 	//BUTTON CLASS
-	class Button : public MenuObject
+	class Button :
+		public MenuObject
 	{
 	private:
 		
@@ -188,7 +191,7 @@ namespace MenuObjects {
 		Button(STATE currentState, const sf::Vector2f& pos, const std::string& msg,
 			const zsk::FONT_CODE fontCode = zsk::ARIAL, const int textSize = 20,
 			const bool canBeClicked = true, STATE newStateOnClick = MAIN_MENU,
-			const sf::Vector2f& tightness = sf::Vector2f(1.1, 1.1));
+			const sf::Vector2f& tightness = sf::Vector2f(1.1f, 1.1f));
 
 		//For use in tuples
 		Button(const STATE currentState, const sf::Vector2f& pos,
@@ -223,16 +226,17 @@ namespace MenuObjects {
 	*/
 
 	//TEXTBOX CLASS
-	class Textbox : public MenuObject
+	class Textbox :
+		public MenuObject
 	{
 	private:
-		short maxMsgSize;
+		int maxMsgSize;
 		bool forceUpperLetters;
 
 		int interval;
 		int counter;
 
-		std::vector<sf::Event>* events;
+		std::shared_ptr<std::vector<sf::Event>> events;
 		//ensures textbox can only be clicked once when engaged
 
 		bool rmDefTextOpts;
@@ -256,7 +260,7 @@ namespace MenuObjects {
 		Textbox(STATE currentState, const sf::Vector2f& pos, const std::string& msg,
 			const zsk::FONT_CODE fontCode = zsk::ARIAL, const int textSize = 20,
 			const bool canBeClicked = true, STATE newStateOnClick = MAIN_MENU,
-			const sf::Vector2f& tghtnss = sf::Vector2f(1.1, 1.1));
+			const sf::Vector2f& tghtnss = sf::Vector2f(1.1f, 1.1f));
 
 		//For use in tuples
 		Textbox(const STATE currentState, const sf::Vector2f & pos,
@@ -264,7 +268,7 @@ namespace MenuObjects {
 			const STATE newStateOnClick);
 
 		/*  Unique Public methods */
-		void setEventsPtr(std::vector<sf::Event>* evs);
+		void setEventsPtr(const std::shared_ptr<std::vector<sf::Event>>& evs);
 		void setString(const std::string & newString);
 		void setSize(const int textSize, const sf::Vector2f&
 			tghtness, const bool init);
@@ -272,7 +276,7 @@ namespace MenuObjects {
 			const ALIGN aln = CNTR);
 
 		//Setters
-		void setMaxMsgSize(short newSize);
+		void setMaxMsgSize(int newSize);
 		void forceUpperCase(bool force);
 
 		//Accessors
@@ -304,7 +308,8 @@ namespace MenuObjects {
 	*/
 
 	class Tuple :
-		public MenuObject {
+		public MenuObject 
+	{
 
 	private:
 

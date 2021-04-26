@@ -8,7 +8,7 @@
 */
 
 //Global Enum Defined in .h for gameState Handling
-enum STATE { MAIN_MENU = 0, 
+enum class STATE { MAIN_MENU = 0, 
 	LOBBY, 
 	HOST_LOBBY, 
 	JOIN_LOBBY,

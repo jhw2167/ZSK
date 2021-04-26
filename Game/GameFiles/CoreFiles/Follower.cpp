@@ -14,7 +14,7 @@ const int Follower::dmgBN = 5;
 
 	/*  Constructor  */
 Follower::Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor, int startHealth, 
-	int startDmg, short retrgtRate, short redirRate, float scale, bool showBoxes)
+	int startDmg, int retrgtRate, int redirRate, float scale, bool showBoxes)
 	: GameObj(ObjType::FOL)
 {
 	//showBoxes = true;
@@ -30,7 +30,7 @@ Follower::Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor, in
 	windowHeight = window.getSize().y;
 
 	followingPlayer = false;
-	momentum = 1.01;
+	momentum = 1.01f;
 	aUp = aLeft = aDown = aRight = 0;
 	breakNeck = false;
 
@@ -101,7 +101,7 @@ void Follower::randomSpawn()
 	//a random spawn point generated between towers on the screen
 	//and stored in a vector
 	zsk::vect sideNums = { 1, 4 };
-	int spawnSide = zsk::randomSpawn(sideNums).a;
+	int spawnSide = static_cast<int>(zsk::randomSpawn(sideNums).a);
 	//clock will rotate zombie's spawnlocale around the map
 
 	/*
@@ -132,12 +132,12 @@ void Follower::randomSpawn()
 
 		case 3:
 			//spawn right
-			newPos.x = windowLength;
+			newPos.x = static_cast<float>(windowLength);
 			break;
 
 		case 4:
 			//spawn bot
-			newPos.y = windowHeight;
+			newPos.y = static_cast<float>(windowHeight);
 		}
 	
 
@@ -368,8 +368,8 @@ void Follower::setNewVelocity(sf::Vector2f const &destinationVector, float speed
 		speed = speedBN;
 	}
 
-	float xVelocity = ((xCoord / mag) * speed * pow(momentum, aRight + aLeft));
-	float yVelocity = ((yCoord / mag) * speed * pow(momentum, aUp + aDown));
+	float xVelocity = ((xCoord / mag) * speed * static_cast<float>(pow(momentum, aRight + aLeft)));
+	float yVelocity = ((yCoord / mag) * speed * static_cast<float>(pow(momentum, aUp + aDown)));
 
 	sf::Vector2f toPass = sf::Vector2f(xVelocity, yVelocity);
 
@@ -564,7 +564,7 @@ bool Follower::followerCollision(std::list<Follower> &fols,
 void Follower::setMinusBounce()
 {
 	zsk::vect range = { 0, 4 };
-	int bounceType = zsk::randomSpawn(range).a;
+	int bounceType = static_cast<int>(zsk::randomSpawn(range).a);
 
 	bounce = globBounce;
 
@@ -639,23 +639,49 @@ const int Follower::takeDamage(int dmg)
 	}
 }
 
-/***************************/
-/***		UPDATE		***/
+
+
+
+
+	/*	UPDATE	*/
 
 STATE Follower::update() 
 {
-	//move yourself "indivual" follower
-	//		- We must inspect follower's collisions then move
-	moveFollowers();
+	/*
+		Routine update function for followers, each follower
+		updates *each frame* and these functions are called
+		in each frame
+			- Involves moving and interacting with other game objs
+	*/
 
-	//Check if you've been attacked
-	shootFollowers();
+	moveFollower();
 
-	//check if you're dealing damage
+	shootFollower();
+
 	attackPlayer();
 
 	return GAME;
 }
+
+
+void Follower::moveFollower()
+{
+	//move yourself "indivual" follower
+	//		- We must inspect follower's collisions then move
+
+}
+
+void Follower::shootFollower() {
+	//Check if follower has been attacked
+
+}
+
+void Follower::attackPlayer()
+{
+	//check if you're dealing damage
+}
+
+
 
 /*		Private Update Functions	*/
 

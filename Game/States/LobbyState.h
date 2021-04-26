@@ -26,7 +26,7 @@ private:
 
 	//Option Vars
 	std::vector<MenuObjects::MenuObject*> menuObjects;
-	short numOptions;
+	int numOptions;
 
 	//host side
 	MenuObjects::Button hostGame;
@@ -93,7 +93,7 @@ public:
 
 	/*  Constructors  */
 
-	LobbyState(sf::RenderWindow* w_ptr, std::vector<sf::Event>* events);
+	LobbyState();
 
 
 	/*  Modifiers  */
@@ -104,7 +104,7 @@ public:
 	/*  Other Public Funtions  */
 	void addNewPlayer(const NetworkObjects::ipBundle& bundle);
 
-	virtual STATE update(sf::Vector2i &mousePos, const float& dt);
+	virtual STATE update(const float& dt);
 
 	virtual void render(sf::RenderTarget* rt = nullptr);
 

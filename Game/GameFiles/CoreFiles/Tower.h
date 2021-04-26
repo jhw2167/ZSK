@@ -6,7 +6,7 @@
 //#include "Player.h"
 
 class Tower:
-	GameObj
+	public GameObj
 {
 
 private:

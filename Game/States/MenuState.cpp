@@ -7,9 +7,11 @@
 
 
 /*  Constructors  */
-MenuState::MenuState(sf::RenderWindow* w_ptr, std::vector<sf::Event>* evs)
-	: State(w_ptr, evs)
+MenuState::MenuState()
+	: State()
 {
+	gameState = STATE::MAIN_MENU;
+
 	initvars();
 	initGameTitle();
 	initMenuOptions();
@@ -19,7 +21,6 @@ MenuState::MenuState(sf::RenderWindow* w_ptr, std::vector<sf::Event>* evs)
 /*  Init methods  */
 void MenuState::initvars()
 {
-	gameState = MAIN_MENU;
 	numOptions = 2;
 	//default, user remains at startmenu
 }
@@ -74,11 +75,11 @@ void MenuState::initMenuOptions()
 	sf::Vector2f quitTightness = sf::Vector2f(3.1f, 1.1);
 
 	//create the buttons
-	play = MenuObjects::Button(MAIN_MENU, posPlay, playText, zsk::ARCDE,
-		textSize, true, LOBBY, playTightness);
+	play = MenuObjects::Button(STATE::MAIN_MENU, posPlay, playText, zsk::ARCDE,
+		textSize, true, STATE::LOBBY, playTightness);
 
-	quit = MenuObjects::Button(MAIN_MENU, posPlay + spacing, quitText, zsk::ARCDE,
-		textSize, true, QUIT, quitTightness);
+	quit = MenuObjects::Button(STATE::MAIN_MENU, posPlay + spacing, quitText, zsk::ARCDE,
+		textSize, true, STATE::QUIT, quitTightness);
 
 	//set Animate color to light gray and border thickness
 	play.setAnimateColor(zsk::art::lightTertCol);
@@ -118,14 +119,14 @@ void MenuState::setTitleSize(int newSize) {
 //End Modifiers
 
 /*  Accessors  */
-short MenuState::getOptionSelected() {
+STATE MenuState::getOptionSelected() {
 	return gameState;
 }
 
 
 /*  Other Public Funtions  */
 
-STATE MenuState::update(sf::Vector2i &mousePos, const float& dt)
+STATE MenuState::update(const float& dt)
 {
 	//Update and animate title screen
 	animateTitle();
@@ -162,10 +163,10 @@ void MenuState::hoverOptions()
 	quit.update(*window_ptr);
 
 	if (play.isClicked()) {
-		updateOption(LOBBY);
+		updateOption(STATE::LOBBY);
 	}
 	else if (quit.isClicked()) {
-		updateOption(QUIT);
+		updateOption(STATE::QUIT);
 	}
 }
 
@@ -178,7 +179,7 @@ void MenuState::render(sf::RenderTarget* rt) {
 
 	switch (gameState)
 	{
-	case MAIN_MENU:
+	case STATE::MAIN_MENU:
 		//title screen
 		window_ptr->draw(title1);
 		window_ptr->draw(title2);
@@ -187,13 +188,13 @@ void MenuState::render(sf::RenderTarget* rt) {
 		quit.draw(*window_ptr);
 
 		break;
-	case LOBBY:
+	case STATE::LOBBY:
 		//create Game Lobby;
 		break;
-	case GAME:
+	case STATE::GAME:
 		//options
 		break;
-	case QUIT:
+	case STATE::QUIT:
 		//quit game
 		break;
 	}

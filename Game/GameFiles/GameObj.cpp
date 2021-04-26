@@ -6,8 +6,7 @@
 */
 
 //static initilization
-std::list<GameObj*>* 
-	GameObj::objs = nullptr;
+std::shared_ptr<std::list<GameObj*>> GameObj::objs = nullptr;
 
 int GameObj::objID = 0;
 
@@ -15,16 +14,19 @@ int GameObj::objID = 0;
 /* PRIVATE METHODS  */
 
 //ADD object when created
-void GameObj::addObj(int obj_id) {
-	/*
-		GameObject puts itself onto the linked list
-	*/
-	id = obj_id;
+void GameObj::addObj() {
+	
+	//GameObject puts itself onto the linked list
+
 	objs->push_back(this);
 	self = objs->end();
 }
 
 void GameObj::remObj() {
+	/*
+		Remove object from the LL and assign const
+		iterator to the correct next obj
+	*/
 	objs->erase(self);
 }
 
@@ -37,7 +39,7 @@ GameObj::GameObj(ObjType objType)
 	static int called = 0;
 	type = objType;
 	id = ++objID;
-	addObj(id);
+	addObj();
 	printf("1. {%d} objID: %d, objSz: %d, Constr Called: %d, " 
 		"ObjType: %d\n\n", id, objID, objs->size(), ++called, type);
 }
@@ -57,17 +59,41 @@ sf::Vector2f GameObj::getPos() const  {
 	return pos;
 }
 
-void GameObj::setWindow(sf::RenderWindow * win_ptr) {
-	window = win_ptr;
+//Static Setters
+void GameObj::setWindow(const std::shared_ptr<sf::RenderWindow> window_pointer) {
+	window_ptr = window_pointer;
 }
 
-void GameObj::setMousePos(sf::Vector2i & mousePosition) {
-	mousePos = mousePosition;
+void GameObj::setMouse(const std::shared_ptr<sf::Mouse>& mouse_pointer) {
+	mouse_ptr = mouse_pointer;
 }
 
 //One time per game SET Objs game vector pointer
-void GameObj::setObjs(std::list<GameObj*>* list) {
+void GameObj::setObjs(std::shared_ptr<std::list<GameObj*>> list) {
 	objs = list;
+}
+
+//STATIC
+//init our subLists from static function call
+void GameObj::initSublist() {
+
+	/*
+		Initiate sublist pointers to null values (before obj
+		vector is added to) using objs->begin
+		- Use std::move to avoid unecessary copying
+	*/
+
+	int i = static_cast<int>(ObjType::PLR);
+	int end = static_cast<int>(ObjType::END);
+
+	while(i++ != end) {
+		subLists.push_back(std::move(SubList(objs->begin(), objs->begin())));
+	}
+}
+
+//Set specific subList
+void GameObj::setSublist(const SubList& sub, ObjType indx) {
+	subLists.at(static_cast<int>(indx)) = sub;
 }
 
 
@@ -82,7 +108,7 @@ GameObj::GameObj(const GameObj& rhs)
 	this->id = rhs.id;
 
 	remObj();
-	addObj(this->id);
+	addObj();
 	printf("2. {%d} New id for this: %p\n", rhs.id, this);
 }
 
@@ -95,7 +121,7 @@ GameObj::GameObj(GameObj&& rhs)
 	this->id = rhs.id;
 
 	remObj();
-	addObj(this->id);
+	addObj();
 	printf("2. {%d} New id for this: %p\n", rhs.id, this);
 }
 

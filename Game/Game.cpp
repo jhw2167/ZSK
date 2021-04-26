@@ -6,7 +6,7 @@
 
 //Game.cpp file describes game object
 
-const short Game::maxPlayers = 4;
+const int Game::maxPlayers = 4;
 
 /*		CLASS CONSTRUCTOR		*/
 Game::Game()
@@ -41,8 +41,8 @@ void Game::initWindow()
 	*/
 
 	std::string title = "ZSK";
-	vidMode.width = 1500.f;
-	vidMode.height = 1200.f;
+	vidMode.width = 1500;
+	vidMode.height = 1200;
 	int frameLimit = 60;
 	bool vertical_syn_enabled = false;
 
@@ -248,10 +248,6 @@ void Game::pollEvents()
 
 } //End func
 
-void Game::updateMousePosition() {
-	mousePos = sf::Mouse::getPosition(*window_ptr);
-}
-
 void Game::addPlayer() {
 	GameState::addPlayer();
 }
@@ -263,13 +259,12 @@ void Game::update()
 		stack is NOT empty, update the top
 	*/
 
-	updateMousePosition();
 	pollEvents();
 	updateDt();
 
 	STATE gs = MAIN_MENU;
 	if (!states.empty())
-		gs = states.top()->update(mousePos, dt);
+		gs = states.top()->update(dt);
 	else
 		gs = QUIT;
 		//gameState quit;

@@ -15,29 +15,31 @@ namespace zsk
 		/*  Functions  */
 	zsk::vect randomSpawn(const vect& range_x, const vect& range_y)
 	{
+		int r1_x = static_cast<int>(range_x.a);
+		int r2_x = static_cast<int>(range_x.b);
+		int dif_x = r2_x - r1_x;
 
-		try
-		{
-			static int srand(time(0));
+		int r1_y = static_cast<int>(range_y.a);
+		int r2_y = static_cast<int>(range_y.b);
+		int dif_y = r2_y - r1_y;
 
-			float rand_x = (rand() % ((int)range_x.b - (int)range_x.a));
-			rand_x += (int)range_x.a;
-			//Calculated our rand x w/in provided range
-
-			float rand_y = (rand() % ((int)range_y.b - (int)range_y.a));
-			rand_y += (int)range_y.a;
-			//Calculated our rand x w/in provided range
-
-			return vect(rand_x, rand_y);
+		if ((dif_x == 0) || (dif_y == 0)) {
+			float spawn_x = static_cast<float>(dif_x / 2);
+			float spawn_y = static_cast<float>(dif_y / 2);
+			return vect(spawn_x, spawn_y);
 		}
-		catch (const std::exception& e)
-		{
-			cout << "Exception caight in global funtion zsk::randomSpawn" <<
-				" possible attempt to modulo 0 " << endl;
-			cout << e.what() << endl;
-		}
+		
+		static int srand(time(0));
 
-		return range_x;
+		float spawn_x = (rand() % (r2_x - r1_x));
+		spawn_x += r1_x;
+		//Calculated our rand x w/in provided range
+
+		float spawn_y = (rand() % (r2_y - r1_y));
+		spawn_y += r1_y;
+		//Calculated our rand x w/in provided range
+
+		return vect(spawn_x, spawn_y);
 	}
 
 	float distanceFrom(const sf::Vector2f & loc1, const sf::Vector2f & loc2)

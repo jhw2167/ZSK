@@ -6,7 +6,8 @@
 #include "Player.h"
 #include "../../../BaseCode/pch/stdafx.h"
 
-class Follower : GameObj
+class Follower : 
+	public GameObj
 {
 private:
 
@@ -19,6 +20,7 @@ private:
 	int health;
 	int dmgDone;
 	sf::Text healthText;
+
 
 	/*  Merging  */
 	int mergeCount;
@@ -39,25 +41,25 @@ private:
 
 
 	/* Player targeting  */
-	short retargetRate;
-	short retargetCount;
+	int retargetRate;
+	int retargetCount;
 
-	short redirectRate;
-	short redirectCount;
+	int redirectRate;
+	int redirectCount;
 
 	float playersOldX;
 	float playersOldY;
 
 
 	/* Collision Info */
-	short towerColNum;;
+	int towerColNum;;
 	sf::Vector2f bounce;
 	static const sf::Vector2f globBounce;
 	//vector with random x y coordinates for collisions
 
 	/*  Window Variables */
-	float windowLength;
-	float windowHeight;
+	unsigned int windowLength;
+	unsigned int windowHeight;
 
 	/*  Miscellaneous  */
 	float towerRadius;
@@ -79,7 +81,7 @@ private:
 public:
 
 Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor = sf::Color::Black,
-	int startHealth = 1, int startDmg = 1, short retrgtRate = 1, short redirRate = 2, 
+	int startHealth = 1, int startDmg = 1, int retrgtRate = 1, int redirRate = 2,
 	float scale = 3.5f, bool showBoxes = true);
 
 
@@ -105,6 +107,7 @@ Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor = sf::Color::
 
 	void setBounce(const sf::Vector2f& bnc);
 	//End Setters
+
 
 	/*  Accessor Methods  */
 	sf::Vector2f getFollowerPosition();
@@ -155,6 +158,14 @@ Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor = sf::Color::
 
 	/*		UPDATE		*/
 	STATE update();
+
+	void moveFollower();
+
+	void shootFollower();
+
+	void attackPlayer();
+
+	//all need implementing
 
 	//DRAW FOLLWER ASPECTS
 	void drawFollower(sf::RenderWindow &window);

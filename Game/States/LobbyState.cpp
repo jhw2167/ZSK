@@ -6,11 +6,12 @@
 
 
 /*  Constructors  */
-LobbyState::LobbyState(sf::RenderWindow* w_ptr,
-	std::vector<sf::Event>* evs)
-	: State(w_ptr, evs)
+LobbyState::LobbyState()
+	: State()
 {
-	
+	//update gameState to Lobby
+	gameState = STATE::LOBBY;
+
 	initvars();
 	initArt();
 	//initIP();
@@ -22,7 +23,6 @@ LobbyState::LobbyState(sf::RenderWindow* w_ptr,
 /*  Init methods  */
 void LobbyState::initvars()
 {
-	gameState = LOBBY;
 	numOptions = 2;
 	//default, user remains at startmenu
 }
@@ -117,12 +117,12 @@ void LobbyState::initHostJoin(const float width, const float height)
 	std::string joinText = "Join Game";
 
 	//create the buttons
-	hostGame = MenuObjects::Button(LOBBY, posHost, playText, zsk::ARCDE,
-		textSize, false, HOST_LOBBY);
+	hostGame = MenuObjects::Button(STATE::LOBBY, posHost, playText, zsk::ARCDE,
+		textSize, false, STATE::HOST_LOBBY);
 	hostGame.bufferClickable();
 
-	joinGame = MenuObjects::Button(LOBBY, posJoin, joinText, zsk::ARCDE,
-		textSize, false, JOIN_LOBBY);
+	joinGame = MenuObjects::Button(STATE::LOBBY, posJoin, joinText, zsk::ARCDE,
+		textSize, false, STATE::JOIN_LOBBY);
 	joinGame.bufferClickable();
 
 	//set Animate color to light gray and border thickness
@@ -151,10 +151,10 @@ void LobbyState::initEnterCode(const float width, const float height)
 	sf::Vector2f tightness = sf::Vector2f(1.1f, 1.1);
 
 	//create the textBox
-	enterCode = MenuObjects::Textbox(LOBBY, pos + spacing, defaultText, zsk::ARIAL,
-		textSize, false, LOBBY, tightness);
+	enterCode = MenuObjects::Textbox(STATE::LOBBY, pos + spacing, defaultText, zsk::ARIAL,
+		textSize, false, STATE::LOBBY, tightness);
 
-	enterCode.setEventsPtr(events);
+	enterCode.setEventsPtr(events_ptr);
 	enterCode.setPrimColor(zsk::art::lightTertCol);
 	enterCode.setTxtColor(zsk::art::secColor);
 
@@ -173,8 +173,8 @@ void LobbyState::initEnterCode(const float width, const float height)
 	tightness = sf::Vector2f(1.25f, 1.25f);
 
 	//create button
-	submitCode = MenuObjects::Button(LOBBY, pos, msg, zsk::ARIAL,
-		textSize, false, LOBBY, tightness);
+	submitCode = MenuObjects::Button(STATE::LOBBY, pos, msg, zsk::ARIAL,
+		textSize, false, STATE::LOBBY, tightness);
 	//submitCode.bufferClickable();
 
 	//reset position
@@ -214,8 +214,8 @@ void LobbyState::initGenCode(const float width, const float height)
 	std::string defaultCode = "#####";
 
 	//create the buttons
-	codeText = MenuObjects::Button(LOBBY, pos1, defaultText, zsk::ARIAL,
-		textSize, false, LOBBY, tightness);
+	codeText = MenuObjects::Button(STATE::LOBBY, pos1, defaultText, zsk::ARIAL,
+		textSize, false, STATE::LOBBY, tightness);
 	codeText.setOutlineThickness(thickness);
 
 	float align = (codeText.getBoxSize().x - hostGame.getBoxSize().x) / 2.f;
@@ -231,8 +231,8 @@ void LobbyState::initGenCode(const float width, const float height)
 	pos2.x += (codeText.getBoxSize().x / 2.f + adj);
 
 	//set game code init
-	gameCode = MenuObjects::Button(LOBBY, pos2, defaultCode, zsk::ARIAL,
-		textSize, false, LOBBY, tightness);
+	gameCode = MenuObjects::Button(STATE::LOBBY, pos2, defaultCode, zsk::ARIAL,
+		textSize, false, STATE::LOBBY, tightness);
 
 	gameCode.setOutlineThickness(thickness);
 	gameCode.setTextSpacing(0.5);
@@ -262,7 +262,7 @@ void LobbyState::initPlayerList(const float width, const float height)
 	posLeft.y = enterCode.getPosition().y;
 	posLeft.y += spacing.y + (size.y / 2.f);
 
-	hostList = MenuObjects::Button(LOBBY, posLeft, size, false, LOBBY);
+	hostList = MenuObjects::Button(STATE::LOBBY, posLeft, size, false, STATE::LOBBY);
 
 	hostList.setOutlineThickness(thickness);
 	hostList.setSecColor(zsk::art::secColor);
@@ -272,7 +272,7 @@ void LobbyState::initPlayerList(const float width, const float height)
 	//And set JOIN list
 	sf::Vector2f posRight(width - posLeft.x, posLeft.y);
 
-	joinList = MenuObjects::Button(LOBBY, posRight, size, false, LOBBY);
+	joinList = MenuObjects::Button(STATE::LOBBY, posRight, size, false, STATE::LOBBY);
 
 	joinList.setOutlineThickness(thickness);
 	joinList.setPrimColor(zsk::art::lightTertCol);
@@ -290,8 +290,8 @@ void LobbyState::initBack(const float width, const float height)
 	float thickness = submitCode.getOutlineThickness();
 
 	//create button
-	back = MenuObjects::Button(LOBBY, pos, msg, zsk::ARCDE,
-		textSize, false, MAIN_MENU, tightness);
+	back = MenuObjects::Button(STATE::LOBBY, pos, msg, zsk::ARCDE,
+		textSize, false, STATE::MAIN_MENU, tightness);
 	back.bufferClickable();
 
 	//set animation facets
@@ -316,8 +316,8 @@ void LobbyState::initStartGame(const float width, const float height)
 	float thickness = submitCode.getOutlineThickness();
 
 	//create button
-	start = MenuObjects::Button(LOBBY, pos, msg, zsk::ARCDE,
-		textSize, false, GAME, tightness);
+	start = MenuObjects::Button(STATE::LOBBY, pos, msg, zsk::ARCDE,
+		textSize, false, STATE::GAME, tightness);
 
 	//reset pos
 	pos.x -= start.getBoxSize().x / 2.f;
@@ -389,7 +389,7 @@ void LobbyState::configLobby(STATE selection)
 
 	switch (selection)
 	{
-	case LOBBY:
+	case STATE::LOBBY:
 		//resets lobby
 		initvars();
 		initArt();
@@ -398,12 +398,12 @@ void LobbyState::configLobby(STATE selection)
 		initMenuOptions();
 		break;
 
-	case HOST_LOBBY:
+	case STATE::HOST_LOBBY:
 		//configs host screen
 		configHost();
 		break;
 
-	case JOIN_LOBBY:
+	case STATE::JOIN_LOBBY:
 		//configs join screen
 		configJoin();
 		break;
@@ -430,7 +430,7 @@ void LobbyState::configHost()
 	playerList.clear();
 
 	//Back & start
-	back.updateNextState(LOBBY);
+	back.updateNextState(STATE::LOBBY);
 	start.setClickable(true);
 	start.setPrimColor(zsk::art::primColor);
 
@@ -453,7 +453,7 @@ void LobbyState::configJoin()
 	playerList.clear();
 
 	//refactor certain buttons
-	back.updateNextState(LOBBY);
+	back.updateNextState(STATE::LOBBY);
 }
 
 void LobbyState::addPlayerTuple(const NetworkObjects::ipBundle & bndl)
@@ -471,7 +471,7 @@ void LobbyState::addPlayerTuple(const NetworkObjects::ipBundle & bndl)
 	// list for each tuple added
 	sf::Vector2f pos(0,0);
 
-	if (gameState == HOST_LOBBY)
+	if (gameState == STATE::HOST_LOBBY)
 		pos = hostList.getPosition();
 	else
 		pos = joinList.getPosition();
@@ -508,7 +508,7 @@ void LobbyState::addPlayerTuple(const NetworkObjects::ipBundle & bndl)
 	}
 
 	//set Special details for textbox - at pos(1)
-	dynamic_cast<MenuObjects::Textbox*>(objs->at(1))->setEventsPtr(events);
+	dynamic_cast<MenuObjects::Textbox*>(objs->at(1))->setEventsPtr(events_ptr);
 
 	//Set Text box details
 	dynamic_cast<MenuObjects::Textbox*>(objs->at(1))->setMaxMsgSize(12);
@@ -537,7 +537,7 @@ void LobbyState::addNewPlayer(const NetworkObjects::ipBundle & bundle)
 
 }
 
-STATE LobbyState::update(sf::Vector2i &mousePos, const float& dt)
+STATE LobbyState::update(const float& dt)
 {
 	//Update and animate title screen
 	animateTitle();
@@ -607,30 +607,30 @@ void LobbyState::render(sf::RenderTarget* rt) {
 
 	switch (gameState)
 	{
-	case MAIN_MENU:
+	case STATE::MAIN_MENU:
 		//title screen
 		break;
 
-	case HOST_LOBBY:
+	case STATE::HOST_LOBBY:
 		//renders Lobby
 		renderLobby();
 		break;
 
-	case JOIN_LOBBY:
+	case STATE::JOIN_LOBBY:
 		//renders Lobby
 		renderLobby();
 		break;
 
-	case LOBBY:
+	case STATE::LOBBY:
 		//renders Lobby
 		renderLobby();
 		break;
 
-	case GAME:
+	case STATE::GAME:
 		//options
 		break;
 
-	case QUIT:
+	case STATE::QUIT:
 		//quit to home screen
 		break;
 	}

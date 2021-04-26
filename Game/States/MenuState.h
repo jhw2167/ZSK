@@ -30,7 +30,7 @@ private:
 	sf::Text subtitle1;
 
 	//Option Vars
-	short numOptions;
+	int numOptions;
 
 	MenuObjects::Button play;
 	MenuObjects::Button quit;
@@ -56,7 +56,7 @@ public:
 
 		/*  Constructors  */
 
-	MenuState(sf::RenderWindow* w_ptr, std::vector<sf::Event>* evs);
+	MenuState();
 
 
 		/*  Modifiers  */
@@ -64,10 +64,10 @@ public:
 	void setTitleSize(int newSize);
 
 		/*  Accessors  */
-	short getOptionSelected();
+	STATE getOptionSelected();
 
 		/*  Other Public Funtions  */
-	virtual STATE update(sf::Vector2i &mousePos, const float& dt);
+	virtual STATE update(const float& dt);
 
 	virtual void render(sf::RenderTarget* rt = nullptr);
 

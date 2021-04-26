@@ -2,13 +2,13 @@
 	OverloadedFuncs.cpp file includes .h file for implementation 
 */
 
-#include "OverloadedFuncs.h";
+#include "OverloadedFuncs.h"
 
 /*	OVERLOADED OPERATORS	*/
 
 
 
-sf::Vector2f operator*(sf::Vector2f v1, int const& a)
+sf::Vector2f operator*(sf::Vector2f v1, float const& a)
 {
 	sf::Vector2f ret;
 	ret.x = v1.x * a;
@@ -34,7 +34,7 @@ sf::Vector2f abs(sf::Vector2f v1) {
 }
 
 sf::Vector2f convert(const sf::Vector2i & vec) {
-	return sf::Vector2f(vec.x, vec.y);
+	return sf::Vector2f((const float) vec.x, (const float) vec.y);
 }
 
 

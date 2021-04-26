@@ -94,11 +94,10 @@ private:
 public:
 
 	/*  Gamestate Constructor  */
-	GameState(sf::RenderWindow* w_ptr, std::vector<sf::Event>* evs);
+	GameState();
 
 	//Modifiers
-	void setMousePos(sf::Vector2i &mPos);
-
+	
 	//Accessors
 
 
@@ -110,7 +109,7 @@ public:
 
 	//Virtual Functions
 	virtual void quitState();
-	virtual STATE update(sf::Vector2i &mousePos, const float& dt);
+	virtual STATE update(const float& dt);
 	virtual void render(sf::RenderTarget* rt = nullptr);
 
 		/*  Destructor  */

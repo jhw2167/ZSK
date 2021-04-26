@@ -13,11 +13,19 @@ int GameState::maxPlayers_this = 0;
 
 	/*  Constructors  */
 
-GameState::GameState(sf::RenderWindow* w_ptr, std::vector<sf::Event>* evs)
-	: State(w_ptr, evs)
+GameState::GameState()
+	: State()
 {
+	gameState = STATE::GAME;
+
+	//Set window and mouse for game objects
+	GameObj::setWindow(window_ptr);
+
 	initVars();
-	players.emplace_back(*w_ptr);
+	addPlayer();
+	//players.emplace_back(*w_ptr);
+	//Need to figure out how im going to add players
+
 	initArt();
 	initTowers();
 }
@@ -83,7 +91,8 @@ void GameState::initVars()
 	towers.reserve(zsk::smallContSz);
 	players.reserve(zsk::smallContSz);
 
-	GameObj::setObjs(&objs);		//set ptr to objs in GameObjs class
+	//set ptr to objs in GameObjs class
+	GameObj::setObjs(std::shared_ptr<std::list<GameObj*>>(&objs));		
 }
 
 
@@ -243,8 +252,8 @@ void GameState::towerMechanics()
 bool GameState::isGameOver() {
 	
 	//Leave this for now, will consider what to do here
-
-	return players.at(0).isGameOver();
+	if(players.at(0).isGameOver());
+	gameState = STATE::MAIN_MENU;
 }
 
 
@@ -393,6 +402,7 @@ int GameState::checkTowerCollision()
 
 	*/
 
+	/*
 	int collidingTower = 0;		//tower num (1-4) of colliding tower, or 0 for none
 	//We can make this better, only check for collision if close to tower
 
@@ -408,6 +418,8 @@ int GameState::checkTowerCollision()
 	}
 
 	return collidingTower;
+	*/
+	return 0;
 }
 
 
@@ -452,10 +464,6 @@ void GameState::updateDt()
 
 
 	/*  Modifiers  */
-void GameState::setMousePos(sf::Vector2i &mPos) {
-	mousePos = mPos;
-	GameObj::setMousePos(mPos);
-}
 
 
 	/*  Other Public Functions  */	
@@ -466,7 +474,7 @@ void GameState::quitState()
 	//changing the 
 }
 
-STATE GameState::update(sf::Vector2i &mPos, const float& dt)
+STATE GameState::update(const float& dt)
 {
 	/*
 		Update Function calls all game update 
@@ -475,9 +483,6 @@ STATE GameState::update(sf::Vector2i &mPos, const float& dt)
 		- Followers
 		- Towers
 	*/
-
-	//Utility
-	setMousePos(mPos);
 
 	//Determine all obj Collisions
 	checkCollisions();
@@ -498,11 +503,10 @@ STATE GameState::update(sf::Vector2i &mPos, const float& dt)
 	static int i = 0;
 	zsk::print(msg, i);
 
-	if (!isGameOver()) {
-		return GAME;
-	}
+	//check game state
+	isGameOver();
 
-	return MAIN_MENU;
+	return gameState;
 }
 
 void GameState::render(sf::RenderTarget* rt)

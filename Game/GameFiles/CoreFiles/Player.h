@@ -111,7 +111,8 @@ class Follower;
 class Tower;				//forward declaration of class tower so player has access
 
 
-class Player : GameObj
+class Player : 
+	public GameObj
 {
 
 private:
@@ -178,16 +179,13 @@ private:
 	//sf::CircleShape dot = sf::CircleShape(4.f);
 	//sf::RectangleShape box;
 
-	float wLength;
-	float wHeight;
-
 	/*** PRIVATE FUNCTIONS ***/
 
 
 	//INITIALIZE METHODS FOR CLASS PLAYER
-	void initHealthBar(sf::RenderWindow &window, float sHealth, float sMaxHealth);
+	void initHealthBar(float sHealth, float sMaxHealth);
 
-	void initShieldBar(sf::RenderWindow &window, float sShield, float sMaxShield);
+	void initShieldBar(float sShield, float sMaxShield);
 
 	void initHealthText();
 
@@ -222,7 +220,7 @@ private:
 public: 
 
 		//CONSTRUCTOR 
-	Player(sf::RenderWindow &window, int pNumber = 1, int startLives = 3, float scale = 2.5f, float startHealth = 300.f,
+	Player(int pNumber = 1, int startLives = 3, float scale = 2.5f, float startHealth = 300.f,
 		float startMaxHealth = 300.f, float startShield = 100.f, float startMaxShield = 100.f, 
 		float mSpeed = 6.f, int startScore = 0, float smallRadius = 70.f,
 		float maxLargeRadius = 240.f, int laserL = 100.f, int laserW = 1, bool showBox = false);
@@ -245,9 +243,9 @@ public:
 
 	void setplayerSpeed(float newSpeed);
 
-	void setPosition(sf::Vector2f newPos);
+	void setPosition(const sf::Vector2f& newPos);
 
-	void setPlayerBox(PlayerShape &shape, bool showBoxes);
+	void setPlayerBox(PlayerShape& shape, bool showBoxes);
 
 	void setSmallFollowerRadius(float newRadius);
 
@@ -261,47 +259,45 @@ public:
 
 	void setLaserWidth(int laserW);
 
-	void setWindowDims(sf::RenderWindow &window);
-
 
 	//ALL GET METHODS OF CLASS PLAYER
-	int getPlayerNumber();
+	int getPlayerNumber() const;
 
-	int getScore();
+	int getScore() const;
 	
-	float getHealth();
+	float getHealth() const;
 	
-	float getShield();
+	float getShield() const;
 
-	PlayerShape getPlayerShape();
+	const PlayerShape& getPlayerShape() const;
 
-	sf::Color getPlayerColor();
+	sf::Color getPlayerColor() const;
 
-	float getplayerSpeed();
+	float getplayerSpeed() const;
 
-	sf::Vector2f getPosition();
+	sf::Vector2f getPosition() const;
 
-	sf::Vector2f getGunPosition();
+	sf::Vector2f getGunPosition() const;
 
-	sf::FloatRect getPlayerBounds();
+	sf::FloatRect getPlayerBounds() const;
 
-	sf::FloatRect getHeartBounds();
+	sf::FloatRect getHeartBounds() const;
 
-	sf::FloatRect getSmallFollowAreaBounds();
+	sf::FloatRect getSmallFollowAreaBounds() const;
 
-	float getSmallFollowAreaRadius();
+	float getSmallFollowAreaRadius() const;
 
-	sf::FloatRect getLargeFollowAreaBounds();
+	sf::FloatRect getLargeFollowAreaBounds() const;
 
-	float getLargeFollowAreaRadius();
+	float getLargeFollowAreaRadius() const;
 
-	float getMinLFR(); 
+	float getMinLFR() const;
 
-	int getLaserLength();
+	int getLaserLength() const;
 
-	int getLaserWidth();
+	int getLaserWidth() const;
 
-	bool isGameOver();
+	bool isGameOver() const;
 
 	const sf::FloatRect& getGlobalBounds() const;
 

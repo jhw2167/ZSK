@@ -15,10 +15,11 @@ class State
 protected:
 	/*  Protected Members are availible to
 				Base Classes			*/
-	sf::RenderWindow* window_ptr;
-	std::vector<sf::Event>* events;
+	static std::shared_ptr<sf::RenderWindow> window_ptr;
+	static std::shared_ptr<sf::Mouse> mouse_ptr;
+	static std::shared_ptr<std::vector<sf::Event>> events_ptr;
 
-	STATE gameState;
+	static STATE gameState;
 
 private:
 	//Private Variables
@@ -26,7 +27,13 @@ private:
 public:
 
 	//Constructors
-	State(sf::RenderWindow* w_ptr, std::vector<sf::Event>* evs);
+	State();
+
+
+	//Set Static variables
+	static void setWindow(const std::shared_ptr<sf::RenderWindow>& w_ptr);
+	static void setMouse(const std::shared_ptr<sf::Mouse>& m_ptr);
+	static void setEvents(const std::shared_ptr<std::vector<sf::Event>>& evs_ptr);
 
 
 	/*
@@ -34,7 +41,7 @@ public:
 		MUST define, else compile error
 	*/
 
-	virtual STATE update(sf::Vector2i &mousePos, const float& dt) = 0;
+	virtual STATE update(const float& dt) = 0;
 	virtual void render(sf::RenderTarget* rt = nullptr) = 0;
 	virtual void quitState() = 0;
 

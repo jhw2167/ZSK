@@ -336,7 +336,7 @@ void Player::initScore()
 		sf::Vector2f pos = sf::Vector2f(wLength / 1.54f, 0.f);
 
 		scoreText.setPosition(pos);
-		setScore(0.f);
+		setScore(0);
 
 
 		if (playerNumber == 1) {
@@ -726,7 +726,7 @@ void Player::takeDamage(float dmg)
 
 void Player::regenShield()
 {
-	static short counter = 0;
+	static int counter = 0;
 
 	if (shield > 0 && shield < maxShield) {
 		counter++;
@@ -855,7 +855,7 @@ void Player::moveBullets() {
 }
 
 void Player::deleteBullet(std::list<Bullet>::iterator& b) {
-	printf("delete bullet: %d, at mem loc: %p\n", b._Ptr);
+	printf("delete bullet: %d, at mem loc: %p\n", b._Ptr->_Myval.getID(), b._Ptr);
 	activeBullets.erase(b);
 }
 

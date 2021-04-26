@@ -11,7 +11,7 @@
 #include "../GameObj.h"
 
 class Bullet :
-	GameObj 
+	public GameObj 
 {
 
 private:
@@ -30,8 +30,8 @@ private:
 public:
 
 	/*	BULLET CONSTRUCTOR	*/
-	Bullet(const sf::Vector2f& startPos = sf::Vector2f(0.f, 0.f),
-		const sf::Vector2i& cursorPos = sf::Vector2i(50.f, 50.f), const int bStrip = 1,
+	Bullet(const sf::Vector2f& startPos = sf::Vector2f(0, 0),
+		const sf::Vector2i& cursorPos = sf::Vector2i(50, 50), const int bStrip = 1,
 		const int bPen = 1, const float scale = 4.f, const float speed = 10.f,
 		const sf::Color& color = sf::Color::Black);
 	//Bullet constructor initializes size, shape and position 

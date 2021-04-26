@@ -563,8 +563,7 @@ namespace MenuObjects {
 
 	//End Constructors
 
-
-	void Textbox::setEventsPtr(std::vector<sf::Event>* evs){
+	void Textbox::setEventsPtr(const std::shared_ptr<std::vector<sf::Event>>& evs) {
 		events = evs;
 	}
 
@@ -655,7 +654,7 @@ namespace MenuObjects {
 		alignText(aln);
 	}
 
-	void Textbox::setMaxMsgSize(short newSize) {
+	void Textbox::setMaxMsgSize(int newSize) {
 		maxMsgSize = newSize;
 	}
 

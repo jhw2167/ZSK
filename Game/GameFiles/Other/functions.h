@@ -32,8 +32,10 @@ namespace zsk
 
 	float magnitude(float x, float y); 
 
+	//double comes with higher precision and makes superior temp variables
 	double radsToDegs(double rads);
-		
+	
+	//double comes with higher precision and makes superior temp variables
 	double lawCosINV(double s1, double s2, double s3);
 
 	/*  Artistic Functions and constants for ZSK  */

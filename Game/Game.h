@@ -37,7 +37,7 @@ private:
 	sf::Event event;
 
 	std::vector<sf::Event> events;
-	sf::Vector2i mousePos;
+	sf::Mouse mouse;
 
 	//Clock variables, move irrespective to framerate
 	float dt;
@@ -47,8 +47,8 @@ private:
 	std::stack<State*> states;
 
 	//Game Based
-	short numPlayers;
-	const static short maxPlayers;
+	int numPlayers;
+	const static int maxPlayers;
 
 	STATE gameState;
 	//0 - Startmenu, 1 - Lobby, 2 - pauseMenu
@@ -93,9 +93,7 @@ public:
 
 		/*  Other Public Functions  */
 	void addPlayer();
-
 	void pollEvents();
-	void updateMousePosition();
 
 	void update();
 	void render();
