@@ -59,8 +59,10 @@ sf::Vector2f GameObj::getPos() const  {
 	return pos;
 }
 
-//Static Setters
-void GameObj::setWindow(const std::shared_ptr<sf::RenderWindow> window_pointer) {
+
+/* STATIC Setters */
+
+void GameObj::setWindow(const std::shared_ptr<sf::RenderWindow>& window_pointer) {
 	window_ptr = window_pointer;
 }
 
@@ -73,7 +75,6 @@ void GameObj::setObjs(std::shared_ptr<std::list<GameObj*>> list) {
 	objs = list;
 }
 
-//STATIC
 //init our subLists from static function call
 void GameObj::initSublist() {
 
@@ -96,8 +97,11 @@ void GameObj::setSublist(const SubList& sub, ObjType indx) {
 	subLists.at(static_cast<int>(indx)) = sub;
 }
 
+//END STATIC METHODS
 
 /* Utility Constructors */
+
+
 
 //Copy constructor
 GameObj::GameObj(const GameObj& rhs) 

@@ -39,19 +39,19 @@ private:
 public:
 	
 		/*  Constructors */
-	Tower(sf::RenderWindow const &window, const int tNumber = 0);
+	Tower(const int tNumber = 0);
 
 
 		/*  Init Methods  */
-	void initVars(const int tNumber, sf::RenderWindow const &window);
-	void initTowerShape(sf::RenderWindow const &window);
+	void initVars(const int tNumber);
+	void initTowerShape();
 	void initLaserTexture();
 	void initLaser();
 
 
 		/*  Setter methods  */
 	void setRadius(float tRadius);
-	void setPosition(sf::RenderWindow const &window, int tNumber);
+	void setPosition(int tNumber);
 
 
 		/*  Accessor Methods  */
@@ -83,7 +83,7 @@ public:
 
 
 	//TOWER DRAW METHODS
-	void drawTowers(sf::RenderWindow &window);
+	void drawTowers();
 
 	/*  Destructor  */
 	~Tower();

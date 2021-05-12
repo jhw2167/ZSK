@@ -20,6 +20,7 @@ GameState::GameState()
 
 	//Set window and mouse for game objects
 	GameObj::setWindow(window_ptr);
+	GameObj::setMouse(mouse_ptr);
 
 	initVars();
 	addPlayer();
@@ -73,9 +74,9 @@ void GameState::initArt()
 void GameState::initTowers()
 {
 	//adds an additional tower out of play that assists with mechanics
-	for (size_t i = 0; i < numberOfTowers + 1; i++) {
+	for (size_t i = 0; i != numberOfTowers + 1; i++) {
 		//towers.push_back(Tower(*window_ptr, i));
-		towers.emplace_back(*window_ptr, i);
+		towers.emplace_back(i);
 	}
 }
 
@@ -92,7 +93,7 @@ void GameState::initVars()
 	players.reserve(zsk::smallContSz);
 
 	//set ptr to objs in GameObjs class
-	GameObj::setObjs(std::shared_ptr<std::list<GameObj*>>(&objs));		
+	GameObj::setObjs(objs);		
 }
 
 
@@ -252,8 +253,8 @@ void GameState::towerMechanics()
 bool GameState::isGameOver() {
 	
 	//Leave this for now, will consider what to do here
-	if(players.at(0).isGameOver());
-	gameState = STATE::MAIN_MENU;
+	if(players.at(0).isGameOver())
+		gameState = STATE::MAIN_MENU;
 }
 
 
@@ -272,9 +273,10 @@ void GameState::spawnFollowers()
 	static int temperSpawnRate = 0; temperSpawnRate++;				//moderates spawn rate
 	static int tmperRate = 50;
 
-	if ((temperSpawnRate % tmperRate == 0) && (followers.size() < maxFollowers))
+	if ((temperSpawnRate % tmperRate == 0) && 
+		(static_cast<int>(followers.size()) < maxFollowers))
 	{
-		Follower follower(*window_ptr, towers.at(0).getTowerRadius());
+		Follower follower;
 		//EXCEPTION THROWN HERE WHEN TOWERS NOT INNIT
 
 		followers.push_back(follower);				
@@ -382,7 +384,7 @@ void GameState::attackPlayer()
 				players.at(i).getHeartBounds())) {	
 				//if a follwer insects the player's global bounds
 
-				int dmg = fol.getDamage();
+				float dmg = fol.getDamage();
 				players.at(i).takeDamage(dmg);	
 				//reduce player's health
 			}

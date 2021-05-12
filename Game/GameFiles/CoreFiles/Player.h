@@ -93,7 +93,7 @@ public:
 
 
 	//DRAW FUNCTIONS
-	void drawPlayer(sf::RenderWindow &window);
+	void drawPlayer(const std::shared_ptr<sf::RenderWindow>& window_ptr);
 
 };
 
@@ -124,15 +124,15 @@ private:
 	sf::Color playerColor;
 	static sf::Color pColors[];
 	
-	float health;
-	float maxHealth;
+	int health;
+	int maxHealth;
 	int lives;
 	bool gameOver;
 
-	float shield;
-	float maxShield;
-	float shieldRegen;
-	//units: float_val / sec (60 frames)
+	int shield;
+	int maxShield;
+	int shieldRegen;
+	//units: int / sec (60 frames)
 	int invulnerability;		
 	//units: #frames of invln
 
@@ -162,8 +162,9 @@ private:
 	
 	PlayerShape playerShape;
 	sf::RectangleShape pBox;
+	static bool showBoxes;
 
-	std::list<Bullet> activeBullets;
+	std::list<std::shared_ptr<Bullet>> activeBullets;
 
 	static float areaOutline;				//outline thickness of large and small follower circles
 	sf::CircleShape largeFollowArea;				//Furthest distance away which followers will follow you after gaining interest
@@ -183,9 +184,9 @@ private:
 
 
 	//INITIALIZE METHODS FOR CLASS PLAYER
-	void initHealthBar(float sHealth, float sMaxHealth);
+	void initHealthBar(int sHealth, int sMaxHealth);
 
-	void initShieldBar(float sShield, float sMaxShield);
+	void initShieldBar(int sShield, int sMaxShield);
 
 	void initHealthText();
 
@@ -220,44 +221,44 @@ private:
 public: 
 
 		//CONSTRUCTOR 
-	Player(int pNumber = 1, int startLives = 3, float scale = 2.5f, float startHealth = 300.f,
-		float startMaxHealth = 300.f, float startShield = 100.f, float startMaxShield = 100.f, 
+	Player(int pNumber = 1, int startLives = 3, float scale = 2.5f, int startHealth = 300,
+		int startMaxHealth = 300, int startShield = 100, int startMaxShield = 100, 
 		float mSpeed = 6.f, int startScore = 0, float smallRadius = 70.f,
 		float maxLargeRadius = 240.f, int laserL = 100.f, int laserW = 1, bool showBox = false);
 
 
 	//ALL SET METHODS OF CLASS PLAYER
-	void setLives(int newLives);
+	void setLives(const int newLives);
 
-	void setHealth(float newHealth);
+	void setHealth(const int newHealth);
 
-	void setInvulnFrames(int newFrames);
+	void setInvulnFrames(const int newFrames);
 
 	void centerHealthText();
 
-	void setShield(float newShield);
+	void setShield(const int newShield);
 
-	void setShieldRegen(float newRegen);
+	void setShieldRegen(const int newRegen);
 
-	void setScore(int newScore);
+	void setScore(const int newScore);
 
-	void setplayerSpeed(float newSpeed);
+	void setplayerSpeed(const float newSpeed);
 
 	void setPosition(const sf::Vector2f& newPos);
 
-	void setPlayerBox(PlayerShape& shape, bool showBoxes);
+	void setPlayerBox(const PlayerShape& shape);
 
-	void setSmallFollowerRadius(float newRadius);
+	void setSmallFollowerRadius(const float newRadius);
 
-	void setLargeFollowerRadius(float newRadius);
+	void setLargeFollowerRadius(const float newRadius);
 
-	void setMinLFR(float newRadius);
+	void setMinLFR(const float newRadius);
 
-	void setMaxLFR(float newRadius);
+	void setMaxLFR(const float newRadius);
 
-	void setLaserLength(int laserL);
+	void setLaserLength(const int laserL);
 
-	void setLaserWidth(int laserW);
+	void setLaserWidth(const int laserW);
 
 
 	//ALL GET METHODS OF CLASS PLAYER
@@ -265,9 +266,9 @@ public:
 
 	int getScore() const;
 	
-	float getHealth() const;
+	int getHealth() const;
 	
-	float getShield() const;
+	int getShield() const;
 
 	const PlayerShape& getPlayerShape() const;
 
@@ -304,12 +305,14 @@ public:
 	//METHODS OF CLASS PLAYER MANAGING SCORE
 	void adjScore(int adj); 
 
-	//calculates vector distance from player or tower object	
-	float circle(float x, float radius); 
+	//calculates vector distance from player or tower object
+	//doubles are more precise then floats so should be used for
+	//function returns
+	double circle(float x, float radius); 
 
 
 	//METHODS RELATED TO MANAGING A PLAYER'S HEALTH
-	void takeDamage(float dmg);
+	void takeDamage(int dmg);
 
 	void regenShield();
 
@@ -321,21 +324,22 @@ public:
 		float towerRadius); 
 	
 
-	float invSpeedSq(float x, float y, float radius);
+	double invSpeedSq(float x, float y, float radius);
 
 	sf::Vector2f avoidTower(sf::Vector2f dir, sf::Vector2f relPos, int towerNum);
 
 
 	//METHODS RELATING TO MANAGINE PLAYERS BULLETS
-	void shoot(sf::Vector2i const &cursorPos);
+	void shoot();
 
-	void addBullet(sf::Vector2i const &cursorPos); 
+	//dynamically allocate memory for bullets 
+	void addBullet(); 
 
 	void moveBullets();
 
-	void deleteBullet(std::list<Bullet>::iterator& b);
+	void deleteBullet(std::list<std::shared_ptr<Bullet>>::iterator& b);
 
-	void checkBulletInBounds(sf::RenderWindow &window);
+	void checkBulletInBounds();
 
 
 	//METHODS RELATING TO FOLLOWERS
@@ -347,13 +351,13 @@ public:
 
 
 	//DRAWING METHODS OF CLASS PLAYER
-	void drawPlayer(sf::RenderWindow &window);
+	void drawPlayer();
 
-	void drawHealthBar(sf::RenderWindow &window);
+	void drawHealthBar();
 
-	void drawBullets(sf::RenderWindow &window);
+	void drawBullets();
 
-	void drawScore(sf::RenderWindow &window); 
+	void drawScore(); 
 
 	/* UPDATE FUNCTION */
 	STATE update();

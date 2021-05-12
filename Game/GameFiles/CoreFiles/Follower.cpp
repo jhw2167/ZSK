@@ -9,11 +9,12 @@ const sf::Vector2f Follower::globBounce
 	= sf::Vector2f(5.f, 5.f);
 const float Follower::speedBN = 10.f;
 const int Follower::dmgBN = 5;
+float Follower::towerRadius = 100.f;
 
 
 
 	/*  Constructor  */
-Follower::Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor, int startHealth, 
+Follower::Follower(sf::Color fColor, int startHealth, 
 	int startDmg, int retrgtRate, int redirRate, float scale, bool showBoxes)
 	: GameObj(ObjType::FOL)
 {
@@ -25,9 +26,6 @@ Follower::Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor, in
 	setHealth(startHealth);
 
 	setDamage(startDmg);
-
-	windowLength = window.getSize().x;
-	windowHeight = window.getSize().y;
 
 	followingPlayer = false;
 	momentum = 1.01f;
@@ -45,7 +43,6 @@ Follower::Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor, in
 	playersOldY = 0;
 	//initializations critical to move function
 
-	towerRadius = tRadius;
 	randomSpawn();
 
 	mergeCount = 1;
@@ -93,8 +90,8 @@ void Follower::initHealthText() {
 void Follower::randomSpawn()
 {
 
-	zsk::vect xRange = { towerRadius, windowLength - towerRadius };
-	zsk::vect yRange = { towerRadius, windowHeight - towerRadius };
+	zsk::vect xRange = { towerRadius, window_ptr->getPosition().x - towerRadius };
+	zsk::vect yRange = { towerRadius, window_ptr->getPosition().y - towerRadius };
 	//x and y ranges where follower can spawn
 
 	zsk::vect spawnPt = zsk::randomSpawn(xRange, yRange);
@@ -112,7 +109,8 @@ void Follower::randomSpawn()
 	*/
 
 	sf::Vector2f newPos = sf::Vector2f(spawnPt.a, spawnPt.b);
-
+	float windowLength = static_cast<float>(window_ptr->getPosition().x);
+	float windowHeight = static_cast<float>(window_ptr->getPosition().y);
 
 		switch (spawnSide)
 		{
@@ -132,12 +130,12 @@ void Follower::randomSpawn()
 
 		case 3:
 			//spawn right
-			newPos.x = static_cast<float>(windowLength);
+			newPos.x = windowLength;
 			break;
 
 		case 4:
 			//spawn bot
-			newPos.y = static_cast<float>(windowHeight);
+			newPos.y = windowHeight;
 		}
 	
 
@@ -198,15 +196,20 @@ void Follower::setDamage(int newDmg) {
 void Follower::setBounce(const sf::Vector2f& bnc) {
 	bounce = bnc;
 }
+
+//STATIC Setters
+void Follower::setTowerRadius(const float tRadius) {
+	towerRadius = tRadius;
+}
 //End Setters
 
 
 	/*  Accessor Methods  */
-sf::Vector2f Follower::getFollowerPosition() {
+sf::Vector2f Follower::getFollowerPosition() const {
 	return pos;
 }
 
-sf::Vector2f Follower::getFollowerVelocity() {
+sf::Vector2f Follower::getFollowerVelocity() const  {
 	return fVelocity;
 }
 
@@ -215,19 +218,19 @@ const sf::FloatRect& Follower::getGlobalBounds() const {
 	return fBox.getGlobalBounds();
 }
 
-int Follower::getHealth() {
+int Follower::getHealth() const {
 	return health;
 }
 
-int Follower::getDamage() {
+int Follower::getDamage() const {
 	return dmgDone;
 }
 
-int Follower::getMergeCount() {
+int Follower::getMergeCount() const {
 	return mergeCount;
 }
 
-sf::Vector2f Follower::getBounce() {
+sf::Vector2f Follower::getBounce() const {
 	return bounce;
 }
 
@@ -235,7 +238,7 @@ sf::Vector2f Follower::getBounce() {
 
 
 /*  Functions  */
-void Follower::centerHeathText()
+void Follower::centerHeathText() 
 {
 	sf::Vector2f textDims = sf::Vector2f(healthText.getLocalBounds().width,
 		healthText.getLocalBounds().height);
@@ -338,7 +341,7 @@ void Follower::moveFollower(sf::Vector2f const &vel) {
 bool Follower::isBreakNeck(bool wasFollowing)
 {
 	if (wasFollowing && !followingPlayer) {
-		float speed = zsk::magnitude(fVelocity.x, fVelocity.y);
+		float speed = static_cast<float>(zsk::magnitude(fVelocity.x, fVelocity.y));
 
 		if (speed >= speedBN) {
 			breakNeck = true;
@@ -361,7 +364,7 @@ void Follower::setNewVelocity(sf::Vector2f const &destinationVector, float speed
 
 	float xCoord = destinationVector.x - fShape.getPosition().x;
 
-	float mag = zsk::magnitude(xCoord, yCoord);
+	float mag = static_cast<float>(zsk::magnitude(xCoord, yCoord));
 	//finds magnitude of vector to create unit vector
 
 	if (breakNeck) {
@@ -466,8 +469,8 @@ void Follower::outOfBounds(sf::Vector2f &pos, bool col)
 	float buffer = 0.f;
 	//need an off screen boundry for the velocity reversal or follower gets
 	//stuck moving further outside
-	bool xOut = pos.x < 0 || pos.x > windowLength;
-	bool yOut = pos.y < 0 || pos.y > windowHeight;
+	bool xOut = pos.x < 0 || pos.x > window_ptr->getPosition().x;
+	bool yOut = pos.y < 0 || pos.y > window_ptr->getPosition().y;
 
 	if (!col)
 	//if no collision
@@ -593,10 +596,10 @@ void Follower::setMinusBounce()
 }
 		//private
 
-void Follower::fixCenterVelocity()
-{
-	sf::Vector2f center = sf::Vector2f(windowLength / 2.f, windowHeight / 2.f);
-	setNewVelocity(center);
+void Follower::fixCenterVelocity() {
+	float centerX = window_ptr->getPosition().x / 2.f;
+	float centerY = window_ptr->getPosition().y / 2.f;
+	setNewVelocity(sf::Vector2f(centerX, centerY));
 }
 		//private
 
@@ -660,7 +663,7 @@ STATE Follower::update()
 
 	attackPlayer();
 
-	return GAME;
+	return STATE::GAME;
 }
 
 
@@ -689,12 +692,12 @@ void Follower::attackPlayer()
 /******************/
 
 //DRAW FOLLWER ASPECTS
-void Follower::drawFollower(sf::RenderWindow &window)
+void Follower::drawFollower()
 {
-	fShape.draw(window);
-	window.draw(fBox);
-	window.draw(healthText);
-	window.draw(dot);
+	fShape.draw(window_ptr);
+	window_ptr->draw(fBox);
+	window_ptr->draw(healthText);
+	window_ptr->draw(dot);
 }
 
 
@@ -732,9 +735,4 @@ Follower::Follower(const Follower &rhs) : GameObj(rhs)
 	//Follower bounds
 	this->bounce = rhs.bounce;
 	this->towerColNum = rhs.towerColNum;
-
-	this->windowLength = rhs.windowLength;
-	this->windowHeight = rhs.windowHeight;
-
-	this->towerRadius = rhs.towerRadius;
 }

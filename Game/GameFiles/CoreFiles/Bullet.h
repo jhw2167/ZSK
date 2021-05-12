@@ -24,14 +24,13 @@ private:
 	int pen;			//How many zoms bullet punches through
 
 	/*  Private Functions  */
-	void orient(const sf::Vector2i& cursorPos);
+	void orient();
 
 
 public:
 
 	/*	BULLET CONSTRUCTOR	*/
-	Bullet(const sf::Vector2f& startPos = sf::Vector2f(0, 0),
-		const sf::Vector2i& cursorPos = sf::Vector2i(50, 50), const int bStrip = 1,
+	Bullet(const sf::Vector2f& startPos = sf::Vector2f(0, 0), const int bStrip = 1,
 		const int bPen = 1, const float scale = 4.f, const float speed = 10.f,
 		const sf::Color& color = sf::Color::Black);
 	//Bullet constructor initializes size, shape and position 
@@ -47,8 +46,7 @@ public:
 	void setBulletPosition(const sf::Vector2f& newPos);
 	//setPosition function
 
-	void setBulletVelocity(const sf::Vector2f& playerPos,
-		const sf::Vector2i& cursorPos, const float speed = 10.f);
+	void setBulletVelocity(const sf::Vector2f& playerPos, const float speed = 10.f);
 		//moves bullet by adding unit vector to bullet shapes move function
 
 	void setStrip(const int bStrip);
@@ -71,7 +69,7 @@ public:
 	/*	OTHER PUBLIC FUNCTIONS	*/
 	void moveBullet();
 
-	bool isOutOBounds(sf::RenderWindow &window);
+	bool isOutOBounds();
 
 	/*		UPDATE		*/
 	STATE update();
@@ -79,7 +77,7 @@ public:
 
 
 	//DRAW FUNCTIONS
-	void drawBullet(sf::RenderWindow &window);
+	void drawBullet();
 
 
 	//copy constructor

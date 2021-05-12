@@ -35,7 +35,7 @@ bad_mine_flagMC::bad_mine_flagMC(std::string err) : invalid_argument(err)
 
 }
 
-no_such_object::no_such_object(std::string err) : logic_error(err)
+no_such_object::no_such_object(std::string err) : invalid_argument(err)
 {
 
 }

@@ -76,7 +76,7 @@ namespace MenuObjects {
 		//Fully Descriptive Constructor
 		MenuObject(const STATE currentState, const sf::Vector2f& pos, const std::string& msg,
 			const zsk::FONT_CODE fontCode = zsk::ARIAL, const int textSize = 20,
-			const bool canBeClicked = true, const STATE newStateOnClick = MAIN_MENU,
+			const bool canBeClicked = true, const STATE newStateOnClick = STATE::MAIN_MENU,
 			const sf::Vector2f& tghtness = sf::Vector2f(1.1f, 1.1f));
 
 		//Constructor important for tuple class
@@ -127,7 +127,7 @@ namespace MenuObjects {
 
 		//Set Text Facets
 		void adjTextToBox(const sf::Vector2f& adj);
-		void setOutlineThickness(const int thickness);
+		void setOutlineThickness(const float thickness);
 		void setTextStyle(const sf::Text::Style& style);
 		void setTextSpacing(const float spc = 1);
 		void setFont(const zsk::FONT_CODE font);
@@ -190,7 +190,7 @@ namespace MenuObjects {
 
 		Button(STATE currentState, const sf::Vector2f& pos, const std::string& msg,
 			const zsk::FONT_CODE fontCode = zsk::ARIAL, const int textSize = 20,
-			const bool canBeClicked = true, STATE newStateOnClick = MAIN_MENU,
+			const bool canBeClicked = true, STATE newStateOnClick = STATE::MAIN_MENU,
 			const sf::Vector2f& tightness = sf::Vector2f(1.1f, 1.1f));
 
 		//For use in tuples
@@ -259,7 +259,7 @@ namespace MenuObjects {
 
 		Textbox(STATE currentState, const sf::Vector2f& pos, const std::string& msg,
 			const zsk::FONT_CODE fontCode = zsk::ARIAL, const int textSize = 20,
-			const bool canBeClicked = true, STATE newStateOnClick = MAIN_MENU,
+			const bool canBeClicked = true, STATE newStateOnClick = STATE::MAIN_MENU,
 			const sf::Vector2f& tghtnss = sf::Vector2f(1.1f, 1.1f));
 
 		//For use in tuples
@@ -337,7 +337,7 @@ namespace MenuObjects {
 			/*  Public Methods  */
 
 		/*  Unique Public Methods */
-		void setOutlineThickness(float thickness);
+		void setOutlineThickness(const float thickness);
 
 		//Accessors
 		std::vector<MenuObject*>* getObjs();

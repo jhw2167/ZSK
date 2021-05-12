@@ -4,8 +4,7 @@
 
 /*	BULLET CONSTRUCTOR	*/
 
-Bullet::Bullet(const sf::Vector2f& startPos,
-	const sf::Vector2i& cursorPos, const int bStrip,
+Bullet::Bullet(const sf::Vector2f& startPos, const int bStrip,
 	const int bPen, const float scale, const float speed,
 	const sf::Color& color) : GameObj(ObjType::BUL)
 	//Bullet constructor initializes size, shape and position 
@@ -13,10 +12,10 @@ Bullet::Bullet(const sf::Vector2f& startPos,
 {
 	//cout << "Calling bullet constr, id: " << id << endl;
 	setBulletPosition(startPos);
-	setBulletVelocity(startPos, cursorPos, speed);
+	setBulletVelocity(startPos, speed);
 
 	initBullet(scale, bStrip, bPen, color);
-	orient(cursorPos);
+	orient();
 
 	strip = bStrip;			//by default bullets strip 1 layer (strips=1) and deletes
 	pen = bPen;				// after colliding with 1 zombie (pen = 1)
@@ -62,8 +61,9 @@ void Bullet::setBulletPosition(const sf::Vector2f& newPos)
 }
 
 void Bullet::setBulletVelocity(const sf::Vector2f& playerPos,
-	const sf::Vector2i& cursorPos, const float speed)		//moves bullet by adding unit vector to bullet shapes move function
+	const float speed)		//moves bullet by adding unit vector to bullet shapes move function
 {
+	sf::Vector2i cursorPos = mouse_ptr->getPosition();
 	float yCoord = cursorPos.y - playerPos.y;
 	float xCoord = cursorPos.x - playerPos.x;
 
@@ -106,13 +106,14 @@ int Bullet::getPen() const {
 
 
 /*  Private Functions  */
-void Bullet::orient(const sf::Vector2i& cursorPos)
+void Bullet::orient()
 {
 	/*
 		Calculated the angle to rotate the bullet object
 		and applies it to the shape
 	*/
 
+	sf::Vector2i cursorPos = mouse_ptr->getPosition();
 	float xDif = cursorPos.x - pos.x;
 	float yDif = pos.y - cursorPos.y;
 
@@ -141,40 +142,30 @@ void Bullet::moveBullet() {
 	pos += velocity;
 }
 
-bool Bullet::isOutOBounds(sf::RenderWindow &window)
+bool Bullet::isOutOBounds()
 {
 	float xPos = bTop.getPosition().x;
 	float yPos = bTop.getPosition().y;
 
-	bool isOut = false;
+	bool xOut = (xPos > window_ptr->getSize().x) || (xPos < 0);
+	bool yOut = (yPos > window_ptr->getSize().y) || (yPos < 0);
 
-	if (xPos > window.getSize().x || xPos < 0)
-	{
-		isOut = true;
-	}
-
-	else if (yPos > window.getSize().y || yPos < 0)
-	{
-		isOut = true;
-	}
-
-	return isOut;
+	return xOut || yOut;
 }
 
 
 /*		UPDATE		*/
 STATE Bullet::update() {
-	return GAME;
+	return STATE::GAME;
 }
 /***************/
 
 
 
 //DRAW FUNCTIONS
-void Bullet::drawBullet(sf::RenderWindow &window)
-{
-	window.draw(bBody);
-	window.draw(bTop);
+void Bullet::drawBullet() {
+	window_ptr->draw(bBody);
+	window_ptr->draw(bTop);
 }
 
 

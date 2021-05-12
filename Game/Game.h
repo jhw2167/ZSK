@@ -108,6 +108,6 @@ inline void Game::updateState(bool pop)
 		states.pop();
 	}
 	
-	State* s = new stateType(window_ptr, &events);
+	State* s = new stateType();
 	states.push(s);
 }

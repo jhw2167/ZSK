@@ -94,7 +94,7 @@ float FollowerShape::getRightBounds()
 
 float FollowerShape::getLowerBounds()
 {
-	float degsToRads = 3.14159 / 180;
+	float degsToRads = static_cast<float>(3.14159 / 180);
 	float dist = 2 * headRadius * cos(legAngle * degsToRads);
 	return fPos.y + dist;
 }
@@ -118,9 +118,9 @@ void FollowerShape::move(sf::Vector2f moveVect)
 
 
 /*	Draw*/
-void FollowerShape::draw(sf::RenderWindow &window)
+void FollowerShape::draw(const std::shared_ptr<sf::RenderWindow>& window_ptr)
 {
-	window.draw(head);
-	window.draw(leg1);
-	window.draw(leg2);
+	window_ptr->draw(head);
+	window_ptr->draw(leg1);
+	window_ptr->draw(leg2);
 }

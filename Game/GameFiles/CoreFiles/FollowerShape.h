@@ -66,7 +66,7 @@ public:
 	//other Methods
 	void move(sf::Vector2f moveVect);
 
-	void draw(sf::RenderWindow &window);
+	void draw(const std::shared_ptr<sf::RenderWindow>& window_ptr);
 };
 
 

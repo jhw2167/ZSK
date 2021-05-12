@@ -29,20 +29,20 @@ namespace zsk
 			return vect(spawn_x, spawn_y);
 		}
 		
-		static int srand(time(0));
+		static time_t srand(time(0));
 
-		float spawn_x = (rand() % (r2_x - r1_x));
+		int spawn_x = (rand() % (r2_x - r1_x));
 		spawn_x += r1_x;
 		//Calculated our rand x w/in provided range
 
-		float spawn_y = (rand() % (r2_y - r1_y));
+		int spawn_y = (rand() % (r2_y - r1_y));
 		spawn_y += r1_y;
 		//Calculated our rand x w/in provided range
 
 		return vect(spawn_x, spawn_y);
 	}
 
-	float distanceFrom(const sf::Vector2f & loc1, const sf::Vector2f & loc2)
+	double distanceFrom(const sf::Vector2f & loc1, const sf::Vector2f & loc2)
 	{
 		//calculates vector distance from player or tower object
 
@@ -54,7 +54,7 @@ namespace zsk
 		//calculates vector for distance from follower to player
 	}
 
-	float magnitude(float x, float y)
+	double magnitude(float x, float y)
 	{
 		float xVal = x * x;
 		float yVal = y * y;

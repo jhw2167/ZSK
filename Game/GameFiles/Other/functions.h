@@ -22,15 +22,19 @@ namespace zsk
 
 		vect(float a1 = 0.f, float b1 = 0.f) :
 			a(a1), b(b1) {};
+
+		vect(int a1 = 0, int b1 = 0) :
+			a(static_cast<float>(a1)), 
+			b(static_cast<float>(b1)) {};
 	};
 
 	zsk::vect randomSpawn(const vect& range_x,
 		const vect& range_y = vect(0.f, 1.f) );
 
-	float distanceFrom(const sf::Vector2f& loc1,
+	double distanceFrom(const sf::Vector2f& loc1,
 		const sf::Vector2f& loc2);
 
-	float magnitude(float x, float y); 
+	double magnitude(float x, float y); 
 
 	//double comes with higher precision and makes superior temp variables
 	double radsToDegs(double rads);

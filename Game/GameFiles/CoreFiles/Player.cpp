@@ -175,18 +175,13 @@ void PlayerShape::movePlayershape(sf::Vector2f &moveVect)
 
 
 	//DRAW FUNCTIONS
-void PlayerShape::drawPlayer(sf::RenderWindow &window)
-	{
-
-		for (int i = 0; i < 6; i++)
-		{
-			window.draw(playerBody[i]);
-		}
-
-		window.draw(head);
-		window.draw(heart);
-
+void PlayerShape::drawPlayer(const std::shared_ptr<sf::RenderWindow>& window_ptr) {
+	for (int i = 0; i < 6; i++) {
+		window_ptr->draw(playerBody[i]);
 	}
+	window_ptr->draw(head);
+	window_ptr->draw(heart);
+}
 
 
 //END CLASS PLAYERSHAPE
@@ -208,6 +203,9 @@ sf::Color Player::pColors[] = { sf::Color::Red, sf::Color::Blue,
 FollowerShape Player::scoreFigure = FollowerShape(sf::Color::Black, 3.f);
 PlayerShape Player::lifeFigure = PlayerShape(2.5f);
 
+//Editing values
+bool Player::showBoxes = true;
+
 
 
 /*  Forward Declarations  */
@@ -218,13 +216,11 @@ class Follower;
 	
 /* Public Members  */
 
-Player::Player(sf::RenderWindow &window, int pNumber, int startLives, float scale, float startHealth,
-		float startMaxHealth, float startShield, float startMaxShield, float mSpeed, int startScore, float smallRadius,
+Player::Player(int pNumber, int startLives, float scale, int startHealth,
+		int startMaxHealth, int startShield, int startMaxShield, float mSpeed, int startScore, float smallRadius,
 		float maxLargeRadius, int laserL, int laserW, bool showBox) 
 			: GameObj(ObjType::PLR)
 	{
-		//Init Window Dims
-		setWindowDims(window);
 
 		//Initialize basic player components
 		playerNumber = pNumber;
@@ -238,15 +234,16 @@ Player::Player(sf::RenderWindow &window, int pNumber, int startLives, float scal
 		moveVect = sf::Vector2f(STILL, STILL);
 
 		//Initialize player box and position
-		sf::Vector2f startPos = sf::Vector2f(wLength / 2.f, wHeight / 2.f);
+		sf::Vector2f startPos = sf::Vector2f(window_ptr->getSize().x / 2.f,
+			window_ptr->getSize().y / 2.f);
 		playerShape = PlayerShape(scale, playerColor, startPos);
-		setPlayerBox(playerShape, showBox);
+		setPlayerBox(playerShape);
 
 		setPosition(startPos);
 
 		//initialize player spawn health and shield bars
-		initHealthBar(window, startHealth, startMaxHealth);
-		initShieldBar(window, startShield, startMaxShield);
+		initHealthBar(startHealth, startMaxHealth);
+		initShieldBar(startShield, startMaxShield);
 		initHealthText();
 		invulnerability = 30;
 
@@ -268,16 +265,15 @@ Player::Player(sf::RenderWindow &window, int pNumber, int startLives, float scal
 
 
 	/*  Init Methods  */
-void Player::initHealthBar(sf::RenderWindow &window,
-	float sHealth, float sMaxHealth)
+void Player::initHealthBar(int sHealth, int sMaxHealth)
 	{
 		maxHealth = sMaxHealth;
 		
-		float healthBarX = window.getSize().x / 2.f;
-		float healthBarY = window.getSize().y / 40.f;
+		float healthBarX = window_ptr->getSize().x / 2.f;
+		float healthBarY = window_ptr->getSize().y / 40.f;
 
-		float hLength = window.getSize().x / 5.f;
-		float hHeight = window.getSize().y / 30.f;
+		float hLength = window_ptr->getSize().x / 5.f;
+		float hHeight = window_ptr->getSize().y / 30.f;
 
 		healthBarPosition = sf::Vector2f(healthBarX, healthBarY);
 		healthBarSize = sf::Vector2f(hLength, hHeight);
@@ -297,11 +293,10 @@ void Player::initHealthBar(sf::RenderWindow &window,
 		healthBarGreen.setFillColor(sf::Color::Green);
 	}
 
-void Player::initShieldBar(sf::RenderWindow &window,
-	float sShield, float sMaxShield)
+void Player::initShieldBar(int sShield, int sMaxShield)
 	{
 		maxShield = sMaxShield;
-		shieldRegen = 1.f;
+		shieldRegen = 1;
 
 		setShield(sShield);									//Player initiated with size 100 shield
 		shieldBar.setOrigin(healthBarOrigin);
@@ -326,25 +321,25 @@ void Player::initHealthText()
 	}
 
 void Player::initScore()
-	{
-		int textSize = 45;
+{
+	int textSize = 45;
 
-		scoreText.setFont(zsk::art::arial);
-		scoreText.setCharacterSize(textSize);
-		scoreText.setFillColor(zsk::art::secColor);
+	scoreText.setFont(zsk::art::arial);
+	scoreText.setCharacterSize(textSize);
+	scoreText.setFillColor(zsk::art::secColor);
 
-		sf::Vector2f pos = sf::Vector2f(wLength / 1.54f, 0.f);
+	sf::Vector2f pos = sf::Vector2f(window_ptr->getSize().x / 1.54f, 0.f);
 
-		scoreText.setPosition(pos);
-		setScore(0);
+	scoreText.setPosition(pos);
+	setScore(0);
 
 
-		if (playerNumber == 1) {
-			sf::Vector2f adj = sf::Vector2f(-25.f, 25.f);
-			scoreFigure.setPosition(pos + adj);
+	if (playerNumber == 1) {
+		sf::Vector2f adj = sf::Vector2f(-25.f, 25.f);
+		scoreFigure.setPosition(pos + adj);
 
-		}
 	}
+}
 
 void Player::initLives(int newLives)
 {
@@ -354,7 +349,7 @@ void Player::initLives(int newLives)
 		lifeText.setCharacterSize(textSize);
 		lifeText.setFillColor(zsk::art::secColor);
 
-		sf::Vector2f pos = sf::Vector2f(wLength / 1.33f, 0.f);
+		sf::Vector2f pos = sf::Vector2f(window_ptr->getSize().x / 1.33f, 0.f);
 
 		lifeText.setPosition(pos);
 		setLives(newLives);
@@ -389,14 +384,14 @@ void Player::initLargeFollowerRadius(float newRadius)
 
 
 	/* SET METHODS */
-void Player::setLives(int newLives) {
+void Player::setLives(const int newLives) {
 		lives = newLives;
 
 		std::string newText = "x" + std::to_string(lives);
 		lifeText.setString(newText);
 	}
 
-void Player::setHealth(float newHealth)
+void Player::setHealth(const int newHealth)
 	{
 		health = newHealth;
 		float newLength = (health / maxHealth) * healthBarSize.x;
@@ -410,7 +405,7 @@ void Player::setHealth(float newHealth)
 
 	}
 
-void Player::setInvulnFrames(int newFrames){
+void Player::setInvulnFrames(const int newFrames){
 	invulnerability = newFrames;
 }
 
@@ -429,7 +424,7 @@ void Player::centerHealthText()
 		healthText.setPosition(healthBarPosition + centerText);
 	}
 
-void Player::setShield(float newShield)
+void Player::setShield(const int newShield)
 	{
 		shield = newShield;
 		float newLength = (shield / maxShield) * healthBarSize.x;
@@ -442,11 +437,11 @@ void Player::setShield(float newShield)
 
 	}
 
-void Player::setShieldRegen(float newRegen) {
+void Player::setShieldRegen(const int newRegen) {
 	shieldRegen = newRegen;
 }
 
-void Player::setScore(int newScore)
+void Player::setScore(const int newScore)
 	{
 		score = newScore;
 
@@ -478,21 +473,22 @@ void Player::setScore(int newScore)
 		
 	}
 
-void Player::setplayerSpeed(float newSpeed) {
+void Player::setplayerSpeed(const float newSpeed) {
 		playerSpeed = newSpeed;
 	}
 
-void Player::setPosition(sf::Vector2f newPos)
-	{
-		pos = newPos;
-		playerShape.setPosition(newPos);
-		pBox.setPosition(newPos);
+void Player::setPosition(const sf::Vector2f& newPos)
+{
+	pos = newPos;
+	playerShape.setPosition(newPos);
+	pBox.setPosition(newPos);
 
-		largeFollowArea.setPosition(playerShape.getPosition());			//Follow circles stay around players
-		smallFollowArea.setPosition(playerShape.getPosition());
-	}
+	//Follow circles stay around players
+	largeFollowArea.setPosition(playerShape.getPosition());	
+	smallFollowArea.setPosition(playerShape.getPosition());
+}
 
-void Player::setPlayerBox(PlayerShape &shape, bool showBoxes)
+void Player::setPlayerBox(const PlayerShape &shape)
 	{
 		float length = shape.getRightBounds() - shape.getLeftBounds();
 		float height = shape.getLowerBounds() - shape.getUpperBounds();
@@ -511,115 +507,108 @@ void Player::setPlayerBox(PlayerShape &shape, bool showBoxes)
 		pBox.setOrigin(length / 2.f, shape.getPosition().y - shape.getUpperBounds());
 	}
 
-void Player::setSmallFollowerRadius(float newRadius) {
+void Player::setSmallFollowerRadius(const float newRadius) {
 		smallFollowArea.setRadius(newRadius);
 		smallFollowArea.setOrigin(newRadius, newRadius);
 }
 
-void Player::setLargeFollowerRadius(float newRadius) {
+void Player::setLargeFollowerRadius(const float newRadius) {
 		largeFollowArea.setRadius(newRadius);
 		largeFollowArea.setOrigin(newRadius, newRadius);
 	}
 
-void Player::setMinLFR(float newRadius) {
+void Player::setMinLFR(const float newRadius) {
 		minLargeFolRad = newRadius;
 		largeFollowArea.setRadius(newRadius);
 	}
 
-void Player::setMaxLFR(float newRadius) {
+void Player::setMaxLFR(const float newRadius) {
 		maxLargeFolRad = newRadius;
 	}
 
-void Player::setLaserLength(int laserL) {
+void Player::setLaserLength(const int laserL) {
 		laserLength = laserL;
 	}
 
-void Player::setLaserWidth(int laserW) {
+void Player::setLaserWidth(const int laserW) {
 		laserWidth = laserW;
-	}
-
-void Player::setWindowDims(sf::RenderWindow &window)
-	{
-		wLength = window.getSize().x;
-		wHeight = window.getSize().y;
 	}
 
 
 	/*  ACCESSOR METHODS  */
-int Player::getPlayerNumber() {
+int Player::getPlayerNumber() const {
 		return playerNumber;
 }
 
-int Player::getScore() {
+int Player::getScore() const {
 	return score;
 }
 
-float Player::getHealth()
-{
+int Player::getHealth() const {
 	return health;
 }
 
-float Player::getShield() {
+int Player::getShield() const {
 	return shield;
 }
 
-PlayerShape Player::getPlayerShape() {
+const PlayerShape& Player::getPlayerShape() const {
 	return playerShape;
 }
 
-sf::Color Player::getPlayerColor() {
+sf::Color Player::getPlayerColor() const {
 	return playerColor;
 }
 
-float Player::getplayerSpeed() {
+float Player::getplayerSpeed() const {
 	return playerSpeed;
 }
 
-sf::Vector2f Player::getPosition() {
+sf::Vector2f Player::getPosition() const {
 	return pos;
 }
 
-sf::Vector2f Player::getGunPosition() {
+sf::Vector2f Player::getGunPosition() const {
 	return playerShape.getGunPosition();
 }
 
-sf::FloatRect Player::getPlayerBounds() {
+sf::FloatRect Player::getPlayerBounds() const {
 	return pBox.getGlobalBounds();
 }
 
-sf::FloatRect Player::getHeartBounds() {
+sf::FloatRect Player::getHeartBounds() const {
 	return playerShape.getHeartBounds();
 }
 
-sf::FloatRect Player::getSmallFollowAreaBounds() {
+sf::FloatRect Player::getSmallFollowAreaBounds() const {
 	return smallFollowArea.getGlobalBounds();
 }
 
-float Player::getSmallFollowAreaRadius() {
+float Player::getSmallFollowAreaRadius() const {
 		return smallFollowArea.getRadius();
 }
 
-sf::FloatRect Player::getLargeFollowAreaBounds() {
+sf::FloatRect Player::getLargeFollowAreaBounds() const {
 		return largeFollowArea.getGlobalBounds();
 }
 
-float Player::getLargeFollowAreaRadius() {
+float Player::getLargeFollowAreaRadius() const {
 	return largeFollowArea.getRadius();
 }
 
-float Player::getMinLFR() {
+float Player::getMinLFR() const {
 	return minLargeFolRad;
 }
 
-int Player::getLaserLength() {
+int Player::getLaserLength() const {
 	return laserLength;
 }
 
-int Player::getLaserWidth() {
+int Player::getLaserWidth() const {
 	return laserWidth;
 }
 
-bool Player::isGameOver() {
+bool Player::isGameOver() const {
 	return gameOver;
 }
 
@@ -694,13 +683,13 @@ void Player::moveLogic(int dir)
 }
 
 
-float Player::circle(float x, float radius) {				//formula for a circle!
+double Player::circle(float x, float radius) {				//formula for a circle!
 	return sqrt(pow(radius, 2) - pow(x, 2));
 }
 
 
 	//METHODS RELATED TO MANAGING A PLAYER'S HEALTH
-void Player::takeDamage(float dmg)
+void Player::takeDamage(int dmg)
 {
 	if (invulnerability > 0) {
 		invulnerability--;
@@ -710,11 +699,11 @@ void Player::takeDamage(float dmg)
 	else {
 
 		if (shield > 0) {
-			float newShield = std::max(shield - dmg, 0.f);
+			int newShield = std::max(shield - dmg, 0);
 			setShield(newShield);
 		}
 		else if (health > 0) {
-			float newHealth = std::max(health - dmg, 0.f);
+			int newHealth = std::max(health - dmg, 0);
 			setHealth(newHealth);
 		}
 		else {
@@ -802,12 +791,12 @@ sf::Vector2f Player::towerCollisions(int dir, int towerNum, sf::Vector2f const &
 	return safeSpeed;
 }
 
-float Player::invSpeedSq(float x, float y, float radius)
+double Player::invSpeedSq(float x, float y, float radius)
 {	//x and y are position floats, returns y_s^2
 	//Using player position, ratio of x^2 and y^2 coords on quarter circle from {0, 100}
 	//must equal ratio of speeds x_s^2 and y_s^2 on bounds {0, playerSpeed}
 
-	float ratio = (pow(x, 2) / pow(y, 2));
+	float ratio = static_cast<float>((pow(x, 2) / pow(y, 2)));
 	return pow(radius, 2) / (ratio + 1);
 }
 
@@ -816,8 +805,8 @@ sf::Vector2f Player::avoidTower(sf::Vector2f dir, sf::Vector2f relPos, int tower
 	sf::Vector2f safeSpeed = sf::Vector2f(0, 0);
 	//safepos is speed that keeps player outside of towerbounds
 
-	safeSpeed.y = invSpeedSq(relPos.x, relPos.y, playerSpeed);
-	safeSpeed.x = pow(playerSpeed, 2) - safeSpeed.y;
+	safeSpeed.y = static_cast<float>(invSpeedSq(relPos.x, relPos.y, playerSpeed));
+	safeSpeed.x = static_cast<float>(pow(playerSpeed, 2)) - safeSpeed.y;
 
 	safeSpeed.x = sqrt(safeSpeed.x) * dir.x;
 	safeSpeed.y = sqrt(safeSpeed.y) * dir.y;
@@ -827,44 +816,53 @@ sf::Vector2f Player::avoidTower(sf::Vector2f dir, sf::Vector2f relPos, int tower
 
 
 //METHODS RELATING TO MANAGINE PLAYERS BULLETS
-void Player::shoot(sf::Vector2i const &cursorPos)
+void Player::shoot()
 {
-	static int temperShooting = 0;					//tempershooting will prevent players from shooting excessively
+	static int temperShooting = 0;					
+	//tempershooting will prevent players from shooting excessively
 
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
 	{
 		if (temperShooting > 10)
 		{
-			addBullet(cursorPos);		//adds bullet to vector of active bullets
+			//adds bullet to vector of active bullets
+			addBullet();		
 			temperShooting = 0;
 		}
 		else
 			temperShooting--;
 	}
-	temperShooting++;			//variable is iterated continuosly to allow multiple shots
+	temperShooting++;			
+	//variable is iterated continuosly to allow multiple shots
 }
 
-void Player::addBullet(sf::Vector2i const &cursorPos) {
-	activeBullets.push_front(Bullet(getGunPosition(), cursorPos));
+void Player::addBullet() {
+	std::shared_ptr<Bullet> b(new Bullet(getGunPosition()));
+	activeBullets.push_front(b);
 }
 
 void Player::moveBullets() {
 	for (auto& bullet: activeBullets) {
-		bullet.moveBullet();
+		bullet->moveBullet();
 	}
-}
+} 
 
-void Player::deleteBullet(std::list<Bullet>::iterator& b) {
-	printf("delete bullet: %d, at mem loc: %p\n", b._Ptr->_Myval.getID(), b._Ptr);
+void Player::deleteBullet(std::list<std::shared_ptr<Bullet>>::iterator& b) 
+{
+	//Remove the bullet from our list, after this function
+	//the bullet should still be refereneced by a shared_ptr in
+	//the objs vector
+
+	printf("delete bullet: %d, at mem loc: %p\n", b->get()->getID(), b._Ptr);
 	activeBullets.erase(b);
 }
 
-void Player::checkBulletInBounds(sf::RenderWindow &window)
+void Player::checkBulletInBounds()
 {
 	for (auto b = activeBullets.begin(); b != activeBullets.end();) {
-		if (b->isOutOBounds(window)) {
+		if (b->isOutOBounds()) {
 			cout << "Bullet OOB\n";
-			deleteBullet(b);
+			activeBullets.erase(b);
 		}
 		++b;
 	}
@@ -949,7 +947,6 @@ void Player::growLargeFollowArea(bool grow, float growRate)
 		if (maxLargeFolRad >= newRad) {
 			setLargeFollowerRadius(newRad);
 		}
-
 		if (newRad >= 0.8 * maxLargeFolRad) {
 			snap = true;
 		}
@@ -976,7 +973,7 @@ void Player::growLargeFollowArea(bool grow, float growRate)
 		}
 	}
 		
-	float newSmallRad = smallFollowArea.getRadius() + 0.5* growRate;
+	float newSmallRad = smallFollowArea.getRadius() + 0.5f * growRate;
 	
 	if (smallFolRad >= newSmallRad) {
 		setSmallFollowerRadius(newSmallRad);
@@ -1000,7 +997,7 @@ STATE Player::update()
 		// - regen Shield
 	miscMechanics();
 
-	return GAME;
+	return STATE::GAME;
 }
 
 //Move PLayer Logic
@@ -1029,13 +1026,13 @@ void Player::movePlayerLogic()
 	//down
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) ||
 			sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-		if (playerShape.getLowerBounds() < window->getSize().y)
+		if (playerShape.getLowerBounds() < window_ptr->getSize().y)
 			dir = DOWN;
 	}
 	//and right
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) ||
 			sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-		if (playerShape.getRightBounds() < window->getSize().x)
+		if (playerShape.getRightBounds() < window_ptr->getSize().x)
 			dir = RIGHT;
 	}
 
@@ -1047,9 +1044,9 @@ void Player::movePlayerLogic()
 //Shooting Mechanics
 void Player::shootingMechanics()
 {
-	shoot(mousePos);
+	shoot();
 	moveBullets();
-	checkBulletInBounds(*window);
+	checkBulletInBounds();
 }
 
 //Miscellaneous Mechanics
@@ -1067,45 +1064,45 @@ void Player::miscMechanics()
 /***************************/
 
 //DRAWING METHODS OF CLASS PLAYER
-void Player::drawPlayer(sf::RenderWindow &window)
+void Player::drawPlayer()
 {
-	window.draw(pBox);
-	playerShape.drawPlayer(window);
+	window_ptr->draw(pBox);
+	playerShape.drawPlayer(window_ptr);
 
-	drawScore(window);
-	drawHealthBar(window);
-	drawBullets(window);
+	drawScore();
+	drawHealthBar();
+	drawBullets();
 }
 
-void Player::drawHealthBar(sf::RenderWindow &window)
+void Player::drawHealthBar()
 {
 
-	window.draw(healthBarRed);
-	window.draw(healthBarGreen);
-	window.draw(shieldBar);
+	window_ptr->draw(healthBarRed);
+	window_ptr->draw(healthBarGreen);
+	window_ptr->draw(shieldBar);
 
-	window.draw(largeFollowArea);
-	window.draw(smallFollowArea);
+	window_ptr->draw(largeFollowArea);
+	window_ptr->draw(smallFollowArea);
 
-	window.draw(healthText);
+	window_ptr->draw(healthText);
 	//window.draw(dot);	//for troubleshooting
 	//window.draw(box);
 }
 
-void Player::drawBullets(sf::RenderWindow &window)
+void Player::drawBullets()
 {
 	for (auto b = activeBullets.begin(); b != activeBullets.end();) {
-		b->drawBullet(window);
+		b->drawBullet();
 		++b;
 	}
 }
 
-void Player::drawScore(sf::RenderWindow &window) {
-	window.draw(scoreText);
-	scoreFigure.draw(window);
+void Player::drawScore() {
+	window_ptr->draw(scoreText);
+	scoreFigure.draw(window_ptr);
 
-	window.draw(lifeText);
-	lifeFigure.drawPlayer(window);
+	window_ptr->draw(lifeText);
+	lifeFigure.drawPlayer(window_ptr);
 }
 
 
@@ -1147,8 +1144,6 @@ Player::Player(const Player& rhs)
 	this->snap = rhs.snap;
 	this->laserLength = rhs.laserLength;
 	this->laserWidth = rhs.laserWidth;
-	this->wLength = rhs.wLength;
-	this->wHeight = rhs.wHeight;
 }
 
 

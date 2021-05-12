@@ -11,11 +11,12 @@ namespace MenuObjects {
 	/*  Menu Object Base Class */
 	const float MenuObject::adj = 10.f;
 
-		//MenuObject Default Constructor
+	//MenuObject Default Constructor
 	MenuObject::MenuObject() {
 		clickable = false;
 		clicked = false;
 		hovered = false;
+		currState = STATE::MAIN_MENU;
 	}
 
 	MenuObject::MenuObject(const STATE currentState, const sf::Vector2f & pos,
@@ -30,7 +31,7 @@ namespace MenuObjects {
 		clickable = canBeClicked;
 		clicked = false;
 		hovered = false;
-		animateScale = sf::Vector2f(1.1, 1.1);
+		animateScale = sf::Vector2f(1.1f, 1.1f);
 		boxSize = sf::Vector2f(20.f, 20.f);
 
 		//init Functions
@@ -243,7 +244,7 @@ namespace MenuObjects {
 		text.setPosition(text.getPosition() + adjm);
 	}
 
-	void MenuObject::setOutlineThickness(const int thickness) {
+	void MenuObject::setOutlineThickness(const float thickness) {
 		box.setOutlineThickness(thickness);
 	}
 
@@ -639,7 +640,7 @@ namespace MenuObjects {
 		//calc new char size
 		float yText = (boxSize.y - adj) / t.y;
 		float xText = boxSize.x / t.x;
-		float newTextSize = std::min(xText, yText);
+		unsigned int newTextSize = static_cast<unsigned int>(std::min(xText, yText));
 		text.setCharacterSize(newTextSize);
 
 		float textLength(text.getLocalBounds().width);
@@ -1095,7 +1096,7 @@ namespace MenuObjects {
 
 	/*  Unique public methods  */
 	// Public Methods
-	void Tuple::setOutlineThickness(float thickness)
+	void Tuple::setOutlineThickness(const float thickness)
 	{
 		/*
 			Outline thickness increase the size of our tuple

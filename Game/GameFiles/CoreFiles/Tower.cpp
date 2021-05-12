@@ -8,31 +8,31 @@
 	
 
 	/*  Constructors  */
-Tower::Tower(sf::RenderWindow const &window, const int tNumber)
+Tower::Tower(const int tNumber)
 	: GameObj(ObjType::TOW)
 //Constructs minimal tower objcet
 {
-	initVars(tNumber, window);
+	initVars(tNumber);
 	initLaserTexture();
-	initTowerShape(window);
-	setPosition(window, tNumber);
+	initTowerShape();
+	setPosition(tNumber);
 	initLaser();
 }
 //End Constructors
 
 
 	/*  Init Methods  */
-void Tower::initVars(const int tNumber, sf::RenderWindow const &window) {
-	win_ptr = &window;
+void Tower::initVars(const int tNumber) {
 	towerNumber = tNumber;
 	towerOwnedBy = NOTOWNED;
 	isFiring = false;
 }
 
-void Tower::initTowerShape(sf::RenderWindow const &window)
+void Tower::initTowerShape()
 {
 	//setRadius and origin at center
-	float tRadius = std::min(window.getSize().x, window.getSize().y) / 8.f;
+	float tRadius = std::min(window_ptr->getSize().x,
+		window_ptr->getSize().y) / 8.f;
 	setRadius(tRadius);
 	
 	//fill color
@@ -76,8 +76,8 @@ void Tower::initLaser()
 	//set laser rotation
 	sf::Vector2f lPos = laser.getPosition();
 
-	float winL = win_ptr->getSize().x;
-	float winH = win_ptr->getSize().y;
+	float winL = window_ptr->getSize().x;
+	float winH = window_ptr->getSize().y;
 	sf::Vector2f center = sf::Vector2f(winL / 2.f, winH / 2.f);
 
 	float l1 = laser.getLocalBounds().width;
@@ -88,8 +88,8 @@ void Tower::initLaser()
 	//L2 is distance between laser origin (at tower) and map center
 	//L3 is distance between the "far" laser point and the map center
 
-	double radAngle = zsk::lawCosINV(l1, l2, l3);
-	double degAngle = zsk::radsToDegs(radAngle);
+	float radAngle = static_cast<float>(zsk::lawCosINV(l1, l2, l3));
+	float degAngle = static_cast<float>(zsk::radsToDegs(radAngle));
 
 	if (lPos.y < winH / 2.f)
 		laser.setRotation(degAngle);
@@ -108,12 +108,12 @@ void Tower::setRadius(float tRadius) {
 	towerShape.setRadius(towerRadius);
 	towerShape.setOrigin(towerRadius, towerRadius);
 
-	const float newRad = 1.06 * tRadius;
+	float newRad = 1.06f * tRadius;
 	towerOutline.setRadius(newRad);
 	towerOutline.setOrigin(newRad, newRad);
 }
 
-void Tower::setPosition(sf::RenderWindow const &window, int tNumber)
+void Tower::setPosition(int tNumber)
 {
 	//sets tower position to one of the four corners
 	towerNumber = tNumber;
@@ -122,21 +122,24 @@ void Tower::setPosition(sf::RenderWindow const &window, int tNumber)
 	sf::Vector2f newPos = sf::Vector2f(0, 0);
 	sf::Vector2f laserPos = sf::Vector2f(0, 0);
 
+	float winLength = static_cast<float>(window_ptr->getSize().x);
+	float winHeight = static_cast<float>(window_ptr->getSize().y);
+
 	switch (towerNumber) {
 	case 1:
 		//do nothing
 		laserPos = sf::Vector2f(towerRadius / 2.f, towerRadius / 2.f);
 		break;
 	case 2:
-		newPos = sf::Vector2f(window.getSize().x, 0);
+		newPos = sf::Vector2f(winLength, 0);
 		laserPos = sf::Vector2f(-towerRadius / 2.f, towerRadius / 2.f);
 		break;
 	case 3:
-		newPos = sf::Vector2f(0, window.getSize().y);
+		newPos = sf::Vector2f(0, winHeight);
 		laserPos = sf::Vector2f(towerRadius / 2.f, -towerRadius / 2.f);
 		break;
 	case 4:
-		newPos = sf::Vector2f(window.getSize().x, window.getSize().y);
+		newPos = sf::Vector2f(winLength, winHeight);
 		laserPos = sf::Vector2f(-towerRadius / 2.f, -towerRadius / 2.f);
 		break;
 	case 0:														
@@ -219,7 +222,11 @@ void Tower::changeLaserColor(const int newOwner)
 	img.loadFromFile("Art/Sprites/laser.png");
 
 	sf::Vector2u s = img.getSize();
-	sf::Color oldColor = img.getPixel(s.x / 2.f, s.y / 2.f);
+
+	unsigned int x = static_cast<unsigned int>(s.x / 2);
+	unsigned int y = static_cast<unsigned int>(s.y / 2);
+
+	sf::Color oldColor = img.getPixel(x,y);
 	sf::Color newColor = zsk::art::playerColors.at(newOwner);
 
 	zsk::art::changePixelRange(img, oldColor, newColor);
@@ -232,21 +239,21 @@ void Tower::changeLaserColor(const int newOwner)
 
 /*		UPDATE		*/
 STATE Tower::update() {
-	return GAME;
+	return STATE::GAME;
 }
 /***************/
 
 
 //TOWER DRAW METHODS
-void Tower::drawTowers(sf::RenderWindow &window) 
+void Tower::drawTowers() 
 {
-	window.draw(towerOutline);
-	window.draw(towerShape);
+	window_ptr->draw(towerOutline);
+	window_ptr->draw(towerShape);
 	
 	if (isFiring) {
 		//cout << "Get texture in draw: " << laser.getTexture() << endl;
 		//getchar();
-		window.draw(laser);
+		window_ptr->draw(laser);
 	}
 		
 	

@@ -15,6 +15,10 @@
 #include "../../BaseCode/Globals/Globals.h"
 #include "Other/functions.h"
 
+//using statements
+using std::list;
+using std::shared_ptr;
+
 
 //Global enum
 enum class ObjType {PLR = 0, TOW, LSR, FOL, BUL, DRP, END};
@@ -40,7 +44,7 @@ struct SubList {
 	std::list<GameObj*>::const_iterator end;
 
 	SubList(std::list<GameObj*>::const_iterator s,
-		std::list<GameObj*>::const_iterator t) :
+		list<GameObj*>::const_iterator t) :
 		start(s), end(t) {};
 };
 
@@ -53,17 +57,16 @@ private:
 	std::list<GameObj*>::const_iterator self;
 
 	//lists
-	static std::shared_ptr<std::list<GameObj*>> objs;
+	static shared_ptr<list<shared_ptr<GameObj>>> objs;
 	static std::vector<SubList> subLists;
 		
 
+protected:
+	
 	//static properties - this objects should never be changed other
 	//than via their static method thus they are private instances
 	static std::shared_ptr<sf::RenderWindow> window_ptr;
 	static std::shared_ptr<sf::Mouse> mouse_ptr;
-
-protected:
-	
 	
 	//Obj properties
 	sf::Vector2f pos;
@@ -89,20 +92,34 @@ public:
 	sf::Vector2f getPos() const;
 	virtual const sf::FloatRect& getGlobalBounds() const = 0;
 
-		//Static Accessors
+	
+	static std::shared_ptr<Player> getNewPlayer();
+	static std::shared_ptr<Tower> getNewTower();
+	static std::shared_ptr<Follower> getNewFollower();
+	static std::shared_ptr<Bullet> getNewBullet();
+	//static std::shared_ptr<Drop> getNewBullet();
+
+	//Modifiers
+	static void setWindow(const std::shared_ptr<sf::RenderWindow>& window_pointer);
+	static void setMouse(const std::shared_ptr <sf::Mouse>& mouse_pointer);
+
+	static void setObjs(std::shared_ptr<std::list<GameObj*>> list);
+	static void initSublist();
+	void setSublist(const SubList& sub, ObjType indx);
 		
 
 	//General, virtual functions
 	virtual STATE update() = 0;
 
 
-	//Modifiers
-	static void setWindow(const std::shared_ptr<sf::RenderWindow> window_pointer);
-	static void setMouse(const std::shared_ptr <sf::Mouse>& mouse_pointer);
+	
+	//Static add/delete GameObj from the list
+	template<class objType>
+	static std::shared_ptr<GameObj> getNewGameObj();
 
-	static void setObjs(std::shared_ptr<std::list<GameObj*>> list);
-	static void initSublist();
-	void setSublist(const SubList& sub, ObjType indx);	
+	template<class objType>
+	static std::shared_ptr<GameObj> removeGameObj(int objID);
+
 	
 	//copy constructor
 	GameObj(const GameObj& rhs);
@@ -114,3 +131,20 @@ public:
 	~GameObj();
 };
 
+template<class objType>
+inline std::shared_ptr<GameObj> GameObj::getNewGameObj()
+{
+	//Create new GameObj of child type: player, tower, follower etc.
+	//and append it to the back of the lists subsection
+
+	static_assert(std::is_base_of<GameObj, ObjType>::value, "ObjType must inherit from GameObj");
+	std::shared_ptr<GameObj> obj(new objType());
+	objs->insert(subLists.at(static_cast<size_t>(obj->getID())).end);
+	return ;
+}
+
+template<class objType>
+inline std::shared_ptr<GameObj> GameObj::removeGameObj(int objID)
+{
+	return std::shared_ptr<GameObj>();
+}

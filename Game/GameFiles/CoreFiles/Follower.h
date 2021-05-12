@@ -57,12 +57,8 @@ private:
 	static const sf::Vector2f globBounce;
 	//vector with random x y coordinates for collisions
 
-	/*  Window Variables */
-	unsigned int windowLength;
-	unsigned int windowHeight;
-
 	/*  Miscellaneous  */
-	float towerRadius;
+	static float towerRadius;
 	sf::CircleShape dot = sf::CircleShape(1.f);
 
 		/*  Private Functions  */
@@ -80,7 +76,7 @@ private:
 
 public:
 
-Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor = sf::Color::Black,
+Follower(sf::Color fColor = sf::Color::Black,
 	int startHealth = 1, int startDmg = 1, int retrgtRate = 1, int redirRate = 2,
 	float scale = 3.5f, bool showBoxes = true);
 
@@ -106,30 +102,34 @@ Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor = sf::Color::
 	void setDamage(int newDmg);
 
 	void setBounce(const sf::Vector2f& bnc);
+
+	//STATICS
+	static void setTowerRadius(const float tRadius);
+
 	//End Setters
 
 
 	/*  Accessor Methods  */
-	sf::Vector2f getFollowerPosition();
+	sf::Vector2f getFollowerPosition() const;
 
-	sf::Vector2f getFollowerVelocity();
+	sf::Vector2f getFollowerVelocity() const;
 
 	const sf::FloatRect& getGlobalBounds() const;
 
-	int getHealth();
+	int getHealth() const;
 
-	int getDamage();
+	int getDamage() const;
 
-	int getMergeCount();
+	int getMergeCount() const;
 
-	sf::Vector2f getBounce();
+	sf::Vector2f getBounce() const;
 	//End Accessor Methods
 
 
 		/*  Functions  */
 
 	//SET UP AND MANAGE FOLLOWER MOVEMENT
-	void setNewVelocity(sf::Vector2f const &destinationVector, float speed = 3.f);
+	void setNewVelocity(const sf::Vector2f& destinationVector, float speed = 3.f);
 
 
 	//MOVE FOLLOWER LOGIC
@@ -168,7 +168,7 @@ Follower(sf::RenderWindow &window, float tRadius, sf::Color fColor = sf::Color::
 	//all need implementing
 
 	//DRAW FOLLWER ASPECTS
-	void drawFollower(sf::RenderWindow &window);
+	void drawFollower();
 
 	//COPY CONSTRUCTOR
 	Follower(const Follower &rhs);

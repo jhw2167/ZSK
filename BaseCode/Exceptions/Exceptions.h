@@ -65,7 +65,7 @@ public:
 	bad_mine_flagMC(std::string);
 };
 
-class no_such_object : public std::logic_error
+class no_such_object : public std::invalid_argument
 {
 	//function ending exception, this mine will not be appended to vector
 public:

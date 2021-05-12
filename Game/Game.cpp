@@ -26,7 +26,7 @@ void Game::initVars()
 {
 	//init window_ptr to nullptr
 	window_ptr = nullptr;
-	gameState = MAIN_MENU;
+	gameState = STATE::MAIN_MENU;
 	numPlayers = 0;
 
 	//load game art and objects
@@ -114,7 +114,14 @@ void Game::initWindow()
 }
 
 void Game::initStartMenu() {
-	MenuState* mm = new MenuState(window_ptr, &events);
+	
+	//Set up static state values
+	State::setWindow(std::shared_ptr<sf::RenderWindow>(window_ptr));
+	State::setMouse(std::shared_ptr<sf::Mouse>(&mouse));
+	State::setEvents(std::shared_ptr<std::vector<sf::Event>>(&events));
+
+	//Create new Menu State
+	MenuState* mm = new MenuState();
 	states.push(mm);
 }
 
@@ -139,38 +146,38 @@ void Game::updateGameState(STATE gs)
 
 		switch (gs)
 		{
-		case MAIN_MENU:
+		case STATE::MAIN_MENU:
 			//Create new MenuState and add
 			//it to the stack
 			updateState<MenuState>(true);
 			break;
 
-		case LOBBY:
+		case STATE::LOBBY:
 			updateState<LobbyState>(true);
 			break;
 
-		case HOST_LOBBY:
+		case STATE::HOST_LOBBY:
 			//subcase of lobby, no state update
-			gs = LOBBY;
+			gs = STATE::LOBBY;
 			break;
 
-		case JOIN_LOBBY:
+		case STATE::JOIN_LOBBY:
 			//subcase of lobby, no state update
-			gs = LOBBY;
+			gs = STATE::LOBBY;
 			break;
 
-		case GAME:
+		case STATE::GAME:
 			//Create new gameState and add
 			//it to the stack
 			updateState<GameState>(true);
 			break;
 
-		case PAUSE:
+		case STATE::PAUSE:
 			//Create new pauseState, overlay it
 			//onto the stack
 			break;
 
-		case QUIT:
+		case STATE::QUIT:
 			window_ptr->close();
 			break;
 
@@ -237,7 +244,7 @@ void Game::pollEvents()
 		case sf::Event::KeyReleased:
 
 			if (event.key.code == sf::Keyboard::Escape) {
-				updateGameState(PAUSE);
+				updateGameState(STATE::PAUSE);
 			}
 			break;
 		}
@@ -262,11 +269,11 @@ void Game::update()
 	pollEvents();
 	updateDt();
 
-	STATE gs = MAIN_MENU;
+	STATE gs = STATE::MAIN_MENU;
 	if (!states.empty())
 		gs = states.top()->update(dt);
 	else
-		gs = QUIT;
+		gs = STATE::QUIT;
 		//gameState quit;
 
 	static int c = 0;

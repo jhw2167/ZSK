@@ -31,7 +31,7 @@ private:
 	sf::Vector2i mousePos;
 
 	//Game objs - ALL GAME ENTITIES: Players, towers, followers etc..
-	std::list<GameObj*> objs;
+	shared_ptr<list<shared_ptr<GameObj>>> objs;
 
 	//Simple Game Values
 	static int numPlayers;
