@@ -8,7 +8,7 @@
 //necesary (most downstream) includes
 #include "../GameFiles/CoreFiles/Follower.h"
 
-//Other Includes
+//Implicit Includes
 /*
 	#include "../GameFiles/CoreFiles/Bullet.h"
 	#include "../GameFiles/CoreFiles/FollowerShape.h"
@@ -31,7 +31,8 @@ private:
 	sf::Vector2i mousePos;
 
 	//Game objs - ALL GAME ENTITIES: Players, towers, followers etc..
-	shared_ptr<list<shared_ptr<GameObj>>> objs;
+	//shared_ptr<list<shared_ptr<GameObj>>> objs;
+	ListMap<GameObj*> objs;
 
 	//Simple Game Values
 	static int numPlayers;

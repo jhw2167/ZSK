@@ -6,30 +6,11 @@
 */
 
 //static initilization
-std::shared_ptr<std::list<GameObj*>> GameObj::objs = nullptr;
-
+std::shared_ptr<ListMap<GameObj*>> GameObj::objs{ nullptr };
 int GameObj::objID = 0;
 
 
 /* PRIVATE METHODS  */
-
-//ADD object when created
-void GameObj::addObj() {
-	
-	//GameObject puts itself onto the linked list
-
-	objs->push_back(this);
-	self = objs->end();
-}
-
-void GameObj::remObj() {
-	/*
-		Remove object from the LL and assign const
-		iterator to the correct next obj
-	*/
-	objs->erase(self);
-}
-
 
 /*  PUBLIC METHODS  */
 
@@ -39,9 +20,9 @@ GameObj::GameObj(ObjType objType)
 	static int called = 0;
 	type = objType;
 	id = ++objID;
-	addObj();
+	//addObj();
 	printf("1. {%d} objID: %d, objSz: %d, Constr Called: %d, " 
-		"ObjType: %d\n\n", id, objID, objs->size(), ++called, type);
+		"ObjType: %d\n\n", id, objID, objs->listSize(), ++called, type);
 }
 
 //Returns objects id

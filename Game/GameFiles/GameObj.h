@@ -57,7 +57,7 @@ private:
 	std::list<GameObj*>::const_iterator self;
 
 	//lists
-	static shared_ptr<list<shared_ptr<GameObj>>> objs;
+	static shared_ptr<ListMap<GameObj*>> objs;
 	static std::vector<SubList> subLists;
 		
 

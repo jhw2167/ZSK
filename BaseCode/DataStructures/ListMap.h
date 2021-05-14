@@ -33,10 +33,14 @@ public:
 
 
 	/*	Accessors  */
+	size_t listSize();
+	size_t mapSize();
+	size_t mapCapacity();
+	int getIDFromFunction(T obj);
 	T& at(int id);
 	typename std::list<T>::iterator atIterator(int id);
-	typename std::list<T>::iterator getFirst();
-	typename std::list<T>::iterator getLast();
+	typename std::list<T>::iterator begin();
+	typename std::list<T>::iterator end();
 
 	/*	Modifiers  */
 	boolean setMapCapacity(size_t newCapacity = DEF_MAP_CAP);
@@ -116,12 +120,12 @@ inline typename std::list<T>::iterator ListMap<T>::atIterator(int id)
 }
 
 template<class T>
-inline typename std::list<T>::iterator ListMap<T>::getFirst() {
+inline typename std::list<T>::iterator ListMap<T>::begin() {
 	return list.begin();
 }
 
 template<class T>
-inline typename std::list<T>::iterator ListMap<T>::getLast() {
+inline typename std::list<T>::iterator ListMap<T>::end() {
 	return list.end();
 }
 

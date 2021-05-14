@@ -12,6 +12,27 @@ const size_t ListMap<T>::DEF_MAP_CAP{ 10 };
 
 
 /*	Accessors  */
+template <class T>
+size_t ListMap<T>::listSize() {
+	return list.size();
+}
+
+template <class T>
+size_t ListMap<T>::mapSize() {
+	return map.size();
+}
+
+template <class T>
+size_t ListMap<T>::mapCapacity() {
+	return map.max_size();
+}
+
+template <class T>
+int ListMap<T>::getIDFromFunction(T obj) {
+	return getID(obj);
+}
+
+
 
 //T ListMap<T>::at(int id) - template, inline
 //std::list<T>::iterator getFirst(); -template, inline
