@@ -4,7 +4,7 @@
 
 #include "main.h"
 
-void myFunc(State *s);
+//void myFunc(State *s);
 
 int main(int argc, char *argv[])
 {

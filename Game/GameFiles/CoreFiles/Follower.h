@@ -114,7 +114,7 @@ Follower(sf::Color fColor = sf::Color::Black,
 
 	sf::Vector2f getFollowerVelocity() const;
 
-	const sf::FloatRect& getGlobalBounds() const;
+	const sf::FloatRect getGlobalBounds() const;
 
 	int getHealth() const;
 
