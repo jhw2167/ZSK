@@ -109,13 +109,15 @@ void GameState::checkCollisions()
 		determine collisions function
 	*/
 
-	std::vector<std::list<GameObj*>*> quads;
+	std::shared_ptr<list<GameObj*>> actObjs{ objs->getList() };
+
+	std::vector<std::shared_ptr<list<GameObj*>>> quads;
 	sf::FloatRect area(sf::Vector2f(0.0,0.0), 
 		sf::Vector2f(window_ptr->getSize()));
 	int numQuads = 4;
 
 	//seperate objs into 16 quadrants for collision detection
-	binSep(&objs, quads, area, numQuads);
+	binSep(actObjs, quads, area, numQuads);
 
 	//determine collisions
 	determineCollisions(quads);
@@ -128,8 +130,8 @@ void GameState::checkCollisions()
 //END
 
 
-void GameState::binSep(const std::list<GameObj*>* actObjs, 
-	std::vector<std::list<GameObj*>*>& quads, sf::FloatRect side, int lvl)
+void GameState::binSep(const std::shared_ptr<list<GameObj*>> actObjs,
+	std::vector<std::shared_ptr<list<GameObj*>>>& quads, sf::FloatRect side, int lvl)
 {
 	/*
 		Seperate each level of objs unordered map into 
@@ -137,8 +139,8 @@ void GameState::binSep(const std::list<GameObj*>* actObjs,
 	*/
 
 	//create actObjs2 - vector of GameObj*'s NOT in float rect area
-	std::list<GameObj*>* actObjs1 = new std::list<GameObj*>();
-	std::list<GameObj*>* actObjs2 = new std::list<GameObj*>();
+	std::shared_ptr<list<GameObj*>> actObjs1{ new list<GameObj*>() };
+	std::shared_ptr<list<GameObj*>> actObjs2{ new list<GameObj*>() };
 
 	//Determine upper/left area
 	sf::FloatRect otherSide(side);
@@ -177,8 +179,7 @@ void GameState::binSep(const std::list<GameObj*>* actObjs,
 //END
 
 
-void GameState::determineCollisions(const 
-	std::vector<std::list<GameObj*>*>& quads)
+void GameState::determineCollisions(const std::vector<std::shared_ptr<list<GameObj*>>>& quads)
 {
 	/*
 		- We determine if 2 given objs within a given
@@ -212,20 +213,23 @@ void GameState::determineCollisions(const
 	}
 	//END vector for
 }
+//END DETERMINE COLLISIONS
 
-void GameState::deleteBins(std::vector<std::list<GameObj*>*>& quads)
+void GameState::deleteBins(std::vector<std::shared_ptr<list<GameObj*>>>& quads)
 {
 	/*
 		We delete memory allocated to storing lists
 		of game objs belonging in quadrants.
 	*/
 
-	for (const auto& list : quads) {
-		list->clear();
-		delete list;
+	for (auto& ptr : quads) {
+		ptr->clear();
 	}
-}
 
+	//Shared ptrs are support to deallocate their data upon destructor call
+	//We will have to confirm this is the case
+}
+//END DELETE BINS
 
 
 
@@ -253,8 +257,11 @@ void GameState::towerMechanics()
 bool GameState::isGameOver() {
 	
 	//Leave this for now, will consider what to do here
-	if(players.at(0).isGameOver())
+	if (players.at(0).isGameOver()) {
 		gameState = STATE::MAIN_MENU;
+		return true;
+	}
+	return false;
 }
 
 
@@ -384,7 +391,7 @@ void GameState::attackPlayer()
 				players.at(i).getHeartBounds())) {	
 				//if a follwer insects the player's global bounds
 
-				float dmg = fol.getDamage();
+				int dmg = fol.getDamage();
 				players.at(i).takeDamage(dmg);	
 				//reduce player's health
 			}
@@ -429,21 +436,21 @@ int GameState::checkTowerCollision()
 void GameState::drawPlayers()
 {
 	for (size_t i = 0; i < players.size(); i++) {
-		players.at(i).drawPlayer(*window_ptr);
+		players.at(i).drawPlayer();
 	}
 }
 
 void GameState::drawFollowers()
 {
 	for (auto& fol : followers) {
-		fol.drawFollower(*window_ptr);
+		fol.drawFollower();
 	}
 }
 
 void GameState::drawTowers()
 {
 	for (size_t i = 0; i < towers.size(); i++) {
-		towers.at(i).drawTowers(*window_ptr);
+		towers.at(i).drawTowers();
 	}
 }
 
@@ -490,7 +497,8 @@ STATE GameState::update(const float& dt)
 	checkCollisions();
 
 	//Game_Obj Update for each object
-	for (auto& obj : objs) {
+	list<GameObj*>* actObjs = objs->getList();
+	for (auto& obj : *actObjs) {
 		obj->update();
 	}
 
@@ -500,7 +508,7 @@ STATE GameState::update(const float& dt)
 	followerMechanics();
 
 	std::string msg = "Size of objs: ";
-	msg += std::to_string(objs.size());
+	msg += std::to_string(objs->listSize());
 
 	static int i = 0;
 	zsk::print(msg, i);

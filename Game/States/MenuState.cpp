@@ -27,13 +27,10 @@ void MenuState::initvars()
 
 void MenuState::initGameTitle()
 {
-	float wLength = window_ptr->getSize().x;
-	float wHeight = window_ptr->getSize().y;
-
-	float titleX = wLength / 2.f;
+	float titleX = wWidth / 2.f;
 	float titleY = wHeight / 7.f;
 
-	int textSize = (wLength / 100.f) * (wHeight / 100.f) * (1.f / 1.5f);
+	unsigned int textSize = static_cast<unsigned int>( (wWidth / 100.f) * (wHeight / 100.f) * (1.f / 1.5f) );
 
 	//Title 1
 	title1.setFont(zsk::art::arcade);
@@ -55,24 +52,21 @@ void MenuState::initGameTitle()
 void MenuState::initMenuOptions()
 {
 	//set Positions of options relative to window
-	float wLength = window_ptr->getSize().x;
-	float wHeight = window_ptr->getSize().y;
-
-	float posX = wLength / 2.f;
+	float posX = wWidth / 2.f;
 	float posY = wHeight / 2.f;
 
 	sf::Vector2f posPlay = sf::Vector2f(posX, posY);
 	sf::Vector2f spacing = sf::Vector2f(0.f, wHeight / 12.f);
 
-	int textSize = (wLength / 100.f) * (wHeight / 100.f) * (0.25f);
+	unsigned int textSize = static_cast<unsigned int>( (wWidth / 100.f) * (wHeight / 100.f) * (0.25f) );
 	float thickness = 8.f;
 
 	//Set Text Aspects Strings
 	std::string playText = "Create Game";
 	std::string quitText = "Quit";
 
-	sf::Vector2f playTightness = sf::Vector2f(1.1f, 1.1);
-	sf::Vector2f quitTightness = sf::Vector2f(3.1f, 1.1);
+	sf::Vector2f playTightness = sf::Vector2f(1.1f, 1.1f);
+	sf::Vector2f quitTightness = sf::Vector2f(3.1f, 1.1f);
 
 	//create the buttons
 	play = MenuObjects::Button(STATE::MAIN_MENU, posPlay, playText, zsk::ARCDE,
@@ -95,11 +89,8 @@ void MenuState::initMenuOptions()
 /*  Modifiers  */
 void MenuState::setTitlePos(sf::Vector2f const &newPos)
 {
-	float wLength = window_ptr->getSize().x;
-	float wHeight = window_ptr->getSize().y;
-
 	t1Pos = newPos;
-	t2Pos = newPos + sf::Vector2f(0, wLength / 12.f);
+	t2Pos = newPos + sf::Vector2f(0, wWidth / 12.f);
 
 	sf::FloatRect title1Size = title1.getLocalBounds();
 	sf::FloatRect title2Size = title2.getLocalBounds();
@@ -111,7 +102,7 @@ void MenuState::setTitlePos(sf::Vector2f const &newPos)
 	title2.setPosition(t2Pos);
 }
 
-void MenuState::setTitleSize(int newSize) {
+void MenuState::setTitleSize(unsigned int newSize) {
 	title1.setCharacterSize(newSize);
 	title2.setCharacterSize(newSize);
 }

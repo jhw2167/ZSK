@@ -29,13 +29,11 @@ void LobbyState::initvars()
 
 void LobbyState::initGameTitle()
 {
-	float wLength = window_ptr->getSize().x;
-	float wHeight = window_ptr->getSize().y;
-
-	float titleX = wLength / 2.f;
+	float titleX = wWidth / 2.f;
 	float titleY = wHeight / 15.f;
 
-	int textSize = (wLength / 100.f) * (wHeight / 100.f) * (1.f / 2.5f);
+	unsigned int textSize = static_cast<unsigned int>( (wWidth / 100.f) * (wHeight / 100.f) * (1.f / 2.5f) );
+	
 
 	//Title 1
 	title1.setFont(zsk::art::arcade);
@@ -54,9 +52,7 @@ void LobbyState::initGameTitle()
 void LobbyState::initMenuOptions()
 {
 	//set Positions of options relative to window
-	float wWidth = window_ptr->getSize().x;
-	float wHeight = window_ptr->getSize().y;
-
+	
 	//init all our interactables
 	initHostJoin(wWidth, wHeight);
 	initEnterCode(wWidth, wHeight);
@@ -71,17 +67,14 @@ void LobbyState::initMenuOptions()
 
 void LobbyState::initArt()
 {
-	const float width = window_ptr->getSize().x;
-	const float height = window_ptr->getSize().y;
+	float w = wWidth * 0.98f;
+	float h = wHeight * 0.98f;
 
-	float w = width * 0.98f;
-	float h = height * 0.98f;
-
-	sf::Vector2f adj(width - w, height - h);
+	sf::Vector2f adj(wWidth - w, wHeight - h);
 	adj = (adj / 2.f);
 
 	sf::Vector2f size(w, h);
-	int thickness = 25;
+	float thickness = 25.f;
 
 	//Set border attributes
 	border.setPosition(adj);
@@ -109,7 +102,7 @@ void LobbyState::initHostJoin(const float width, const float height)
 	sf::Vector2f posHost = sf::Vector2f(posX, posY);
 	sf::Vector2f posJoin = sf::Vector2f(width - posX, posY);
 
-	int textSize = (width / 100.f) * (height / 100.f) * (0.25f);
+	unsigned int textSize = static_cast<unsigned int>( (width / 100.f) * (height / 100.f) * (0.25f) );
 	float thickness = 8.f;
 
 	//Set Text Aspects Strings
@@ -132,6 +125,7 @@ void LobbyState::initHostJoin(const float width, const float height)
 	hostGame.setOutlineThickness(thickness);
 	joinGame.setOutlineThickness(thickness);
 }
+//END INIT JOIN HOST
 
 void LobbyState::initEnterCode(const float width, const float height)
 {
@@ -148,7 +142,7 @@ void LobbyState::initEnterCode(const float width, const float height)
 
 	//Set Text Aspects Strings
 	std::string defaultText = "Enter Code";
-	sf::Vector2f tightness = sf::Vector2f(1.1f, 1.1);
+	sf::Vector2f tightness = sf::Vector2f(1.1f, 1.1f);
 
 	//create the textBox
 	enterCode = MenuObjects::Textbox(STATE::LOBBY, pos + spacing, defaultText, zsk::ARIAL,
@@ -207,7 +201,7 @@ void LobbyState::initGenCode(const float width, const float height)
 
 	int textSize = hostGame.getTextSize() + 2;
 	float thickness = 0.f;
-	sf::Vector2f tightness(0.9, 0.9);
+	sf::Vector2f tightness(0.9f, 0.9f);
 
 	//Set Text Aspects Strings
 	std::string defaultText = "Game Code:";
@@ -221,7 +215,7 @@ void LobbyState::initGenCode(const float width, const float height)
 	float align = (codeText.getBoxSize().x - hostGame.getBoxSize().x) / 2.f;
 	pos1.x = codeText.getPosition().x + align;
 	codeText.setPosition(pos1);
-	codeText.setTextSpacing(0.80);
+	codeText.setTextSpacing(0.80f);
 	codeText.setTxtColor(zsk::art::darkTertCol);
 
 
@@ -312,7 +306,7 @@ void LobbyState::initStartGame(const float width, const float height)
 
 	std::string msg = "Start>>";
 	sf::Vector2f tightness(1.1f, 1.05f);
-	int textSize = enterCode.getTextSize() - 5.f;
+	unsigned int textSize = enterCode.getTextSize() - 5;
 	float thickness = submitCode.getOutlineThickness();
 
 	//create button
@@ -463,9 +457,9 @@ void LobbyState::addPlayerTuple(const NetworkObjects::ipBundle & bndl)
 
 	//Sizes
 	float w = hostList.getBoxSize().x;
-	float h = hostGame.getBoxSize().y * 1.5;
+	float h = hostGame.getBoxSize().y * 1.5f;
 	sf::Vector2f size(w, h);
-	std::vector<float> lengths = { 0.15, 0.7, 0.15 };
+	std::vector<float> lengths = { 0.15f, 0.7f, 0.15f };
 
 	// Position - push tuple position furth down the
 	// list for each tuple added
@@ -515,7 +509,7 @@ void LobbyState::addPlayerTuple(const NetworkObjects::ipBundle & bndl)
 	dynamic_cast<MenuObjects::Textbox*>(objs->at(1))->setFont(zsk::ARIAL);
 	dynamic_cast<MenuObjects::Textbox*>(objs->at(1))->setString(bndl.user);
 	dynamic_cast<MenuObjects::Textbox*>(objs->at(1))
-		->fitTextToBox(sf::Vector2f(1.2, 1.4), MenuObjects::LEFT);
+		->fitTextToBox(sf::Vector2f(1.2f, 1.4f), MenuObjects::LEFT);
 
 	//add to list of players to be visible
 	playerList.push_back(std::move(member));

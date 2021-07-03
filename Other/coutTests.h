@@ -72,7 +72,7 @@ void coutTests()
 	} while (--totalVars > 0);
 
 
-	for (int a = 0; a < vars.size(); a++)
+	for (unsigned int a = 0; a < vars.size(); a++)
 	{
 		if (a == 0)
 			std::cout << std::endl << "std::cout << std::endl << ";

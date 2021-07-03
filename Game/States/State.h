@@ -16,6 +16,8 @@ protected:
 	/*  Protected Members are availible to
 				Base Classes			*/
 	static std::shared_ptr<sf::RenderWindow> window_ptr;
+		static float wWidth;
+		static float wHeight;
 	static std::shared_ptr<sf::Mouse> mouse_ptr;
 	static std::shared_ptr<std::vector<sf::Event>> events_ptr;
 

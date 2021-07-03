@@ -19,8 +19,9 @@ namespace MenuObjects {
 		currState = STATE::MAIN_MENU;
 	}
 
-	MenuObject::MenuObject(const STATE currentState, const sf::Vector2f & pos,
-		const std::string & msg, const zsk::FONT_CODE fontCode, const int textSize,
+	MenuObject::MenuObject(const STATE currentState,
+ const sf::Vector2f & pos,
+		const std::string & msg, const zsk::FONT_CODE fontCode, const unsigned int textSize,
 		const bool canBeClicked, const STATE newStateOnClick, const sf::Vector2f & tghtness)
 	{
 		//States
@@ -199,7 +200,7 @@ namespace MenuObjects {
 		setSize(text.getCharacterSize(), tightness);
 	}
 
-	void MenuObject::setSize(const int textSize, const sf::Vector2f&
+	void MenuObject::setSize(const unsigned int textSize,  const sf::Vector2f&
 		tghtness, const bool init)
 	{
 		/*
@@ -655,7 +656,7 @@ namespace MenuObjects {
 		alignText(aln);
 	}
 
-	void Textbox::setMaxMsgSize(int newSize) {
+	void Textbox::setMaxMsgSize(unsigned int newSize) {
 		maxMsgSize = newSize;
 	}
 

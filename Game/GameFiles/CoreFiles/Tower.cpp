@@ -76,13 +76,13 @@ void Tower::initLaser()
 	//set laser rotation
 	sf::Vector2f lPos = laser.getPosition();
 
-	float winL = window_ptr->getSize().x;
-	float winH = window_ptr->getSize().y;
+	float winL = static_cast<float>(window_ptr->getSize().x);
+	float winH = static_cast<float>(window_ptr->getSize().y);
 	sf::Vector2f center = sf::Vector2f(winL / 2.f, winH / 2.f);
 
 	float l1 = laser.getLocalBounds().width;
-	float l2 = zsk::distanceFrom(lPos, center);
-	float l3 = zsk::distanceFrom(lPos + sf::Vector2f(l1,0), center);
+	float l2 = static_cast<float>(zsk::distanceFrom(lPos, center));
+	float l3 = static_cast<float>(zsk::distanceFrom(lPos + sf::Vector2f(l1,0), center));
 
 	//L1 is simply length of the laser
 	//L2 is distance between laser origin (at tower) and map center

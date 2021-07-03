@@ -61,7 +61,7 @@ public:
 
 		/*  Modifiers  */
 	void setTitlePos(sf::Vector2f const &newPos);
-	void setTitleSize(int newSize);
+	void setTitleSize(unsigned int newSize);
 
 		/*  Accessors  */
 	STATE getOptionSelected();

@@ -41,6 +41,7 @@ public:
 	typename std::list<T>::iterator atIterator(int id);
 	typename std::list<T>::iterator begin();
 	typename std::list<T>::iterator end();
+	typename std::list<T>* getList();
 
 	/*	Modifiers  */
 	boolean setMapCapacity(size_t newCapacity = DEF_MAP_CAP);
@@ -144,6 +145,7 @@ T& ListMap<T>::at(int id)
 	return val._Ptr->_Myval;
 }
 
+
 template<class T>
 typename std::list<T>::iterator ListMap<T>::atIterator(int id)
 {
@@ -157,16 +159,24 @@ typename std::list<T>::iterator ListMap<T>::atIterator(int id)
 	return map.at(id);
 }
 
+//Get first entry in the list
 template<class T>
 typename std::list<T>::iterator ListMap<T>::begin() {
 	return list.begin();
 }
 
+//Get last entry in the list
 template<class T>
 typename std::list<T>::iterator ListMap<T>::end() {
 	return list.end();
 }
 
+
+//Returns a ptr to the list that exist internally in this object
+template<class T>
+typename std::list<T>* ListMap<T>::getList() {
+	return &list;
+}
 
 
 /*	Modifiers  */

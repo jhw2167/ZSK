@@ -74,9 +74,9 @@ namespace MenuObjects {
 		MenuObject();
 
 		//Fully Descriptive Constructor
-		MenuObject(const STATE currentState, const sf::Vector2f& pos, const std::string& msg,
-			const zsk::FONT_CODE fontCode = zsk::ARIAL, const int textSize = 20,
-			const bool canBeClicked = true, const STATE newStateOnClick = STATE::MAIN_MENU,
+		MenuObject(const STATE currentState, const sf::Vector2f& pos, const std::string& msg, 
+			const zsk::FONT_CODE fontCode = zsk::ARIAL, const unsigned int textSize = 20,
+			const bool canBeClicked = true,const STATE newStateOnClick = STATE::MAIN_MENU,
 			const sf::Vector2f& tghtness = sf::Vector2f(1.1f, 1.1f));
 
 		//Constructor important for tuple class
@@ -117,7 +117,8 @@ namespace MenuObjects {
 
 		/*  Modifiers  */
 		void setString(const std::string& newString);
-		void setSize(const int textSize, const sf::Vector2f&
+		void setSize(const unsigned int textSize,
+ const sf::Vector2f&
 			tightness, const bool init = false);
 		void setPosition(const sf::Vector2f& pos);
 		void setBoxOrigin(const sf::Vector2f& org);
@@ -230,7 +231,7 @@ namespace MenuObjects {
 		public MenuObject
 	{
 	private:
-		int maxMsgSize;
+		unsigned int maxMsgSize;
 		bool forceUpperLetters;
 
 		int interval;
@@ -276,7 +277,7 @@ namespace MenuObjects {
 			const ALIGN aln = CNTR);
 
 		//Setters
-		void setMaxMsgSize(int newSize);
+		void setMaxMsgSize(unsigned int newSize);
 		void forceUpperCase(bool force);
 
 		//Accessors

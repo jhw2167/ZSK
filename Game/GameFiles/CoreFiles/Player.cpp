@@ -860,7 +860,7 @@ void Player::deleteBullet(std::list<std::shared_ptr<Bullet>>::iterator& b)
 void Player::checkBulletInBounds()
 {
 	for (auto b = activeBullets.begin(); b != activeBullets.end();) {
-		if (b->isOutOBounds()) {
+		if (b->get()->isOutOBounds()) {
 			cout << "Bullet OOB\n";
 			activeBullets.erase(b);
 		}
@@ -1092,7 +1092,7 @@ void Player::drawHealthBar()
 void Player::drawBullets()
 {
 	for (auto b = activeBullets.begin(); b != activeBullets.end();) {
-		b->drawBullet();
+		b->get()->drawBullet();
 		++b;
 	}
 }

@@ -31,8 +31,7 @@ private:
 	sf::Vector2i mousePos;
 
 	//Game objs - ALL GAME ENTITIES: Players, towers, followers etc..
-	//shared_ptr<list<shared_ptr<GameObj>>> objs;
-	ListMap<GameObj*> objs;
+	std::shared_ptr<ListMap<GameObj*>> objs;
 
 	//Simple Game Values
 	static int numPlayers;
@@ -60,10 +59,10 @@ private:
 
 	/* LEVEL 1  -  Call From Update*/
 	void checkCollisions();
-	void binSep(const std::list<GameObj*>* actObjs, 
-		std::vector<std::list<GameObj*>*>& quads, sf::FloatRect area, int lvl);
-	void determineCollisions(const std::vector<std::list<GameObj*>*>& quads);
-	void deleteBins(std::vector<std::list<GameObj*>*>& quads);
+	void binSep(const std::shared_ptr<list<GameObj*>> actObjs,
+		std::vector<std::shared_ptr<list<GameObj*>>>& quads, sf::FloatRect area, int lvl);
+	void determineCollisions(const std::vector<std::shared_ptr<list<GameObj*>>>& quads);
+	void deleteBins(std::vector<std::shared_ptr<list<GameObj*>>>& quads);
 
 	void movePlayerLogic();
 	void otherPlayerMechs();

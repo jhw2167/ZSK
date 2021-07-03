@@ -57,7 +57,7 @@ private:
 	std::list<GameObj*>::const_iterator self;
 
 	//lists
-	static shared_ptr<ListMap<GameObj*>> objs;
+	static std::shared_ptr<ListMap<GameObj*>> objs;
 	static std::vector<SubList> subLists;
 		
 
@@ -103,7 +103,7 @@ public:
 	static void setWindow(const std::shared_ptr<sf::RenderWindow>& window_pointer);
 	static void setMouse(const std::shared_ptr <sf::Mouse>& mouse_pointer);
 
-	static void setObjs(std::shared_ptr<std::list<GameObj*>> list);
+	static void setObjs(std::shared_ptr<ListMap<GameObj*>> list);
 	static void initSublist();
 	void setSublist(const SubList& sub, ObjType indx);
 		

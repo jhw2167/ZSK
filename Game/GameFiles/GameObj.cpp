@@ -52,7 +52,7 @@ void GameObj::setMouse(const std::shared_ptr<sf::Mouse>& mouse_pointer) {
 }
 
 //One time per game SET Objs game vector pointer
-void GameObj::setObjs(std::shared_ptr<std::list<GameObj*>> list) {
+void GameObj::setObjs(std::shared_ptr<ListMap<GameObj*>> list) {
 	objs = list;
 }
 
@@ -123,7 +123,7 @@ GameObj::~GameObj()
 	*/
 
 	printf("About to delete {%d}, visualizing data... size %d\n",
-		id, objs->size());
+		id, objs->listSize());
 	bool shouldRemove = 0;
 
 	try
