@@ -10,7 +10,6 @@
 //includes
 #include "../pch/stdafx.h"
 #include "../Exceptions/Exceptions.h"
-#include "../../Game/GameFiles/GameObj.h"
 
 template <typename T>
 class ListMap {
@@ -19,7 +18,7 @@ private:
 
 	//Variables
 	std::list<T> list;
-	std::unordered_map<int, std::list<T>::iterator > map;
+	std::unordered_map<int, typename std::list<T>::iterator > map;
 	const static size_t DEF_MAP_CAP;
 
 	//Pointer to ID function
@@ -28,8 +27,9 @@ private:
 public:
 
 	/*	Constructors  */
-	ListMap<T>();
-	ListMap<T>(int idFunction(T), size_t reserveCapacity);
+	ListMap();
+	ListMap(size_t reserveCapacity);
+	ListMap(int idFunction(T), size_t reserveCapacity);
 
 
 	/*	Accessors  */
@@ -60,11 +60,17 @@ public:
 	void clearAll() noexcept;
 };
 
+/*
+	Template function must exist in the header file because
+	they provide the compiler patterns from which to generate
+	the source code needed for compilation of a specific
+	instance of the template.
+*/
 
 
-/*  Constructors  */
+/*	Constructors  */
 template<class T>
-inline ListMap<T>::ListMap()
+ListMap<T>::ListMap()
 {
 	/*
 		T MUST be a pointer to an object that holds
@@ -78,7 +84,17 @@ inline ListMap<T>::ListMap()
 }
 
 template<class T>
-inline ListMap<T>::ListMap(int idFunction(T), size_t reserveCapacity)
+ListMap<T>::ListMap(size_t reserveCapacity)
+{
+	//Assert that type T must be a ptr
+	//Allocate capacity to map
+	ListMap();
+	setMapCapacity(reserveCapacity);
+}
+
+
+template<class T>
+ListMap<T>::ListMap(int idFunction(T), size_t reserveCapacity)
 {
 	//Assert that type T must be a ptr
 	//Allocate capacity to map
@@ -87,11 +103,33 @@ inline ListMap<T>::ListMap(int idFunction(T), size_t reserveCapacity)
 	setMapCapacity(reserveCapacity);
 }
 
+
 /*  Accessors  */
+
+template <class T>
+size_t ListMap<T>::listSize() {
+	return list.size();
+}
+
+template <class T>
+size_t ListMap<T>::mapSize() {
+	return map.size();
+}
+
+template <class T>
+size_t ListMap<T>::mapCapacity() {
+	return map.max_size();
+}
+
+template <class T>
+int ListMap<T>::getIDFromFunction(T obj) {
+	return getID(obj);
+}
+
 template<class T>
-inline T& ListMap<T>::at(int id)
+T& ListMap<T>::at(int id)
 {
-	/* 
+	/*
 		Returns T* at provided map index
 		-	Throws out_of_range if index DNE
 		-	T=GameObj* will be nullptr if
@@ -99,7 +137,7 @@ inline T& ListMap<T>::at(int id)
 	*/
 
 	//may throw out_of_range, to be caught by caller of at()
-	std::list<T>::iterator val = atIterator(id);
+	typename std::list<T>::iterator val = atIterator(id);
 	if (val == list.end())
 		throw no_such_object("GameObj Expired at id" + id);
 
@@ -107,7 +145,7 @@ inline T& ListMap<T>::at(int id)
 }
 
 template<class T>
-inline typename std::list<T>::iterator ListMap<T>::atIterator(int id)
+typename std::list<T>::iterator ListMap<T>::atIterator(int id)
 {
 	/*
 		Returns iterator at provided map index
@@ -120,20 +158,52 @@ inline typename std::list<T>::iterator ListMap<T>::atIterator(int id)
 }
 
 template<class T>
-inline typename std::list<T>::iterator ListMap<T>::begin() {
+typename std::list<T>::iterator ListMap<T>::begin() {
 	return list.begin();
 }
 
 template<class T>
-inline typename std::list<T>::iterator ListMap<T>::end() {
+typename std::list<T>::iterator ListMap<T>::end() {
 	return list.end();
 }
+
+
+
+/*	Modifiers  */
+template <class T>
+boolean ListMap<T>::setMapCapacity(size_t newCapacity) {
+
+	/*
+		Checks if requested capacity has already been
+		returned and returns false if so -
+		ELSE - newCapacity is reserved, a rehash is
+		triggered and the method is O(n)
+	*/
+
+	if (map.max_size() < newCapacity) {
+		map.reserve(newCapacity);
+		return true;
+	}
+
+	return false;
+}
+
+template <class T>
+void ListMap<T>::setIDFunction(int id(T)) {
+	/*  MAKES IMPLICIT CALL TO CLEAR ALL,
+	sets new id function else we may lose
+	lots of data  */
+
+	clearAll();
+	getID = id;
+}
+
 
 
 /*  Insertion Function  */
 template<class T>
 typename std::list<T>::iterator ListMap<T>::insert(T obj, const typename std::list<T>::iterator& before) {
-	
+
 	/*
 		- Checks if object item is novel to ListMap
 			- Throws invalid argument if id is not novel
@@ -160,9 +230,9 @@ typename std::list<T>::iterator ListMap<T>::insert(T obj, const typename std::li
 		fprintf(stderr, "\nUnknown exception caught in ListMap<T>::insert when attempting to check use of id: %d\n", id);
 		std::cerr << e.what() << endl;
 	}
-	
+
 	//Insert obj into list
-	std::list<T>::iterator loc = list.insert(before, obj);
+	typename std::list<T>::iterator loc = list.insert(before, obj);
 
 	//Map to id value
 	map[id] = loc;
@@ -196,7 +266,7 @@ typename std::list<T>::iterator ListMap<T>::push_back(T obj) {
 /*  Erasers  */
 
 template <class T>
-inline T& ListMap<T>::erase(int id)
+T& ListMap<T>::erase(int id)
 {
 	/* Removes element at id,
 		- sets map iterator to list<T>::end() at id
@@ -205,7 +275,7 @@ inline T& ListMap<T>::erase(int id)
 	*/
 
 	//throws out of range
-	std::list<T>::iterator iter = map.at(id);
+	typename std::list<T>::iterator iter = map.at(id);
 
 	//set to end() in map, remove from list
 	map[id] = list.end();
@@ -215,4 +285,37 @@ inline T& ListMap<T>::erase(int id)
 	return val;
 }
 
+
 /*  Clear Methods  */
+template <class T>
+size_t ListMap<T>::clear() noexcept
+{
+	/* Clears the entire map, reloads all
+	values in the list back into the map with
+	their internally stored ID's
+	- function to generate ID's must be passed
+	*/
+
+	//clear map
+	size_t cap = map.max_size();
+	map.clear();
+	map.reserve(cap);
+
+	//iterate over LL
+	auto elem = list.begin();
+	while (elem != list.end()) {
+		map[getID(elem._Ptr->_Myval)] = elem;
+		++elem;
+	}
+
+	//return size
+	return map.size();
+}
+
+
+template <class T>
+void ListMap<T>::clearAll() noexcept {
+	map.clear();
+	setMapCapacity();
+	list.clear();
+}
