@@ -90,7 +90,7 @@ sf::Vector2f Bullet::getBulletPosition() const  {
 }
 //get bullets position function used for collisions 
 
-const sf::FloatRect Bullet::getGlobalBounds() const {
+const sf::FloatRect& Bullet::getGlobalBounds() const {
 	return bTop.getGlobalBounds();
 }
 //taken as global bounds of of bullets circlceShape top

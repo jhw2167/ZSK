@@ -56,7 +56,7 @@ public:
 
 		/*  Accessor Methods  */
 	int getTowerNum() const;
-	const sf::FloatRect getGlobalBounds() const;
+	const sf::FloatRect& getGlobalBounds() const;
 	sf::Vector2f getPosition() const;
 	float getTowerRadius() const ;
 	sf::CircleShape getTowerShape() const;

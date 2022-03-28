@@ -213,7 +213,7 @@ sf::Vector2f Follower::getFollowerVelocity() const  {
 	return fVelocity;
 }
 
-const sf::FloatRect Follower::getGlobalBounds() const {			
+const sf::FloatRect& Follower::getGlobalBounds() const {			
 	//taken as global bounds of follower's circleShape head
 	return fBox.getGlobalBounds();
 }

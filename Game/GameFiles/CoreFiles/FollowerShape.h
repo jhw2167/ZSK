@@ -48,7 +48,7 @@ public:
 
 	sf::Vector2f getPosition();
 		
-	sf::FloatRect getGlobalBounds();
+	const sf::FloatRect& getGlobalBounds();
 
 	//bounds with respect to center of follower head at fPos
 	float getLeftBounds();

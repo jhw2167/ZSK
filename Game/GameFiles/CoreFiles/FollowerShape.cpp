@@ -70,7 +70,7 @@ sf::Vector2f FollowerShape::getPosition() {
 	return fPos;
 }
 
-sf::FloatRect FollowerShape::getGlobalBounds()
+const sf::FloatRect& FollowerShape::getGlobalBounds()
 //taken as global bounds of follower's circleShape head
 {
 	return head.getGlobalBounds();

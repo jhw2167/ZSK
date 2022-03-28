@@ -144,7 +144,6 @@ inline std::shared_ptr<GameObj> GameObj::getNewGameObj()
 }
 
 template<class objType>
-inline std::shared_ptr<GameObj> GameObj::removeGameObj(int objID)
-{
+inline std::shared_ptr<GameObj> GameObj::removeGameObj(int objID) {
 	return std::shared_ptr<GameObj>();
 }

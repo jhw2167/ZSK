@@ -122,7 +122,7 @@ sf::Vector2f PlayerShape::getGunPosition() const						//Returns position of gun 
 		return playerBody[GUN2].getPosition();
 	}
 
-const sf::FloatRect PlayerShape::getHeartBounds() const {
+const sf::FloatRect& PlayerShape::getHeartBounds() const {
 		return heart.getGlobalBounds();
 	}
 
@@ -613,7 +613,7 @@ bool Player::isGameOver() const {
 }
 
 
-const sf::FloatRect & Player::getGlobalBounds() const {
+const sf::FloatRect& Player::getGlobalBounds() const {
 	return playerShape.getHeartBounds();
 }
 
