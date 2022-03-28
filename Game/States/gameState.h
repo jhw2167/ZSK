@@ -64,9 +64,10 @@ private:
 	void determineCollisions(const std::vector<std::shared_ptr<list<GameObj*>>>& quads);
 	void deleteBins(std::vector<std::shared_ptr<list<GameObj*>>>& quads);
 
-	void movePlayerLogic();
+	/*void movePlayerLogic();
 	void otherPlayerMechs();
-	void shootingMechanics();
+	void shootingMechanics();*/
+
 	void followerMechanics();
 	void towerMechanics();
 	bool isGameOver();

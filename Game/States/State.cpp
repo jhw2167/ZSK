@@ -5,6 +5,11 @@
 float State::wWidth = 0.f;
 float State::wHeight = 0.f;
 
+std::shared_ptr<sf::RenderWindow> State::window_ptr{ nullptr };
+std::shared_ptr<sf::Mouse> State::mouse_ptr{ nullptr };
+std::shared_ptr<std::vector<sf::Event>> State::events_ptr{ nullptr };
+
+STATE State::gameState{ STATE::MAIN_MENU };
 
 //Constructor
 State::State() {

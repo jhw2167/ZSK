@@ -7,6 +7,11 @@
 
 //static initilization
 std::shared_ptr<ListMap<GameObj*>> GameObj::objs{ nullptr };
+std::vector<SubList> GameObj::subLists;
+
+//protected
+std::shared_ptr<sf::RenderWindow> GameObj::window_ptr{ nullptr };
+std::shared_ptr<sf::Mouse> GameObj::mouse_ptr{ nullptr };
 int GameObj::objID = 0;
 
 
@@ -92,8 +97,8 @@ GameObj::GameObj(const GameObj& rhs)
 	this->type = rhs.type;
 	this->id = rhs.id;
 
-	remObj();
-	addObj();
+	//remObj();
+	//addObj();
 	printf("2. {%d} New id for this: %p\n", rhs.id, this);
 }
 
@@ -105,8 +110,8 @@ GameObj::GameObj(GameObj&& rhs)
 	this->type = rhs.type;
 	this->id = rhs.id;
 
-	remObj();
-	addObj();
+	//remObj();
+	//addObj();
 	printf("2. {%d} New id for this: %p\n", rhs.id, this);
 }
 

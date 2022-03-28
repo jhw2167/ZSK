@@ -164,7 +164,7 @@ int Tower::getTowerNum() const {
 }
 
 /*  Accessor Methods  */
-const sf::FloatRect& Tower::getGlobalBounds() const  {
+const sf::FloatRect Tower::getGlobalBounds() const  {
 	return towerShape.getGlobalBounds();
 }
 

@@ -13,7 +13,8 @@ enum class STATE { MAIN_MENU = 0,
 	LOBBY, 
 	HOST_LOBBY, 
 	JOIN_LOBBY,
-	GAME, PAUSE, 
+	GAME, 
+	PAUSE, 
 	SHOP, 
 	QUIT};
 

@@ -74,8 +74,8 @@ protected:
 
 
 	/** FUNCTIONS **/
-	virtual void addObj();
-	virtual void remObj();
+	//virtual void addObj();
+	//virtual void remObj();
 	//END FUNCTIONS
 
 public:
@@ -90,13 +90,13 @@ public:
 	unsigned int getID() const;
 	ObjType getType() const;
 	sf::Vector2f getPos() const;
-	virtual const sf::FloatRect& getGlobalBounds() const = 0;
+	virtual const sf::FloatRect getGlobalBounds() const = 0;
 
 	
-	static std::shared_ptr<Player> getNewPlayer();
+	/*static std::shared_ptr<Player> getNewPlayer(); CNTR + k + c to comment +u to uncomment
 	static std::shared_ptr<Tower> getNewTower();
 	static std::shared_ptr<Follower> getNewFollower();
-	static std::shared_ptr<Bullet> getNewBullet();
+	static std::shared_ptr<Bullet> getNewBullet();*/
 	//static std::shared_ptr<Drop> getNewBullet();
 
 	//Modifiers

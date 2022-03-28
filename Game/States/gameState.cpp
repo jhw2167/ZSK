@@ -502,9 +502,10 @@ STATE GameState::update(const float& dt)
 		obj->update();
 	}
 
-	movePlayerLogic();
-	otherPlayerMechs();
-	shootingMechanics();
+	//movePlayerLogic();
+	//otherPlayerMechs();
+	//shootingMechanics();
+
 	followerMechanics();
 
 	std::string msg = "Size of objs: ";

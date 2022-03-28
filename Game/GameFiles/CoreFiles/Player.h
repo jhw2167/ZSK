@@ -69,7 +69,7 @@ public:
 	sf::Vector2f getGunPosition() const;
 	//Returns position of gun for shooting
 	
-	const sf::FloatRect& getHeartBounds() const;
+	const sf::FloatRect getHeartBounds() const;
 	
 	float getLeftBounds() const;
 	//returns player's upper, lower, left and right bounds for boundry checking
@@ -300,7 +300,7 @@ public:
 
 	bool isGameOver() const;
 
-	const sf::FloatRect& getGlobalBounds() const;
+	const sf::FloatRect getGlobalBounds() const;
 
 	//METHODS OF CLASS PLAYER MANAGING SCORE
 	void adjScore(int adj); 
