@@ -19,7 +19,7 @@ private:
 	//Variables
 	std::list<T> list;
 	std::unordered_map<int, typename std::list<T>::iterator > map;
-	const static size_t DEF_MAP_CAP;
+	const static size_t DEF_MAP_CAP{ 10 };
 
 	//Pointer to ID function
 	int (*getID)(T);

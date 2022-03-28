@@ -93,6 +93,7 @@ void GameState::initVars()
 	players.reserve(zsk::smallContSz);
 
 	//set ptr to objs in GameObjs class
+	objs = std::make_shared< ListMap<GameObj*>>();
 	GameObj::setObjs(objs);		
 }
 
@@ -109,7 +110,7 @@ void GameState::checkCollisions()
 		determine collisions function
 	*/
 
-	std::shared_ptr<list<GameObj*>> actObjs{ objs->getList() };
+	std::shared_ptr<list<GameObj*>> actObjs{ new list<GameObj*>(*objs->getList()) };
 
 	std::vector<std::shared_ptr<list<GameObj*>>> quads;
 	sf::FloatRect area(sf::Vector2f(0.0,0.0), 
@@ -123,7 +124,6 @@ void GameState::checkCollisions()
 	determineCollisions(quads);
 
 	//delete allocated data in quads
-
 	deleteBins(quads);
 
 }
