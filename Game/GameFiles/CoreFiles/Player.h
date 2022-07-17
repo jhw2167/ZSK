@@ -180,6 +180,8 @@ private:
 	//sf::CircleShape dot = sf::CircleShape(4.f);
 	//sf::RectangleShape box;
 
+	static const  std::chrono::milliseconds PLYR_UPD_SLEEP;
+
 	/*** PRIVATE FUNCTIONS ***/
 
 
@@ -202,9 +204,10 @@ private:
 
 
 	/*   Private Update Functions  */
+		void playerUpdate();
 
 	//related to moving our player
-	void movePlayerLogic();
+		void movePlayerLogic();
 		void movePlayer(sf::Vector2f &mVect);
 		void moveLogic(int dir);
 

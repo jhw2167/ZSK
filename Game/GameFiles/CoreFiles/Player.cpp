@@ -9,6 +9,8 @@
 /*****************************/
 
 /*  CNTRL + M + O collapses all*/
+/*  CNTRL + M, CNTRL + O collapses all*/
+/*  CNTRL + M, CNTRL + M repopen all*/
 
 	/*	Private Members	*/
 
@@ -202,6 +204,7 @@ sf::Color Player::pColors[] = { sf::Color::Red, sf::Color::Blue,
 
 FollowerShape Player::scoreFigure = FollowerShape(sf::Color::Black, 3.f);
 PlayerShape Player::lifeFigure = PlayerShape(2.5f);
+const std::chrono::milliseconds Player::PLYR_UPD_SLEEP{ 5 };
 
 //Editing values
 bool Player::showBoxes = true;
@@ -260,6 +263,8 @@ Player::Player(int pNumber, int startLives, float scale, int startHealth,
 		setLaserWidth(laserW);
 		//laser color = playercolor
 
+		std::thread t1{ &Player::playerUpdate, this};
+		t1.detach();
 		initScore();
 	}
 
@@ -678,8 +683,8 @@ void Player::moveLogic(int dir)
 		moveVect = towerCollisions(dir, towerCollision, towerPos, towerRadius);
 	}
 
+	cout << "Moving with vel: " << moveVect;
 	movePlayer(moveVect);
-
 }
 
 
@@ -998,6 +1003,15 @@ STATE Player::update()
 	miscMechanics();
 
 	return STATE::GAME;
+}
+
+void Player::playerUpdate() {
+
+	while (!this->isGameOver()) {
+		movePlayerLogic();
+		shoot();
+		std::this_thread::sleep_for(PLYR_UPD_SLEEP);
+	}
 }
 
 //Move PLayer Logic

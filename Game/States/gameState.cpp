@@ -24,7 +24,7 @@ GameState::GameState()
 
 	initVars();
 	addPlayer();
-	//players.emplace_back(*w_ptr);
+	players.emplace_back();
 	//Need to figure out how im going to add players
 
 	initArt();
@@ -494,7 +494,7 @@ STATE GameState::update(const float& dt)
 	*/
 
 	//Determine all obj Collisions
-	checkCollisions();
+	//checkCollisions();
 
 	//Game_Obj Update for each object
 	list<GameObj*>* actObjs = objs->getList();
@@ -502,7 +502,7 @@ STATE GameState::update(const float& dt)
 		obj->update();
 	}
 
-	//movePlayerLogic();
+	//movePlayerLogic();	//done internal to each player with threads!
 	//otherPlayerMechs();
 	//shootingMechanics();
 
