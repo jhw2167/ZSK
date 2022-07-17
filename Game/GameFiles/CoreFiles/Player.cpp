@@ -204,10 +204,10 @@ sf::Color Player::pColors[] = { sf::Color::Red, sf::Color::Blue,
 
 FollowerShape Player::scoreFigure = FollowerShape(sf::Color::Black, 3.f);
 PlayerShape Player::lifeFigure = PlayerShape(2.5f);
-const std::chrono::milliseconds Player::PLYR_UPD_SLEEP{ 5 };
+const std::chrono::milliseconds Player::PLYR_UPD_SLEEP{ 7 };
 
 //Editing values
-bool Player::showBoxes = true;
+bool Player::showBoxes = false;
 
 
 
